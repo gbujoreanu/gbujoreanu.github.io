@@ -14,7 +14,14 @@ body{
     padding:10px;
 }
 
+.assignment a{
+    color:mediumaquamarine
+}
 
+.assignment p{
+    color:cornsilk
+    
+}
 h1{
     color:mediumaquamarine;
     text-align:center;
