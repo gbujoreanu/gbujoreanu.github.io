@@ -1,0 +1,33 @@
+/* Structure */
+
+body {
+    background-color:rgb(153, 200, 206);
+}
+
+header {
+    color: darkslategray;
+}
+h1 {
+    background-color:rgb(91, 155, 156); 
+    text-align: center;
+    color: darkslategray;
+}
+
+h2{
+    text-align: center;
+    color: darkslategrey;
+}
+
+p {
+    color:rgb(6, 80, 76);
+}
+
+li {
+    text-align: center;
+}
+
+/* Typography */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
