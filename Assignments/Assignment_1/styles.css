@@ -11,16 +11,28 @@ h1 {
     background-color:rgb(91, 155, 156); 
     text-align: center;
     color: darkslategray;
+
 }
 p {
     text-align:left;
     color: darkslategray;
 }
 
+a {
+    text-decoration: none;
+    color: darkslategray;
+}
+a:hover {
+    color: rgb(106, 47, 161);
+}
+
+/* Images */
+
 img {
     width: 250px;
     height: 250px;
 }
+
 /* Typography */
 
 body {

@@ -1,0 +1,101 @@
+/* Structure */
+
+body {
+    background-color:rgb(153, 200, 206);
+    background: url(images/background.jpg);
+}
+
+header {
+    color: darkslategray;
+}
+
+h1 {
+    background-color:rgb(91, 155, 156); 
+    text-align: center;
+    color: darkslategray;
+    border-radius: 5px;
+}
+
+h2 {
+    text-align: center;
+    color: darkslategray;
+}
+
+#content {
+    background:rgba(141, 210, 219, 0.9);
+    margin:auto;
+    padding: 0 5px;
+    border-radius: 10px;
+    width: 75%;
+    box-shadow: 10px 10px rgb(20, 139, 160);
+}
+
+p {
+    text-align:left;
+    color: darkslategray;
+}
+
+/* Images */
+
+img {
+    border: 5px solid rgb(74, 133, 133);
+    border-radius: 5px;
+    padding: 0px;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 350px;
+}
+
+/* Navigation */
+
+#main-nav a{
+    text-decoration:none;
+    background: rgb(133, 169, 180);
+    color: darkslategray;
+    padding: 4px;
+    border-radius: 3px;
+}
+
+#main-nav a:hover {
+    background: rgb(84, 185, 172);
+
+}
+
+/* Typography */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.bad {
+    color: rgb(236, 31, 31);
+}
+
+/* Table */
+
+table {
+    border-collapse: collapse;
+    padding: 4px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th {
+    background-color: rgb(141, 210, 219);
+    color:darkslategray
+}
+
+td, th {
+    border: 2px solid rgb(7, 74, 90);
+    padding: 20px; 
+}
+
+.top-row {
+    color:black; 
+    text-decoration: solid;   
+}
