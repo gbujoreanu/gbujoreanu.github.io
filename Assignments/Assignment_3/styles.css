@@ -1,0 +1,164 @@
+/* Structure */
+body {
+    background-color: #0c0c0c;
+    color: #ffffff;
+}
+
+#space-header h1 {
+    background-color: #0c0c0c;
+}
+
+h1 {
+    text-align: center;
+}
+
+#space-footer {
+    padding-top: 2px;
+    margin: auto;
+    margin-top: 10px;
+    background-color: #000;
+    color: #ffffff;
+}
+
+#galactic-info {
+    background-color: #000;
+    padding: 10px;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#alien-sidebar {
+    background-color: #000;
+}
+
+#info-header {
+    padding: 8px;
+    margin: auto;
+}
+
+.padded-area {
+    padding: 10px;
+    margin: auto;
+}
+
+.columns,
+#info-text,
+#alien-sidebar {
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    background-color: #000;
+    border: 1px solid #1e1e1e;
+}
+
+.galactic-img {
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    display: block;
+    margin: auto;
+}
+
+.space-info {
+    background-color: #191970;
+    margin: 10px;
+    border: 2px solid #4169e1;
+    padding: 10px;
+    border-radius: 5px;
+    color: #ffffff;
+}
+
+.c1of3 {
+    background-color: #00008b;
+    border: 2px solid #1e90ff;
+}
+
+p {
+    padding: 10px;
+    margin: auto;
+}
+
+/* Main Navigation */
+#space-nav ul {
+    padding-left: 0px;
+    margin: 15px;
+    background-color: #000;
+    text-align: center;
+}
+
+#space-nav li {
+    list-style-type: none;
+    font-size: 20px;
+}
+
+#space-nav a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+#space-nav a:hover {
+    border-bottom: 3px solid #1e90ff;
+    background-color: #000;
+    color: #1e90ff;
+}
+
+/* Typography */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+#info-header,
+#info-text {
+    text-align: left;
+}
+
+#space-header h1,
+#expect-header,
+.c1of3 h4 {
+    text-align: center;
+}
+
+#space-footer {
+    text-align: right;
+}
+
+/* Larger Resolutions */
+@media only screen and (min-width: 1000px) {
+    #space-nav ul,
+    .flex,
+    .img {
+        display: flex;
+    }
+
+    #space-nav li,
+    .c1of2,
+    .c1of3,
+    #alien-sidebar,
+    .space-images {
+        flex: 1;
+    }
+
+    #galactic-info {
+        flex: 3;
+    }
+
+    .img {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .flex-columns {
+        display:flex;
+    }
+
+   
+    .space-info.c1of2 {
+        flex: 1;
+    }
+    
+    
+}
+
+
