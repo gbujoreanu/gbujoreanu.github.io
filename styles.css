@@ -64,8 +64,8 @@ a:hover {
 }
 
 footer {
-    background-color: #1a1a1a;  /* Very dark gray, almost black */
-    color: #e0e0e0;  /* Light gray for contrast */
+    background-color: #1a1a1a;  
+    color: #e0e0e0;  
     padding: 20px 0;
     position: relative;
     bottom: 0;
@@ -79,7 +79,7 @@ footer {
 }
 
 footer p {
-    margin: 5px 0;  /* Spacing between lines in the footer */
+    margin: 5px 0;  
     font-size: 14px;
 }
 
