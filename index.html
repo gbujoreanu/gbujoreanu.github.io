@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-<Head>
+<head>
     <title>CSCE 242</title>
     <link rel="stylesheet" href="styles.css">
-</Head>
+</head>
 
 <body>
-
-    <div id="main-content">
-        <h1><Strong>CSCE 242</Strong></h1>
-
-        <p>We will learn to use both HTML and CSS to do front end applications. We will also learn to use JavaScript to add functionality to our websites. And finally we will learn how to utilize node and server side JavaScript to store and retrieve data from server.</p>
-
-        <h2><Strong>Assignments</Strong></h2>
-    
-        <li>
-            <a href="Assignments/Assignment_1/index.html">Assignment 1</a>
-        </li>
-        <br>
-        <li>
-            <a href="Assignments/Assignment_2/index.html">Assignment 2</a>
-        </li>
-        <br>
-        <li>
-            <a href="Assignments/Assignment_3/index.html">Assignment 3</a>
-        </li>
+    <div class="page-container">
+        <div id="main-content"> 
+           <header>
+                <h1><strong>CSCE 242</strong></h1>
+                <p>We will learn to use both HTML and CSS to do front end applications. We will also learn to use JavaScript to add functionality to our websites. And finally we will learn how to utilize node and server side JavaScript to store and retrieve data from the server.</p>
+            </header>
+            <div class="assignments-container">
+                <div class="assignment-box">
+                    <a href="Assignments/Assignment_1/index.html">Assignment 1</a>
+                    <a href="Assignments/Assignment_1/index.html"><img src="images/assignment_1.png"  class="assignment-image"></a>
+                    <p>In assignment 1 I implemented properly formatted html code to make a page based off of space.</p>
+                </div>
+                <div class="assignment-box">
+                    <a href="Assignments/Assignment_2/index.html">Assignment 2</a>
+                    <a href="Assignments/Assignment_2/index.html"><img src="images/assignment_2.png"  class="assignment-image"></a>
+                    <p>In assignment 2 I implemented more css styling adding a background image and implementing a div which allows the content to be easily read.</p>
+                </div>
+                <div class="assignment-box">
+                    <a href="Assignments/Assignment_3/index.html">Assignment 3</a>
+                    <a href="Assignments/Assignment_3/index.html"><img src="images/assignment_3.png"  class="assignment-image"></a>
+                    <p>In assignment 3 I implemenmted the flexbox and media query to allow for seemless transition from a horizontal to verticle layout. </p>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="footer-content">
+                <p>George Bujoreanu</p> 
+                <p>1234 Elm Street, Springfield, IL, 62704</p>
+            </div>
+        </footer>
     </div>
-    
-</body>
-
-
+</body>    
 </html>
