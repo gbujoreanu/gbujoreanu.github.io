@@ -1,0 +1,115 @@
+/*Structure*/
+#top-header, #bottom-footer {
+    background-color: yellow;
+    margin: 5px;
+    padding: 5px;
+}
+
+#primary-content {
+    margin: 5px;
+}
+
+.column-section {
+    background-color: lightgoldenrodyellow;
+    border: 5px solid gold;
+    padding-left: 0px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 2px;
+}
+
+.user-comment {
+    background-color: lightgoldenrodyellow;
+    border: 5px solid gold;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 2px;
+}
+
+#show-button, #hide-button {
+    margin: auto;
+    margin-bottom: 5px;
+}
+
+.invisible {
+    display: none;
+}
+
+#input-section {
+    text-align: left;
+}
+
+.animate-ball {
+    position: relative;
+    border-radius: 50%;
+    width: 50px; 
+    height: 50px;
+    animation: ball-animation 3s infinite;
+}
+
+@keyframes ball-animation {
+    0%, 100% {
+        bottom: 50px;
+        transform: translateY(0);
+        left: 100px;
+    }
+    10% {
+        bottom: 10px;
+        transform: translateY(0);
+        left: 115px;
+    }
+    25%, 35% {
+        bottom: 50px;
+        transform: translateY(0);
+        left: 130px;
+    }
+    40% {
+        bottom: 10px;
+        transform: translateY(0);
+        left: 145px;
+    }
+    55%, 65% {
+        bottom: 50px;
+        transform: translateY(0);
+        left: 160px;
+    }
+    70% {
+        bottom: 10px;
+        transform: translateY(0);
+        left: 175px;
+    }
+    85%, 95% {
+        bottom: 50px;
+        transform: translateY(0);
+        left: 190px;
+    }
+}
+
+
+/*Typography*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+#bottom-footer p {
+    text-align: center;
+    font-size: 18px;
+}
+
+/*Larger Resolutions*/
+
+@media only screen and (min-width: 900px) {
+    
+    .flexbox-container {
+        display: flex;
+    }
+    
+    .column-section {
+        flex: 1;
+    }
+}
