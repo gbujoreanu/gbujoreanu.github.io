@@ -1,0 +1,48 @@
+body{
+    background-color: cadetblue;
+}
+
+#button{
+    background-color:antiquewhite;
+    border-radius: 10px;
+    border-color:burlywood;
+}
+
+#square{
+    background-color: blanchedalmond;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.s-animation{
+    position: relative;
+    animation-name: anim-square;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes anim-square {
+    0%{
+        background-color:antiquewhite;
+        top: 0px;
+        Opacity: .5;
+        width: 100px;
+        height: 100px;
+    }
+    50%{
+        background-color:antiquewhite;
+        top: 100px;
+        opacity: 1;
+        width: 400px;
+        height:75px;
+    }
+    100%{
+        background-color:black;
+        top: 0px;
+        opacity: .5;
+        width: 100px;
+        height:100px;
+    }
+}
