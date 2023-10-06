@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TimeTrack - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Task Manager</h1>
+        <nav>
+            <div class="menu-toggle" id="menuToggle">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul class="menu">
+                <li><a href="../hub/index.html">Hub</a></li>
+                <li><a href="../goal_tracker/goal_tracker.html">Goal Tracker</a></li>
+                <li><a href="../checklist/checklist.html">Checklist</a></li>
+                <li><a href="../calendar/calendar.html">Calendar</a></li>
+            </ul>
+        </nav>        
+    </header>
+
+    <main>
+        <!-- Add Task Form -->
+        <section id="add-task-section">
+            <h2>Add Task</h2>
+            <form id="add-task-form">
+                <div>
+                    <label for="task-name">Task Name:</label>
+                    <input type="text" id="task-name" required>
+                </div>
+                <div>
+                    <label for="task-description">Description:</label>
+                    <textarea id="task-description"></textarea>
+                </div>
+                <div>
+                    <label for="task-due-date">Due Date:</label>
+                    <input type="date" id="task-due-date">
+                </div>
+                <div>
+                    <label for="task-priority">Priority:</label>
+                    <select id="task-priority">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="task-status">Status:</label>
+                    <select id="task-status">
+                        <option>Not Started</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit">Add Task</button>
+                </div>
+            </form>
+        </section>
+    
+        <!-- Tasks Display -->
+        <section id="tasks-display">
+            <h2>Tasks</h2>
+            <!-- Sample Task Card for visual reference. In a real application, these would be dynamically generated. -->
+            <div class="task-card">
+                <h3>Sample Task Name</h3>
+                <p><strong>Description:</strong> Sample Task Description</p>
+                <p><strong>Due Date:</strong> 2023-10-10</p>
+                <p><strong>Priority:</strong> Medium</p>
+                <p><strong>Status:</strong> In Progress</p>
+                <button class="edit-task">Edit</button>
+                <button class="delete-task">Delete</button>
+            </div>
+            <!-- Repeat similar task cards for other tasks... -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 TimeTrack. All rights reserved.</p>
+    </footer>
+</body>
+</html>

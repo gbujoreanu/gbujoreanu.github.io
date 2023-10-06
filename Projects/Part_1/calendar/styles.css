@@ -1,0 +1,222 @@
+:root {
+    --primary-font: 'Arial', sans-serif;
+    --content-width: 1200px;
+    --padding: 1rem;
+    --background-color: #333;
+    --accent-color: #FFD700; 
+    --box-bg-color: #444;
+    --text-color: #FFF;
+}
+
+body {
+    font-family: var(--primary-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;           
+    justify-content: center; 
+    flex-direction: column;
+    gap: 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 0.5rem 1.5rem; 
+    width: 150px; 
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--accent-color); 
+    transition: background-color 0.3s;
+    display: block; 
+}
+
+nav a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    position: absolute;
+    top: 45px; 
+    right: 1rem; 
+    background-color: var(--box-bg-color);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1; 
+    list-style: none;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+.menu a.active {
+    font-weight: bold;
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+main {
+    max-width: var(--content-width);
+    margin: 2rem auto;
+    padding: 0 var(--padding);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 2rem;
+    cursor: pointer;
+}
+
+.bar {
+    background-color: var(--accent-color);
+    height: 0.25rem;
+    width: 1.5rem;
+}
+/* Main */
+
+.calendar-area {
+    display: flex;
+    justify-content: space-between;
+}
+
+.large-calendar {
+    width: 80%; 
+    border: 1px solid var(--text-color);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.calendar-actions {
+    width: 28%; 
+    padding: 1rem;
+    border: 1px solid var(--text-color);
+    background-color: var(--box-bg-color);
+    border-radius: 5px;
+}
+
+.calendar-actions h2 {
+    margin-top: 0;
+}
+
+#addEvent {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--background-color);  
+    transition: background-color 0.3s;
+}
+
+#addEvent:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.modal-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--text-color);  
+    background-color: var(--box-bg-color);  
+    border-radius: 5px;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+#event-form label {
+    color: var(--text-color);  
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#event-form input,
+#event-form textarea,
+#event-form select {
+    width: 100%;
+    background-color: var(--background-color); 
+    color: var(--text-color);
+    border: 1px solid var(--text-color);  
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+#event-form input[type="submit"],
+#event-form button {
+    width: auto;
+    background-color: var(--accent-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--background-color);  
+    transition: background-color 0.3s;
+}
+
+#event-form button:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+
+@media (min-width: 800px) {
+    .menu {
+        display: flex;
+        gap: 20px;
+        flex-direction: row;
+    }
+
+    .menu-toggle {
+        display: none;
+    }
+}

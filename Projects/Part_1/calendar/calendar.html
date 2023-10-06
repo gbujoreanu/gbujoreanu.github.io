@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TimeTrack - Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>TimeTrack</h1>
+        <nav>
+            <div class="menu-toggle" id="menuToggle">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul class="menu">
+                <li><a href="../hub/index.html">Hub</a></li>
+                <li><a href="../goal_tracker/goal_tracker.html">Goal Tracker</a></li>
+                <li><a href="../checklist/checklist.html">Checklist</a></li>
+                <li><a href="../task_manager/task_manager.html">Task Manager</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="calendar-area">
+            <!-- Large Calendar -->
+            <div id="calendar" class="large-calendar"></div>
+        
+            <!-- Right side area for interactions -->
+            <div class="calendar-actions">
+                <h2>Manage Events</h2>
+                <button id="addEvent">Add Event</button>
+        
+                <div id="add-event-modal" class="modal-content">
+                    <h3>Add New Event</h3>
+                    <form id="event-form">
+                        <label for="event-date">Date:</label>
+                        <input type="date" id="event-date" required>
+        
+                        <label for="event-time">Time:</label>
+                        <input type="time" id="event-time">
+        
+                        <label for="event-description">Description:</label>
+                        <textarea id="event-description" required></textarea>
+        
+                        <label for="task-association">Associate with Task:</label>
+                        <select id="task-association">
+                            <!-- You can populate this with tasks as options -->
+                            <option value="task1">Task 1</option>
+                            <option value="task2">Task 2</option>
+                        </select>
+        
+                        <button type="submit">Add Event</button>
+                    </form>
+                </div>
+            </div>
+        </section>             
+    </main>
+</body>
+</html>
