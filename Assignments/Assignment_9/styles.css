@@ -1,0 +1,84 @@
+/* Structure */
+
+:root {
+    --num: 0%;
+}
+
+.central-padding {
+    margin: auto;
+    padding: 5px;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(31, 83, 107);
+    color: black;
+}
+
+.boxA,
+.boxB {
+    margin: 10px;
+    padding: 40px 20px;
+    background-color: rgb(66, 104, 129);
+    border-radius: 10px;
+    border: 7px solid black;
+    text-align: center;
+}
+
+.boxA,
+.boxB {
+    height: 250px;
+    position: relative;
+    top: 0px;
+}
+
+#rainbowTrigger {
+    padding: 5px 12px;
+    background-color: rgb(58, 97, 133);
+    color: black;
+    border-radius: 8px;
+}
+
+.colorBand {
+    width: 500px;
+    height: 30px;
+    margin: 0px;
+}
+
+#potOfGold {
+    position: relative;
+    top: -160px;
+    left: 200px;
+    height: 150px;
+    width: 150px;
+}
+
+/* Typography */
+
+.boxA,
+.boxB {
+    font-size: 1.2em;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Larger Resolution */
+
+@media (min-width: 900px) {
+
+    .flex-columns {
+        display: flex;
+    }
+
+    .boxA,
+    .boxB {
+        flex: 1;
+    }
+
+    .boxA,
+    .boxB {
+        top: 150px;
+    }
+}

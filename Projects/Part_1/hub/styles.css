@@ -1,6 +1,6 @@
 :root {
     --primary-font: 'Arial', sans-serif;
-    --padding: 1rem;
+    --padding: 0.5rem;
     --background-color: #333;
     --accent-color: #FFD700; 
     --box-bg-color: #444;
@@ -40,7 +40,7 @@ nav ul {
 
 nav a {
     text-decoration: none;
-    color: var(--text-color);
+    color: black;
     padding: 0.5rem 1.5rem; 
     width: 150px; 
     text-align: center;
@@ -95,12 +95,12 @@ nav a:hover {
 }
 
 main {
-    margin-top: 4rem; 
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem; 
+    gap: 2rem;
     justify-content: space-between;
-    padding: 2rem; 
+    padding: 2rem;
+    margin-top: 100px;  /* Added margin-top */
 }
 
 .hub-section {
@@ -146,7 +146,7 @@ footer {
     margin-top: 2rem;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 950px) {
     .menu {
         display: flex;
         flex-direction: row;
