@@ -1,0 +1,279 @@
+:root {
+    --primary-font: 'Arial', sans-serif;
+    --content-width: 1200px;
+    --padding: 0.5rem;
+    --background-color: #333;
+    --accent-color: #FFD700; 
+    --box-bg-color: #444;
+    --text-color: #FFF;
+}
+
+body {
+    font-family: var(--primary-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    position: absolute;
+    top: 45px; 
+    right: 1rem; 
+    background-color: var(--box-bg-color);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1; 
+    list-style: none;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+.menu a.active {
+    font-weight: bold;
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;           
+    justify-content: center; 
+    flex-direction: column;
+    gap: 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1.5rem; 
+    width: 150px; 
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--accent-color); 
+    transition: background-color 0.3s;
+    display: block; 
+}
+
+nav a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+main {
+    max-width: var(--content-width);
+    margin: 2rem auto;
+    padding: 0 var(--padding);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 2rem;
+    cursor: pointer;
+}
+
+.bar {
+    background-color: var(--accent-color);
+    height: 0.25rem;
+    width: 1.5rem;
+}
+
+/* Goal Tracker Styles */
+
+#add-goal-form {
+    display: grid;
+    gap: 1rem;
+}
+
+#add-goal-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+#add-goal-form input,
+#add-goal-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    transition: background-color 0.3s;
+}
+
+#add-goal-form input:focus,
+#add-goal-form textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#add-goal-form button {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-goal-form button:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+
+/* Goal Cards Styling */
+#goals-display {
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.goal-card {
+    background-color: #555;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.goal-card h3 {
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.goal-card p {
+    margin-bottom: 1rem;
+}
+
+.edit-goal,
+.delete-goal {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-goal:hover,
+.delete-goal:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.edit-goal {
+    margin-right: 1rem;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    width: 12px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #FFD700; 
+    border-radius: 6px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #FFB500; 
+}
+
+::-webkit-scrollbar-track {
+    background-color: #444; 
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #444; 
+    color: #FFA500;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #444; 
+}
+
+
+@media (min-width: 1200px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    .menu {
+        display: flex;
+        position: initial;
+        background-color: transparent;
+        box-shadow: none;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .menu a {
+        background-color: transparent;
+        color: var(--text-color);
+    }
+
+    .menu a:hover {
+        background-color: var(--accent-color);
+        color: var(--background-color);
+    }
+
+    nav ul {
+        flex-direction: row;
+        gap: 2rem;
+    }
+    
+    @media (max-width: 767px) {
+        body {
+            font-size: 0.9rem; 
+        }
+    
+        header {
+            flex-wrap: wrap;
+        }
+    }
+}

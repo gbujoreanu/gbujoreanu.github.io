@@ -1,0 +1,148 @@
+/* Global Styles */
+:root {
+    --primary-font: 'Arial', sans-serif;
+    --content-width: 1200px;
+    --padding: 0.5rem;
+    --background-color: #333;
+    --accent-color: #FFD700;
+    --box-bg-color: #444;
+    --text-color: #FFF;
+}
+
+body {
+    font-family: var(--primary-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+    padding: 0.5rem 1rem;
+}
+
+nav a:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+main {
+    max-width: var(--content-width);
+    margin: 2rem auto;
+    padding: 0 var(--padding);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Contact Form Styles */
+#contact-form {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+#contact-form h2 {
+    margin-top: 0;
+}
+
+#contact-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+#contact-form input,
+#contact-form textarea {
+    width: 97.5%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    transition: background-color 0.3s;
+    margin-bottom: 1rem;
+    padding: 5px;
+}
+
+#contact-form input:focus,
+#contact-form textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#contact-form button[type="submit"] {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#contact-form button[type="submit"]:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+#status {
+    color: #FFA500;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav {
+        margin-top: 1rem;
+    }
+
+    nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-container {
+        margin: 1rem;
+    }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TimeTrack - Checklist</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Checklist</h1>
+        <nav>
+            <div class="menu-toggle" id="menuToggle">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul class="menu">
+                <li><a href="../hub/index.html">Hub</a></li>
+                <li><a href="../task_manager/task_manager.html">Task Manager</a></li>
+                <li><a href="../goal_tracker/goal_tracker.html">Goal Tracker</a></li>
+                <li><a href="../checklist/checklist.html">Checklist</a></li>
+                <li><a href="../calendar/calendar.html">Calendar</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="checklist-creator">
+            <h2>Create Checklist</h2>
+            <form id="create-checklist-form">
+                <label for="checklist-name">Checklist Name:</label>
+                <input type="text" id="checklist-name" placeholder="e.g. Shopping List">
+                
+                <label for="single-item">Add Item:</label>
+                <input type="text" id="single-item" placeholder="e.g. Milk">
+                <button type="button" id="add-single-item">Add Item</button>
+                
+                <div id="items-list"></div>
+    
+                <button type="submit">Create Checklist</button>
+            </form>
+    
+            <section id="existing-checklists">
+                <h3>Your Checklists:</h3>
+            </section>
+        </section>
+    </main>           
+</body>
+</html>
