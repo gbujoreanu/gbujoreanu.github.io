@@ -1,4 +1,6 @@
 const logSubmit = () => {
+    event.preventDefault();
+
     const name = document.getElementById("namebox").value;
     const email = document.getElementById("emailbox").value;
     const subject = document.getElementById("subjectbox").value;
