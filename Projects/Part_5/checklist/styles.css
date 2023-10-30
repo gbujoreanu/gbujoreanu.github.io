@@ -1,0 +1,329 @@
+/* Base styles */
+:root {
+    --primary-font: 'Arial', sans-serif;
+    --content-width: 1200px;
+    --padding: 0.5rem;
+    --background-color: #333;
+    --accent-color: #FFD700; 
+    --box-bg-color: #444;
+    --text-color: #FFF;
+}
+
+body {
+    font-family: var(--primary-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    position: absolute;
+    top: 45px; 
+    right: 1rem; 
+    background-color: var(--box-bg-color);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1; 
+    list-style: none;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+.menu a.active {
+    font-weight: bold;
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;           
+    justify-content: center; 
+    flex-direction: column;
+    gap: 1rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1.5rem; 
+    width: 150px; 
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--accent-color); 
+    transition: background-color 0.3s;
+    display: block; 
+}
+
+nav a:hover {
+    background-color: rgba(255, 215, 0, 0.8); 
+}
+
+main {
+    max-width: var(--content-width);
+    margin: 2rem auto;
+    padding: 0 var(--padding);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 2rem;
+    cursor: pointer;
+}
+
+.bar {
+    background-color: var(--accent-color);
+    height: 0.25rem;
+    width: 1.5rem;
+}
+
+#checklist-creator {
+    display: grid;
+    gap: 2rem;
+}
+
+#create-checklist-form {
+    display: grid;
+    gap: 1rem;
+}
+
+#create-checklist-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+#create-checklist-form input,
+#create-checklist-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    transition: background-color 0.3s;
+}
+
+#create-checklist-form input:focus,
+#create-checklist-form textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#create-checklist-form button {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#create-checklist-form button:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+#items-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+#items-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+#items-list input[type="checkbox"] {
+    display: none;
+}
+
+#items-list label {
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.checklist {
+    background-color: var(--box-bg-color);
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.checklist h4 {
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.checklist ul {
+    list-style: none;
+    padding: 0;
+}
+
+.checklist li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.edit-checklist, .remove-checklist {
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-left: 10px;
+    color: var(--accent-color);
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.edit-checklist:hover, .remove-checklist:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.checklist-item input[type="text"] {
+    width: 100%;
+    padding: 0.25rem;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.checklist-item button {
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 5px;
+    padding: 0.25rem 0.5rem;
+    margin-left: 10px;
+    color: var(--background-color);
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.checklist-item button:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    width: 12px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #FFD700; 
+    border-radius: 6px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #FFB500; 
+}
+
+::-webkit-scrollbar-track {
+    background-color: #444; 
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #444; 
+    color: #FFA500;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #444; 
+}
+
+
+/* Media queries */
+@media (min-width: 1200px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    .menu {
+        display: flex;
+        position: initial;
+        background-color: transparent;
+        box-shadow: none;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .menu a {
+        background-color: transparent;
+        color: var(--text-color);
+    }
+
+    .menu a:hover {
+        background-color: var(--accent-color);
+        color: var(--background-color);
+    }
+
+    nav ul {
+        flex-direction: row;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        font-size: 0.9rem; 
+    }
+
+    header {
+        flex-wrap: wrap;
+    }
+}

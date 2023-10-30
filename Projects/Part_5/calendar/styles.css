@@ -1,0 +1,348 @@
+:root {
+    --primary-font: 'Arial', sans-serif;
+    --content-width: 1200px;
+    --padding: 0.5rem;
+    --background-color: #333;
+    --accent-color: #FFD700;
+    --box-bg-color: #444444;
+    --text-color: #FFF;
+}
+
+body {
+    font-family: var(--primary-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    color: black;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1.5rem;
+    width: 150px;
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+    display: block;
+}
+
+nav a:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    position: absolute;
+    top: 45px;
+    right: 1rem;
+    background-color: var(--box-bg-color);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1;
+    list-style: none;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.menu a.active {
+    font-weight: bold;
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.main {
+    max-width: var(--content-width);
+    margin: 2rem auto;
+    padding: 0 var(--padding);
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+footer {
+    background-color: var(--box-bg-color);
+    padding: var(--padding);
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 2rem;
+    cursor: pointer;
+}
+
+.bar {
+    background-color: var(--accent-color);
+    height: 0.25rem;
+    width: 1.5rem;
+}
+
+/* New Calendar Styles */
+
+.calendar-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.calendar {
+    width: 100%;
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.calendar p.current-date {
+    font-size: 1.45rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.calendar ul.weeks {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    background-color: var(--accent-color);
+    padding: 0.5rem 0;
+    border-radius: 5px;
+    margin: 0;
+}
+
+.calendar ul.days {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px; 
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    margin-top: 10px; 
+}
+
+.calendar ul.weeks li,
+.calendar ul.days li {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.calendar ul.days li {
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: var(--box-bg-color);
+    border: 1px solid var(--accent-color);
+    height: 70px; 
+    position: relative;
+}
+
+.calendar ul.days li.inactive {
+    color: #aaa;
+    cursor: not-allowed;
+    background-color: transparent;
+    border: none;
+}
+
+.calendar ul.days li.active {
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+.calendar ul.days li:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+    border: 1px solid rgba(255, 215, 0, 0.8);
+}
+
+/* Event Form Styles */
+
+.event-form {
+    width: 100%;
+    text-align: center;
+    background-color: var(--box-bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+}
+
+.event-form h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--accent-color);
+}
+
+#event-form label {
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#event-form input,
+#event-form textarea,
+#event-form select {
+    width: 100%;
+    background-color: var(--box-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+#event-form input[type="submit"],
+#event-form button {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--box-bg-color);
+    transition: background-color 0.3s;
+    display: block;
+    margin: auto;
+}
+
+#event-form button:hover {
+    background-color: rgba(255, 215, 0, 0.8);
+}
+
+.event {
+    font-size: 0.5rem;
+    background-color: var(--accent-color);
+    color: var(--box-bg-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    margin-top: 0.2rem;
+}
+  
+  
+.material-symbols-rounded {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+  
+.material-symbols-rounded:hover {
+    color: rgba(255, 215, 0, 0.8);
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar {
+    width: 12px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #FFD700; 
+    border-radius: 6px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #FFB500; 
+}
+
+::-webkit-scrollbar-track {
+    background-color: #444; 
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #444; 
+    color: #FFA500;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #444; 
+}
+
+/* Media Queries */
+
+@media (min-width: 1200px) {
+    .menu-toggle {
+        display: none;
+    }
+
+    .menu {
+        display: flex;
+        position: initial;
+        background-color: transparent;
+        box-shadow: none;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .menu a {
+        background-color: transparent;
+        color: var(--text-color);
+    }
+
+    .menu a:hover {
+        background-color: var(--accent-color);
+        color: var(--background-color);
+    }
+
+    nav ul {
+        flex-direction: row;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 767px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    header {
+        flex-wrap: wrap;
+    }
+}

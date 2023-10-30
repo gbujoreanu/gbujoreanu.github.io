@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Contact Me</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <h1>TimeTrack</h1>
+        <nav>
+            <ul>
+                <li><a href="../hub/index.html">Hub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="notification-container"></div>
+        <section id="contact-form">
+            <h2>Contact Me</h2>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="6d20ed96-cbfa-4255-b635-e672fe6b97a5">
+                
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="Name" required>
+            
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="Email" required>
+            
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="Subject">
+            
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            
+                <button type="submit" id="submit">Submit</button>
+            </form>
+            <script src="https://web3forms.com/client/script.js" async defer></script>
+            <p id="status"></p>
+        </section>
+    </main>
+
+    <footer>
+        TimeTrack &copy; 2023
+    </footer>
+    
+</body>
+</html>

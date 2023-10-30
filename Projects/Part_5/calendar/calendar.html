@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TimeTrack - Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Calendar</h1>
+        <nav>
+            <div class="menu-toggle" id="menuToggle">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul class="menu">
+                <li><a href="../hub/index.html">Hub</a></li>
+                <li><a href="../task_manager/task_manager.html">Task Manager</a></li>
+                <li><a href="../goal_tracker/goal_tracker.html">Goal Tracker</a></li>
+                <li><a href="../checklist/checklist.html">Checklist</a></li>
+                <li><a href="../calendar/calendar.html">Calendar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="wrapper">
+            <header>
+                <div class="icons">
+                    <span id="prev" class="material-symbols-rounded">Previous</span>
+                    <span id="next" class="material-symbols-rounded">Next</span>
+                </div>
+            </header>
+            <div class="calendar-area">
+                <div class="calendar">
+                    <p class="current-date"></p>
+                    <ul class="weeks">
+                        <li>Sun</li>
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                    </ul>
+                    <ul class="days">
+                        <!-- Previous month's days -->
+                        <li class="inactive">27<div class="events"></div></li>
+                        <li class="inactive">28<div class="events"></div></li>
+                        <li class="inactive">29<div class="events"></div></li>
+                        
+                        <!-- Current month's days -->
+                        <li>1<div class="events"></div></li>
+                        <li>2<div class="events"></div></li>
+                        <li>3<div class="events"></div></li>
+                                            
+                        <!-- Next month's days (if needed) -->
+                        <li class="inactive">1<div class="events"></div></li>
+                        <li class="inactive">2<div class="events"></div></li>
+                    </ul>
+                    
+                </div>
+                <div class="event-form">
+                    <h2>Add Event</h2>
+                    <form id="event-form">
+                        <label for="event-date">Date:</label>
+                        <input type="date" id="event-date" required>
+                        <label for="event-time">Time:</label>
+                        <input type="time" id="event-time" required>
+                        <label for="event-description">Title:</label>
+                        <textarea id="event-description" rows="3" required maxlength="25" required></textarea>
+                        <input type="submit" value="Add Event">
+                    </form>
+                </div>
+            </div>
+        </div>
+      </main>  
+</body>
+</html>
