@@ -96,7 +96,7 @@ nav a:hover {
 }
 
 main {
-    display: flex;
+    display: block;
     flex-wrap: wrap;
     gap: 2rem;
     justify-content: space-between;
@@ -111,7 +111,7 @@ main {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     min-width: calc(50% - 2rem); 
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 .hub-section h2 {
@@ -158,7 +158,7 @@ footer {
 /* Style for the iframes */
 iframe {
     width: 100%; 
-    height: 400px; 
+    height: 500px; 
     border: none; 
 }
 .iframe-container {
