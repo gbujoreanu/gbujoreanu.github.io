@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "Learn JavaScript",
+        "description": "Master JavaScript programming language",
+        "due_date": "2023-12-31",
+        "progress": 50,
+        "notes": "Study regularly to achieve this goal"
+    },
+    {
+        "id": 2,
+        "name": "Exercise",
+        "description": "Stay fit and healthy",
+        "due_date": "2023-12-31",
+        "progress": 30,
+        "notes": "Go to the gym three times a week"
+    }
+]
