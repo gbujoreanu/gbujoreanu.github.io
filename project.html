@@ -1,47 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <title>CSCE 242</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Selected CSCE 242 coursework by George Bujoreanu.">
+    <title>Coursework | George Bujoreanu</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div class="page-container">
-        <div id="main-content"> 
-           <header>
-                <h1><strong>CSCE 242</strong></h1>
-                <a href="index.html">Assignments</a>
-                <p>We will learn to use both HTML and CSS to do front end applications. We will also learn to use JavaScript to add functionality to our websites. And finally we will learn how to utilize node and server side JavaScript to store and retrieve data from the server.</p>
-            </header>
-            <div class="assignments-container">
-                <div class="assignment-box">
-                    <a href="Projects/Part_1/hub/index.html">Part 1</a>
-                    <a href="Projects/Part_1/hub/index.html"><img src="images/project_1.png"  class="assignment-image"></a>
-                    <p>In part 1 I put down the base html and css structure for my page.</p>
-                </div>
-                <div class="assignment-box">
-                    <a href="Projects/Part_4/hub/index.html">Part 4</a>
-                    <a href="Projects/Part_4/hub/index.html"><img src="images/project_4.png"  class="assignment-image"></a>
-                    <p>In part 4 I implemented javascript to create forms and show inputs.</p>
-                </div>
-                <div class="assignment-box">
-                    <a href="Projects/Part_5/hub/index.html">Part 5</a>
-                    <a href="Projects/Part_5/hub/index.html"><img src="images/project_5.png"  class="assignment-image"></a>
-                    <p>In part 5 I added json files for each page and parsed info from that json file.</p>
-                </div>
-                <div class="assignment-box">
-                    <a href="https://two42-project.onrender.com">Part 6</a>
-                    <a href="https://two42-project.onrender.com"><img src="images/project_5.png"  class="assignment-image"></a>
-                    <p>In part 6 I added get post put and delete functions to work with mongo database.</p>
-                </div>
+    <header class="site-header">
+        <a class="brand" href="index.html" aria-label="George Bujoreanu home">GB</a>
+        <nav aria-label="Primary navigation">
+            <a href="index.html">Home</a>
+            <a href="index.html#work">Work</a>
+            <a href="assets/George-Bujoreanu-Resume.pdf">Resume</a>
+        </nav>
+    </header>
+    <main>
+        <section class="archive-hero">
+            <p class="eyebrow">CSCE 242 archive</p>
+            <h1>Web development coursework.</h1>
+            <p class="intro">Selected stages from a semester project covering responsive interfaces, JavaScript interactions, JSON data, APIs, and full-stack development.</p>
+        </section>
+        <section class="archive-grid" aria-label="Course projects">
+            <a class="archive-card" href="Projects/Part_1/hub/index.html">
+                <span>Part 1</span>
+                <strong>HTML and CSS foundation</strong>
+            </a>
+            <a class="archive-card" href="Projects/Part_4/hub/index.html">
+                <span>Part 4</span>
+                <strong>JavaScript forms and input</strong>
+            </a>
+            <a class="archive-card" href="Projects/Part_5/hub/index.html">
+                <span>Part 5</span>
+                <strong>JSON-driven content</strong>
+            </a>
+            <a class="archive-card" href="https://two42-project.onrender.com">
+                <span>Part 6</span>
+                <strong>Full-stack CRUD application</strong>
+            </a>
+        </section>
+    </main>
+    <footer>
+        <p>George Bujoreanu</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="https://github.com/gbujoreanu">GitHub</a>
         </div>
-        <footer>
-            <div class="footer-content">
-                <p>George Bujoreanu</p> 
-                <p>1234 Elm Street, Springfield, IL, 62704</p>
-            </div>
-        </footer>
-    </div>
-</body>    
+    </footer>
+</body>
 </html>
