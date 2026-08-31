@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5d90a">
+  <meta name="description" content="Daymark is a private, browser-based task, goal, and calendar tracker.">
+  <title>Daymark — Plan what matters</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><span class="brand-mark">D</span><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
+    <div class="top-actions">
+      <span class="local-badge">Saved on this device</span>
+      <button class="icon-button" id="backupHelp" type="button" aria-label="Data and backup help">?</button>
+      <button class="button secondary compact" id="exportData" type="button">Export</button>
+      <label class="button secondary compact" for="importData">Import</label>
+      <input class="visually-hidden" id="importData" type="file" accept="application/json">
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <nav class="main-nav" aria-label="Tracker navigation">
+        <button class="nav-item active" type="button" data-view-target="overview"><span class="nav-icon">◫</span><span>Overview</span></button>
+        <button class="nav-item" type="button" data-view-target="tasks"><span class="nav-icon">✓</span><span>To Do</span><b id="navTaskCount">0</b></button>
+        <button class="nav-item" type="button" data-view-target="goals"><span class="nav-icon">◎</span><span>Goals</span><b id="navGoalCount">0</b></button>
+        <button class="nav-item" type="button" data-view-target="calendar"><span class="nav-icon">□</span><span>Calendar</span></button>
+      </nav>
+      <div class="sidebar-note"><span>●</span><p>Everything is connected. Dated tasks and goals appear on your calendar automatically.</p></div>
+    </aside>
+
+    <main>
+      <section class="view active" data-view="overview">
+        <div class="overview-hero">
+          <div><p class="eyebrow" id="todayLabel">Today</p><h1>Own your<br><em>momentum.</em></h1><p class="hero-copy">One clear view of what is due, what is moving, and what deserves your attention next.</p></div>
+          <div class="hero-score"><span>Completion</span><strong id="completionScore">0%</strong><div class="meter"><i id="completionMeter"></i></div><small id="completionDetail">No tasks yet</small></div>
+        </div>
+
+        <div class="stat-strip">
+          <article><span>Open tasks</span><strong id="openTaskStat">0</strong><small id="overdueStat">Nothing overdue</small></article>
+          <article><span>Due today</span><strong id="todayTaskStat">0</strong><small>Across tasks and events</small></article>
+          <article><span>Active goals</span><strong id="activeGoalStat">0</strong><small id="goalProgressStat">0% average progress</small></article>
+          <article class="accent-stat"><span>Next seven days</span><strong id="weekStat">0</strong><small>Calendar commitments</small></article>
+        </div>
+
+        <div class="overview-grid">
+          <article class="panel focus-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Focus queue</p><h2>What needs you next</h2></div><button class="text-button" type="button" data-view-target="tasks">All tasks →</button></div>
+            <div class="stack-list" id="focusList"></div>
+          </article>
+          <article class="panel week-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Coming up</p><h2>Your next 7 days</h2></div><button class="text-button" type="button" data-view-target="calendar">Calendar →</button></div>
+            <div class="mini-week" id="miniWeek"></div>
+          </article>
+          <article class="panel goals-panel">
+            <div class="panel-heading"><div><p class="eyebrow">Goals</p><h2>Progress worth seeing</h2></div><button class="text-button" type="button" data-view-target="goals">All goals →</button></div>
+            <div class="goal-preview" id="goalPreview"></div>
+          </article>
+          <article class="quick-panel">
+            <p class="eyebrow">Quick capture</p><h2>Get it out of your head.</h2><p>Add an action or define the outcome behind it.</p>
+            <div><button class="button primary" type="button" data-open-form="task">+ New task</button><button class="button dark" type="button" data-open-form="goal">+ New goal</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view="tasks">
+        <div class="page-heading"><div><p class="eyebrow">To Do</p><h1>Turn intention<br>into action.</h1><p>Capture work, set a priority, and give it a place on your calendar.</p></div><button class="button primary" type="button" data-open-form="task">+ Add task</button></div>
+        <div class="toolbar">
+          <div class="segmented" id="taskFilters"><button class="active" type="button" data-task-filter="open">Open</button><button type="button" data-task-filter="today">Today</button><button type="button" data-task-filter="done">Completed</button><button type="button" data-task-filter="all">All</button></div>
+          <label class="search-field"><span>Search</span><input id="taskSearch" type="search" placeholder="Find a task…"></label>
+        </div>
+        <div class="task-board" id="taskList"></div>
+      </section>
+
+      <section class="view" data-view="goals">
+        <div class="page-heading"><div><p class="eyebrow">Goals</p><h1>Keep the horizon<br>in view.</h1><p>Define meaningful outcomes, track progress, and let target dates guide the week.</p></div><button class="button primary" type="button" data-open-form="goal">+ Add goal</button></div>
+        <div class="goal-grid" id="goalList"></div>
+      </section>
+
+      <section class="view" data-view="calendar">
+        <div class="page-heading calendar-heading"><div><p class="eyebrow">Calendar</p><h1>See the month.<br>Shape the day.</h1><p>Tasks, goal targets, and events share one timeline.</p></div><button class="button primary" type="button" data-open-form="event">+ Add event</button></div>
+        <div class="calendar-layout">
+          <article class="calendar-panel">
+            <div class="calendar-toolbar"><button class="icon-button light" id="prevMonth" type="button" aria-label="Previous month">←</button><h2 id="calendarTitle"></h2><button class="icon-button light" id="nextMonth" type="button" aria-label="Next month">→</button><button class="text-button today-button" id="todayButton" type="button">Today</button></div>
+            <div class="weekday-row"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+          </article>
+          <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><div class="agenda-list" id="agendaList"></div><button class="button dark full" type="button" data-open-form="event">+ Add event here</button></aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="modal" id="itemModal">
+    <form id="itemForm">
+      <div class="modal-heading"><div><p class="eyebrow" id="formEyebrow">New item</p><h2 id="formTitle">Add task</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close">×</button></div>
+      <input id="itemType" type="hidden"><input id="itemId" type="hidden">
+      <label class="field full">Title<input id="itemTitle" type="text" maxlength="80" required placeholder="What needs to happen?"></label>
+      <label class="field full">Notes<textarea id="itemNotes" rows="3" maxlength="300" placeholder="Add helpful context…"></textarea></label>
+      <div class="form-grid" id="taskFields">
+        <label class="field">Due date<input id="taskDate" type="date"></label><label class="field">Time<input id="taskTime" type="time"></label>
+        <label class="field">Priority<select id="taskPriority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select></label>
+        <label class="check-field"><input id="taskOnCalendar" type="checkbox" checked><span>Show on calendar</span></label>
+      </div>
+      <div class="form-grid hidden" id="goalFields">
+        <label class="field">Target date<input id="goalDate" type="date" required></label><label class="field">Progress <output id="goalProgressOutput">0%</output><input id="goalProgress" type="range" min="0" max="100" step="5" value="0"></label>
+      </div>
+      <div class="form-grid hidden" id="eventFields">
+        <label class="field">Date<input id="eventDate" type="date" required></label><label class="field">Time<input id="eventTime" type="time"></label>
+      </div>
+      <div class="modal-actions"><button class="button secondary ink" type="button" data-close-modal>Cancel</button><button class="button primary" type="submit" id="saveItem">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal help-modal" id="helpModal">
+    <form method="dialog"><div class="modal-heading"><div><p class="eyebrow">Your data</p><h2>Saved locally</h2></div><button class="modal-close" type="submit" aria-label="Close">×</button></div><p>Tasks, goals, and events stay in this browser after you close the tab or restart your computer.</p><div class="help-row"><strong>Export</strong><span>Download a JSON backup before clearing browser data or changing devices.</span></div><div class="help-row"><strong>Import</strong><span>Restore that backup in this or another browser.</span></div><button class="button primary" type="submit">Got it</button></form>
+  </dialog>
+
+  <footer><span>Daymark</span><p>Private by default. Built for momentum.</p><button class="text-button danger" id="resetData" type="button">Reset all data</button></footer>
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
