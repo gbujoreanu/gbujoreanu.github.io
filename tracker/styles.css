@@ -16,3 +16,4 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:20px;pa
 .agenda-actions{display:flex;gap:4px;margin-top:7px}
 .local-badge.sync-error{border-color:#a63d35;color:#ffaaa3}.top-actions .button:disabled{opacity:.55;cursor:wait}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.view{animation:none}.button.primary:hover{transform:none}}
+.auth-pending{visibility:hidden}

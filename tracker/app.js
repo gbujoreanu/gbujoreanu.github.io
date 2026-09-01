@@ -5,7 +5,7 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const cloudClient = window.AppAuth?.client || null;
 const deviceState = loadDeviceState();
 
-let state = deviceState || seedState();
+let state = { tasks: [], goals: [], events: [] };
 let currentUser = null;
 let cloudIsEmpty = false;
 let handledUserId = null;
@@ -35,8 +35,7 @@ initialize();
 
 async function initialize() {
   bindEvents();
-  renderAll();
-  if (!cloudClient) return;
+  if (!cloudClient) return location.replace('../account/?returnTo=/tracker/');
   cloudClient.auth.onAuthStateChange((_event, session) => setTimeout(() => applySession(session), 0));
   const { data, error } = await cloudClient.auth.getSession();
   if (error) return setStorageStatus("Cloud unavailable", true);
@@ -112,29 +111,24 @@ function seedState() {
   };
 }
 
-function saveState() { if (!currentUser) localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
 async function applySession(session) {
+  if (session?.user && !session.user.email_confirmed_at) { await cloudClient.auth.signOut(); return location.replace('../account/?returnTo=/tracker/'); }
   const nextUser = session?.user || null;
   if (nextUser?.id === handledUserId) return;
   handledUserId = nextUser?.id || null;
   currentUser = nextUser;
-  els.accountLink.classList.toggle('hidden', Boolean(currentUser));
-  els.signOut.classList.toggle('hidden', !currentUser);
   if (!currentUser) {
-    state = loadDeviceState() || seedState();
-    cloudIsEmpty = false;
-    els.migrateData.classList.add('hidden');
-    setStorageStatus('Saved on this device');
-    renderAll();
-    return;
+    return location.replace('../account/?returnTo=/tracker/');
   }
+  els.accountLink.classList.add('hidden');
+  els.signOut.classList.remove('hidden');
   setStorageStatus('Loading cloud data…');
   try {
     state = await loadCloudState();
     cloudIsEmpty = !state.tasks.length && !state.goals.length && !state.events.length;
     els.migrateData.classList.toggle('hidden', !(cloudIsEmpty && deviceState));
     setStorageStatus(`Cloud · ${currentUser.email || 'signed in'}`);
+    document.body.classList.remove('auth-pending');
     renderAll();
   } catch (error) {
     console.error(error);
@@ -299,7 +293,7 @@ async function saveItem(event) {
   const item = type === 'task' ? { ...base, dueDate:els.taskDate.value,dueTime:els.taskTime.value,priority:els.taskPriority.value,onCalendar:els.taskOnCalendar.checked,status:existing?.status||'open' }
     : type === 'goal' ? { ...base,targetDate:els.goalDate.value,progress:Number(els.goalProgress.value) }
     : { ...base,date:els.eventDate.value,time:els.eventTime.value };
-  try { await persistItem(type,item); upsert(type==='task'?state.tasks:type==='goal'?state.goals:state.events,item); saveState(); els.itemModal.close(); renderAll(); }
+  try { await persistItem(type,item); upsert(type==='task'?state.tasks:type==='goal'?state.goals:state.events,item); els.itemModal.close(); renderAll(); }
   catch(error) { console.error(error); setStorageStatus('Save failed',true); alert('This item could not be saved. Please try again.'); }
 }
 
@@ -317,7 +311,7 @@ async function handleItemAction(event) {
     try { if(currentUser) await removeCloudItem(type,id); list.splice(list.findIndex((entry)=>entry.id===id),1); }
     catch(error) { console.error(error); alert('That item could not be deleted.'); return; }
   }
-  saveState(); renderAll();
+  renderAll();
 }
 
 function findItem(type,id) { return (type === 'task' ? state.tasks : type === 'goal' ? state.goals : state.events).find((item) => item.id === id); }
@@ -329,14 +323,21 @@ function exportData() {
 }
 async function importData(event) {
   const file = event.target.files[0]; if (!file) return;
-  if(currentUser){alert('To protect existing cloud data, sign out before importing a device backup. You can then move it into an empty account.');event.target.value='';return;}
-  try { const imported=JSON.parse(await file.text()); if(!Array.isArray(imported.tasks)||!Array.isArray(imported.goals)||!Array.isArray(imported.events)) throw new Error('Invalid backup'); state={tasks:imported.tasks,goals:imported.goals,events:imported.events}; saveState(); renderAll(); alert('Daymark backup imported.'); } catch { alert('That file is not a valid Daymark backup.'); } finally { event.target.value=''; }
+  if(!cloudIsEmpty){alert('Import is available only when your cloud account is empty, preventing accidental overwrites.');event.target.value='';return;}
+  try {
+    const imported=JSON.parse(await file.text());
+    if(!Array.isArray(imported.tasks)||!Array.isArray(imported.goals)||!Array.isArray(imported.events)) throw new Error('Invalid backup');
+    const batches=[['daymark_tasks',imported.tasks.map(toCloudTask)],['daymark_goals',imported.goals.map(toCloudGoal)],['daymark_events',imported.events.map(toCloudEvent)]];
+    for(const [table,rows] of batches){if(!rows.length)continue;const {error}=await cloudClient.from(table).upsert(rows,{onConflict:'user_id,id'});if(error)throw error;}
+    state=await loadCloudState();cloudIsEmpty=false;els.migrateData.classList.add('hidden');renderAll();alert('Daymark backup imported into your account.');
+  } catch(error) { console.error(error); alert('That backup could not be imported. Your existing cloud data was not replaced.'); }
+  finally { event.target.value=''; }
 }
 async function resetData() {
   if(!confirm(`Reset every task, goal, and event ${currentUser?'in your cloud account':'on this device'}? Export first if you may need this data.`)) return;
   try {
     if(currentUser) for(const table of ['daymark_tasks','daymark_goals','daymark_events']) { const {error}=await cloudClient.from(table).delete().eq('user_id',currentUser.id); if(error) throw error; }
-    state={tasks:[],goals:[],events:[]}; saveState(); cloudIsEmpty=Boolean(currentUser); renderAll();
+    state={tasks:[],goals:[],events:[]}; cloudIsEmpty=Boolean(currentUser); renderAll();
   } catch(error) { console.error(error); alert('Your data could not be reset.'); }
 }
 

@@ -1,6 +1,6 @@
 # Daymark Tracker
 
-Daymark is a browser-based personal productivity workspace built from the original yellow-and-black TimeTrack course project.
+Daymark is an account-based personal productivity workspace built from the original yellow-and-black TimeTrack course project.
 
 ## Product model
 
@@ -12,7 +12,7 @@ Daymark is a browser-based personal productivity workspace built from the origin
 
 ## Persistence
 
-The app stores its data in `localStorage` under `daymark-v1`. Export and import provide a JSON backup for moving between browsers or devices. Reset removes all tracker data from the current browser.
+The app requires a confirmed Supabase account. Tasks, goals, and events are stored in user-owned tables protected by Row Level Security. The legacy `daymark-v1` browser record is read only as an optional one-time migration source. Export and guarded import provide portable JSON backups.
 
 ## Run locally
 

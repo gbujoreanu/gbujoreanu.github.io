@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5d90a">
-  <meta name="description" content="Daymark is a private, browser-based task, goal, and calendar tracker.">
+  <meta name="description" content="Daymark is a private, account-based task, goal, and calendar tracker.">
   <title>Daymark — Plan what matters</title>
   <link rel="stylesheet" href="styles.css?v=2">
 </head>
-<body>
+<body class="auth-pending">
   <header class="topbar">
     <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><span class="brand-mark">D</span><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
     <div class="top-actions">
-      <span class="local-badge" id="storageStatus">Saved on this device</span>
+      <span class="local-badge" id="storageStatus">Connecting securely…</span>
       <button class="button secondary compact hidden" id="migrateData" type="button">Move device data</button>
       <a class="button secondary compact" id="accountLink" href="../account/">Sign in</a>
       <button class="button secondary compact hidden" id="signOut" type="button">Sign out</button>
@@ -118,7 +118,7 @@
   </dialog>
 
   <dialog class="modal help-modal" id="helpModal">
-    <form method="dialog"><div class="modal-heading"><div><p class="eyebrow">Your data</p><h2>Local or cloud</h2></div><button class="modal-close" type="submit" aria-label="Close">×</button></div><p>Guest data stays in this browser. Sign in to save account data securely in the cloud and use it on another device.</p><div class="help-row"><strong>Export</strong><span>Download a JSON backup at any time.</span></div><div class="help-row"><strong>Import</strong><span>Restore a backup in guest mode, then move it into an empty cloud account.</span></div><button class="button primary" type="submit">Got it</button></form>
+    <form method="dialog"><div class="modal-heading"><div><p class="eyebrow">Your data</p><h2>Private cloud storage</h2></div><button class="modal-close" type="submit" aria-label="Close">×</button></div><p>Tasks, goals, and events are saved to your account in Supabase. Database security rules restrict every record to its owner.</p><div class="help-row"><strong>Export</strong><span>Download a portable JSON backup at any time.</span></div><div class="help-row"><strong>Migration</strong><span>If this browser has older local data, move it into an empty account with the migration button.</span></div><button class="button primary" type="submit">Got it</button></form>
   </dialog>
 
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p><button class="text-button danger" id="resetData" type="button">Reset all data</button></footer>
