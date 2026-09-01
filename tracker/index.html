@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5d90a">
+  <meta name="theme-color" id="themeColor" content="#f5d90a">
   <meta name="description" content="Daymark is a private, account-based task, goal, and calendar tracker.">
   <title>Daymark — Plan what matters</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const system=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.dataset.theme=s.followSystem?system:(s.theme||'neutral');document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='neutral'}</script>
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body class="auth-pending">
   <header class="topbar">
     <div class="topbar-inner">
       <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><span class="brand-mark">D</span><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
       <div class="top-actions">
-        <span class="local-badge" id="storageStatus">Connecting securely…</span>
-        <button class="button secondary compact hidden" id="migrateData" type="button">Move device data</button>
-        <a class="button secondary compact" id="accountLink" href="../account/">Sign in</a>
-        <button class="button secondary compact hidden" id="signOut" type="button">Sign out</button>
+        <span class="local-badge" id="storageStatus" title="Cloud connection status">Connecting securely…</span>
+        <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings"><span aria-hidden="true">⚙</span><span>Settings</span></button>
       </div>
     </div>
   </header>
@@ -28,6 +27,7 @@
         <button class="nav-item" type="button" data-view-target="tasks"><span class="nav-icon">✓</span><span>To Do</span><b id="navTaskCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="goals"><span class="nav-icon">◎</span><span>Goals</span><b id="navGoalCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="calendar"><span class="nav-icon">□</span><span>Calendar</span></button>
+        <button class="nav-item settings-nav" id="settingsNav" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
       </nav>
       <div class="sidebar-note"><span>●</span><p>Everything is connected. Dated tasks and goals appear on your calendar automatically.</p></div>
     </aside>
@@ -85,7 +85,7 @@
         <div class="calendar-layout">
           <article class="calendar-panel">
             <div class="calendar-toolbar"><button class="icon-button light" id="prevMonth" type="button" aria-label="Previous month">←</button><h2 id="calendarTitle"></h2><button class="icon-button light" id="nextMonth" type="button" aria-label="Next month">→</button><button class="text-button today-button" id="todayButton" type="button">Today</button></div>
-            <div class="weekday-row"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+            <div class="weekday-row" id="weekdayRow"></div>
             <div class="calendar-grid" id="calendarGrid"></div>
           </article>
           <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><div class="agenda-list" id="agendaList"></div><button class="button dark full" type="button" data-open-form="event">+ Add event here</button></aside>
@@ -115,9 +115,44 @@
     </form>
   </dialog>
 
-  <footer><span>Daymark</span><p>Private by default. Built for momentum.</p><button class="text-button danger" id="resetData" type="button">Reset all data</button></footer>
+  <dialog class="settings-modal" id="settingsModal" aria-labelledby="settingsTitle">
+    <div class="settings-sheet">
+      <header class="settings-heading"><div><p class="eyebrow">Personalize Daymark</p><h2 id="settingsTitle">Settings</h2></div><button class="modal-close" id="closeSettings" type="button" aria-label="Close settings">×</button></header>
+
+      <section class="settings-section" aria-labelledby="accountSettingsTitle">
+        <div class="settings-section-heading"><div><p class="eyebrow">Account</p><h3 id="accountSettingsTitle">Private and connected</h3></div><span class="verified-chip">● Email verified</span></div>
+        <dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Cloud status</dt><dd id="settingsCloud">Connecting…</dd></div></dl>
+        <div class="settings-actions"><a class="button secondary ink" href="../account/">Open account page</a><a class="button secondary ink" href="../account/">Change or reset password</a><button class="button secondary ink" id="signOut" type="button">Sign out</button></div>
+      </section>
+
+      <section class="settings-section" aria-labelledby="appearanceSettingsTitle">
+        <div class="settings-section-heading"><div><p class="eyebrow">Appearance</p><h3 id="appearanceSettingsTitle">Choose your atmosphere</h3></div></div>
+        <fieldset class="theme-picker"><legend>Theme</legend><label><input type="radio" name="theme" value="neutral"><span class="theme-swatch neutral"><i></i><b>Neutral</b><small>Bold and focused</small></span></label><label><input type="radio" name="theme" value="light"><span class="theme-swatch light"><i></i><b>Calm Light</b><small>Cool and open</small></span></label><label><input type="radio" name="theme" value="dark"><span class="theme-swatch dark"><i></i><b>Calm Dark</b><small>Quiet and grounded</small></span></label></fieldset>
+        <label class="setting-row"><span><strong>Follow system appearance</strong><small>Use Calm Light or Calm Dark with your device.</small></span><input id="followSystem" type="checkbox"></label>
+        <fieldset class="inline-options"><legend>Layout density</legend><label><input type="radio" name="density" value="comfortable"> Comfortable</label><label><input type="radio" name="density" value="compact"> Compact</label></fieldset>
+      </section>
+
+      <section class="settings-section settings-grid-section" aria-labelledby="planningSettingsTitle">
+        <div class="settings-section-heading full"><div><p class="eyebrow">Planning defaults</p><h3 id="planningSettingsTitle">Make capture feel automatic</h3></div></div>
+        <label class="field">Week starts on<select id="weekStart"><option value="0">Sunday</option><option value="1">Monday</option></select></label>
+        <label class="field">Default task priority<select id="defaultPriority"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label>
+        <label class="setting-row"><span><strong>Show completed tasks</strong><small>Include completed tasks on calendars.</small></span><input id="showCompletedCalendar" type="checkbox"></label>
+        <label class="setting-row"><span><strong>Put new tasks on calendar</strong><small>Enable calendar display by default.</small></span><input id="defaultOnCalendar" type="checkbox"></label>
+        <label class="setting-row full"><span><strong>Confirm before deleting</strong><small>Ask before removing individual tasks, goals, or events.</small></span><input id="confirmDelete" type="checkbox"></label>
+      </section>
+
+      <section class="settings-section data-settings" aria-labelledby="dataSettingsTitle">
+        <div class="settings-section-heading"><div><p class="eyebrow">Data and privacy</p><h3 id="dataSettingsTitle">Your account, your records</h3></div></div>
+        <p>Tasks, goals, and events are stored in your private Supabase account. Per-user database rules prevent other accounts from reading or changing them.</p>
+        <button class="button secondary ink hidden" id="migrateData" type="button">Move older device data to cloud</button>
+        <div class="danger-zone"><div><strong>Reset Daymark data</strong><p>Permanently delete every task, goal, and event in this cloud account.</p></div><button class="button danger-button" id="resetData" type="button">Reset data</button></div>
+      </section>
+    </div>
+  </dialog>
+
+  <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="app.js?v=3"></script>
+  <script type="module" src="app.js?v=4"></script>
 </body>
 </html>

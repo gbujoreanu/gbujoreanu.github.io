@@ -40,9 +40,17 @@ a { color: inherit; }
     letter-spacing: -0.04em;
 }
 nav, .footer-links, .actions { display: flex; }
-nav { gap: 28px; }
-nav a, .footer-links a { color: var(--muted); font-size: 0.92rem; text-decoration: none; }
+nav { gap: 12px; }
+nav a, .footer-links a { color: var(--muted); font-size: 0.98rem; text-decoration: none; }
+nav a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 10px; border-radius: 7px; font-weight: 650; }
 nav a:hover, .footer-links a:hover, .text-link:hover { color: var(--accent); }
+.menu-toggle { display: none; width: 44px; height: 44px; padding: 10px; border: 1px solid var(--border); border-radius: 9px; background: transparent; color: var(--text); cursor: pointer; }
+.menu-toggle span { display: block; height: 2px; margin: 4px 0; border-radius: 2px; background: currentColor; transition: transform .18s ease, opacity .18s ease; }
+.menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.menu-toggle:focus-visible, nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.anchor-alias { position: absolute; transform: translateY(-88px); }
 .hero {
     min-height: 680px;
     display: flex;
@@ -160,9 +168,12 @@ footer p { margin-bottom: 0; }
 }
 @media (max-width: 560px) {
     .site-header, main, footer { width: min(calc(100% - 32px), var(--max-width)); }
-    nav { gap: 16px; }
-    nav a { font-size: 0.84rem; }
+    .site-header { position: relative; }
+    .menu-toggle { display: block; }
+    nav { position: absolute; top: calc(100% - 1px); right: 0; z-index: 20; width: min(290px, calc(100vw - 32px)); display: none; flex-direction: column; gap: 3px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 22px 50px rgba(0,0,0,.35); }
+    nav.open { display: flex; }
+    nav a { width: 100%; min-height: 48px; padding: 0 14px; font-size: 0.95rem; }
     h1 { font-size: clamp(2.8rem, 15vw, 4.5rem); }
     footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 12px; }
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .menu-toggle span { transition: none; } }

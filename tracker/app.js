@@ -1,9 +1,12 @@
 const STORAGE_KEY = "daymark-v1";
+const SETTINGS_KEY = "daymark-settings-v1";
+const DEFAULT_SETTINGS = { theme:'neutral', followSystem:false, density:'comfortable', weekStart:0, showCompletedCalendar:true, defaultPriority:'medium', defaultOnCalendar:true, confirmDelete:true };
 const DAY = 86400000;
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const cloudClient = window.AppAuth?.client || null;
 const deviceState = loadDeviceState();
+let settings = loadSettings();
 
 let state = { tasks: [], goals: [], events: [] };
 let currentUser = null;
@@ -21,19 +24,22 @@ const els = {
   activeGoalStat: $("#activeGoalStat"), goalProgressStat: $("#goalProgressStat"), weekStat: $("#weekStat"),
   focusList: $("#focusList"), miniWeek: $("#miniWeek"), goalPreview: $("#goalPreview"),
   taskList: $("#taskList"), taskSearch: $("#taskSearch"), taskFilters: $("#taskFilters"), goalList: $("#goalList"),
-  calendarTitle: $("#calendarTitle"), calendarGrid: $("#calendarGrid"), agendaDate: $("#agendaDate"), agendaList: $("#agendaList"),
+  calendarTitle: $("#calendarTitle"), calendarGrid: $("#calendarGrid"), weekdayRow: $("#weekdayRow"), agendaDate: $("#agendaDate"), agendaList: $("#agendaList"),
   itemModal: $("#itemModal"), itemForm: $("#itemForm"), itemType: $("#itemType"), itemId: $("#itemId"),
   formEyebrow: $("#formEyebrow"), formTitle: $("#formTitle"), itemTitle: $("#itemTitle"), itemNotes: $("#itemNotes"),
   taskFields: $("#taskFields"), taskDate: $("#taskDate"), taskTime: $("#taskTime"), taskPriority: $("#taskPriority"), taskOnCalendar: $("#taskOnCalendar"),
   goalFields: $("#goalFields"), goalDate: $("#goalDate"), goalProgress: $("#goalProgress"), goalProgressOutput: $("#goalProgressOutput"),
   eventFields: $("#eventFields"), eventDate: $("#eventDate"), eventTime: $("#eventTime"), saveItem: $("#saveItem"),
-  storageStatus: $("#storageStatus"),
-  accountLink: $("#accountLink"), signOut: $("#signOut"), migrateData: $("#migrateData")
+  storageStatus: $("#storageStatus"), signOut: $("#signOut"), migrateData: $("#migrateData"),
+  settingsModal: $("#settingsModal"), settingsEmail: $("#settingsEmail"), settingsCloud: $("#settingsCloud"),
+  followSystem: $("#followSystem"), weekStart: $("#weekStart"), showCompletedCalendar: $("#showCompletedCalendar"),
+  defaultPriority: $("#defaultPriority"), defaultOnCalendar: $("#defaultOnCalendar"), confirmDelete: $("#confirmDelete")
 };
 
 initialize();
 
 async function initialize() {
+  applySettings();
   bindEvents();
   if (!cloudClient) return location.replace('../account/?returnTo=/tracker/');
   cloudClient.auth.onAuthStateChange((_event, session) => setTimeout(() => applySession(session), 0));
@@ -71,6 +77,10 @@ function bindEvents() {
     if (selected.getMonth() !== calendarCursor.getMonth()) calendarCursor = startOfMonth(selected);
     renderCalendar();
   });
+  $('#settingsTrigger').addEventListener('click', openSettings);
+  $('#settingsNav').addEventListener('click', openSettings);
+  $('#closeSettings').addEventListener('click', () => els.settingsModal.close());
+  els.settingsModal.addEventListener('change', saveSettingsFromControls);
   $('#resetData').addEventListener('click', resetData);
   els.signOut.addEventListener('click', () => cloudClient?.auth.signOut());
   els.migrateData.addEventListener('click', migrateDeviceData);
@@ -91,6 +101,48 @@ function loadDeviceState() {
   } catch (error) { console.warn('Could not read Daymark data.', error); }
   return null;
 }
+
+function loadSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+    return {
+      theme: ['neutral','light','dark'].includes(saved.theme) ? saved.theme : DEFAULT_SETTINGS.theme,
+      followSystem: Boolean(saved.followSystem), density: saved.density === 'compact' ? 'compact' : 'comfortable',
+      weekStart: Number(saved.weekStart) === 1 ? 1 : 0, showCompletedCalendar: saved.showCompletedCalendar !== false,
+      defaultPriority: ['high','medium','low'].includes(saved.defaultPriority) ? saved.defaultPriority : 'medium',
+      defaultOnCalendar: saved.defaultOnCalendar !== false, confirmDelete: saved.confirmDelete !== false
+    };
+  } catch (error) { return { ...DEFAULT_SETTINGS }; }
+}
+
+function resolvedTheme() { return settings.followSystem ? (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light') : settings.theme; }
+function applySettings() {
+  const theme = resolvedTheme();
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.density = settings.density;
+  const themeColor = document.getElementById('themeColor');
+  if (themeColor) themeColor.content = theme === 'dark' ? '#0a1114' : theme === 'light' ? '#21343c' : '#f5d90a';
+}
+function openSettings() {
+  els.settingsEmail.textContent = currentUser?.email || 'Signed in account';
+  els.settingsCloud.textContent = els.storageStatus.textContent;
+  $$('input[name="theme"]').forEach((input) => { input.checked = input.value === settings.theme; input.disabled = settings.followSystem; });
+  $$('input[name="density"]').forEach((input) => { input.checked = input.value === settings.density; });
+  els.followSystem.checked = settings.followSystem; els.weekStart.value = String(settings.weekStart);
+  els.showCompletedCalendar.checked = settings.showCompletedCalendar; els.defaultPriority.value = settings.defaultPriority;
+  els.defaultOnCalendar.checked = settings.defaultOnCalendar; els.confirmDelete.checked = settings.confirmDelete;
+  els.settingsModal.showModal();
+}
+function saveSettingsFromControls() {
+  const selectedTheme = $('input[name="theme"]:checked'); const selectedDensity = $('input[name="density"]:checked');
+  settings = { theme:selectedTheme?.value || settings.theme, followSystem:els.followSystem.checked, density:selectedDensity?.value || settings.density,
+    weekStart:Number(els.weekStart.value), showCompletedCalendar:els.showCompletedCalendar.checked, defaultPriority:els.defaultPriority.value,
+    defaultOnCalendar:els.defaultOnCalendar.checked, confirmDelete:els.confirmDelete.checked };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  $$('input[name="theme"]').forEach((input) => { input.disabled = settings.followSystem; });
+  applySettings(); renderAll();
+}
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => { if (settings.followSystem) applySettings(); });
 
 function seedState() {
   const today = new Date();
@@ -117,7 +169,6 @@ async function applySession(session) {
   if (!currentUser) {
     return location.replace('../account/?returnTo=/tracker/');
   }
-  els.accountLink.classList.add('hidden');
   els.signOut.classList.remove('hidden');
   setStorageStatus('Loading cloud data…');
   try {
@@ -125,6 +176,7 @@ async function applySession(session) {
     cloudIsEmpty = !state.tasks.length && !state.goals.length && !state.events.length;
     els.migrateData.classList.toggle('hidden', !(cloudIsEmpty && deviceState));
     setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
+    els.settingsEmail.textContent = currentUser.email || 'Signed in account';
     document.body.classList.remove('auth-pending');
     renderAll();
   } catch (error) {
@@ -163,7 +215,7 @@ async function removeCloudItem(type,id) {
   const { error } = await cloudClient.from(cloudTable(type)).delete().eq('user_id',currentUser.id).eq('id',id);
   if (error) throw error;
 }
-function setStorageStatus(text,isError=false) { els.storageStatus.textContent=text; els.storageStatus.classList.toggle('sync-error',isError); }
+function setStorageStatus(text,isError=false) { els.storageStatus.textContent=text; els.storageStatus.classList.toggle('sync-error',isError); if(els.settingsCloud) els.settingsCloud.textContent=text; }
 
 async function migrateDeviceData() {
   if (!currentUser || !deviceState || !cloudIsEmpty) return;
@@ -186,7 +238,7 @@ function updateNavCounts() {
 
 function calendarEntries() {
   return [
-    ...state.tasks.filter((task) => task.dueDate && task.onCalendar).map((task) => ({ id: task.id, sourceId: task.id, type: 'task', title: task.title, date: task.dueDate, time: task.dueTime, done: task.status === 'done' })),
+    ...state.tasks.filter((task) => task.dueDate && task.onCalendar && (settings.showCompletedCalendar || task.status !== 'done')).map((task) => ({ id: task.id, sourceId: task.id, type: 'task', title: task.title, date: task.dueDate, time: task.dueTime, done: task.status === 'done' })),
     ...state.goals.filter((goal) => goal.targetDate).map((goal) => ({ id: goal.id, sourceId: goal.id, type: 'goal', title: goal.title, date: goal.targetDate, time: '', done: Number(goal.progress) >= 100 })),
     ...state.events.map((event) => ({ ...event, type: 'event', sourceId: event.id }))
   ].sort(sortByDateTime);
@@ -253,7 +305,9 @@ function renderGoals() {
 function renderCalendar() {
   const year = calendarCursor.getFullYear(), month = calendarCursor.getMonth();
   els.calendarTitle.textContent = calendarCursor.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  const gridStart = new Date(year, month, 1); gridStart.setDate(1 - gridStart.getDay()); gridStart.setHours(12,0,0,0);
+  const weekdays = settings.weekStart === 1 ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  els.weekdayRow.innerHTML = weekdays.map((day) => `<span>${day}</span>`).join('');
+  const gridStart = new Date(year, month, 1); const offset = (gridStart.getDay() - settings.weekStart + 7) % 7; gridStart.setDate(1 - offset); gridStart.setHours(12,0,0,0);
   const entries = calendarEntries();
   els.calendarGrid.innerHTML = Array.from({length:42},(_,index) => {
     const day = new Date(gridStart.getTime() + index * DAY); const key = formatKey(day); const dayEntries = entries.filter((entry) => entry.date === key);
@@ -277,7 +331,7 @@ function openForm(type, item = null) {
   $$('input', els.eventFields).forEach((control) => { control.disabled = type !== 'event'; });
   const labels = {task:'task',goal:'goal',event:'event'}; els.formEyebrow.textContent = item ? `Edit ${labels[type]}` : `New ${labels[type]}`; els.formTitle.textContent = `${item ? 'Update' : 'Add'} ${labels[type]}`; els.saveItem.textContent = item ? 'Save changes' : `Add ${labels[type]}`;
   els.itemTitle.value = item?.title || ''; els.itemNotes.value = item?.notes || '';
-  if (type === 'task') { els.taskDate.value = item?.dueDate || todayKey(); els.taskTime.value = item?.dueTime || ''; els.taskPriority.value = item?.priority || 'medium'; els.taskOnCalendar.checked = item?.onCalendar ?? true; }
+  if (type === 'task') { els.taskDate.value = item?.dueDate || todayKey(); els.taskTime.value = item?.dueTime || ''; els.taskPriority.value = item?.priority || settings.defaultPriority; els.taskOnCalendar.checked = item?.onCalendar ?? settings.defaultOnCalendar; }
   if (type === 'goal') { els.goalDate.value = item?.targetDate || dateOffset(new Date(),30); els.goalProgress.value = item?.progress ?? 0; els.goalProgressOutput.value = `${els.goalProgress.value}%`; }
   if (type === 'event') { els.eventDate.value = item?.date || (activeView === 'calendar' ? selectedDate : todayKey()); els.eventTime.value = item?.time || ''; }
   els.itemModal.showModal(); setTimeout(() => els.itemTitle.focus(), 0);
@@ -303,7 +357,7 @@ async function handleItemAction(event) {
   if (action === 'edit-event') return openForm('event', state.events.find((item) => item.id === id));
   if (action.startsWith('delete-')) {
     const type = action.replace('delete-',''); const item = findItem(type,id);
-    if (!item || !confirm(`Delete “${item.title}”?`)) return;
+    if (!item || (settings.confirmDelete && !confirm(`Delete “${item.title}”?`))) return;
     const list = type === 'task' ? state.tasks : type === 'goal' ? state.goals : state.events;
     try { if(currentUser) await removeCloudItem(type,id); list.splice(list.findIndex((entry)=>entry.id===id),1); }
     catch(error) { console.error(error); alert('That item could not be deleted.'); return; }
