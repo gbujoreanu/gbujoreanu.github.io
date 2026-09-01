@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sign in to sync your George Bujoreanu web apps across devices.">
+  <meta name="theme-color" content="#11120f">
+  <title>Account · George Bujoreanu</title>
+  <link rel="stylesheet" href="account.css?v=1">
+</head>
+<body>
+  <main>
+    <a class="back" href="../">← Portfolio</a>
+    <section class="account-shell">
+      <div class="intro">
+        <p class="eyebrow">One private account</p>
+        <h1>Your apps,<br><em>wherever you are.</em></h1>
+        <p>Sign in to keep Daymark data securely associated with your account. Golf cloud sync will use this same account when it is enabled.</p>
+        <ul><li>Encrypted connection</li><li>Per-user database access</li><li>Local guest mode remains available</li></ul>
+      </div>
+      <div class="card">
+        <div id="signedOut">
+          <div class="tabs" role="tablist"><button class="active" type="button" data-mode="signin">Sign in</button><button type="button" data-mode="signup">Create account</button></div>
+          <form id="authForm">
+            <label>Email<input id="email" type="email" autocomplete="email" required></label>
+            <label>Password<input id="password" type="password" minlength="8" autocomplete="current-password" required></label>
+            <button class="primary" id="submitAuth" type="submit">Sign in</button>
+          </form>
+          <button class="link" id="forgotPassword" type="button">Send a password-reset email</button>
+          <p class="message" id="authMessage" role="status"></p>
+        </div>
+        <div id="signedIn" hidden>
+          <p class="eyebrow">Signed in</p><h2 id="accountEmail"></h2>
+          <p>Your session works across the apps on this GitHub Pages site.</p>
+          <div class="actions"><a class="primary" href="../tracker/">Open Daymark</a><a href="../golf/">Open Golf</a></div>
+          <button class="link danger" id="signOut" type="button">Sign out</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../shared/supabase.js?v=1"></script>
+  <script src="account.js?v=1"></script>
+</body>
+</html>

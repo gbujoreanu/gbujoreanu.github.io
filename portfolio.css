@@ -103,7 +103,7 @@ h2 {
 .section-copy p:last-child { margin-bottom: 0; }
 .work-section { display: block; }
 .section-heading { max-width: 690px; margin-bottom: 48px; }
-.project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .project-card {
     min-height: 330px;
     display: flex;
