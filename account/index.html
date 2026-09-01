@@ -6,7 +6,7 @@
   <meta name="description" content="Sign in to sync your George Bujoreanu web apps across devices.">
   <meta name="theme-color" content="#11120f">
   <title>Account · George Bujoreanu</title>
-  <link rel="stylesheet" href="account.css?v=1">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
 <body>
   <main>
@@ -15,20 +15,30 @@
       <div class="intro">
         <p class="eyebrow">One private account</p>
         <h1>Your apps,<br><em>wherever you are.</em></h1>
-        <p>Sign in to keep Daymark data securely associated with your account. Golf cloud sync will use this same account when it is enabled.</p>
-        <ul><li>Encrypted connection</li><li>Per-user database access</li><li>Local guest mode remains available</li></ul>
+        <p>One confirmed account securely syncs your Daymark and Fairway Log data across supported devices.</p>
+        <ul><li>Encrypted connection</li><li>Per-user database access</li><li>Confirmed account required</li></ul>
       </div>
       <div class="card">
+        <div class="account-state inactive" id="accountState" role="status" aria-live="polite"><span aria-hidden="true"></span><strong>Inactive</strong></div>
         <div id="signedOut">
           <div class="tabs" role="tablist"><button class="active" type="button" data-mode="signin">Sign in</button><button type="button" data-mode="signup">Create account</button></div>
           <form id="authForm">
             <label>Email<input id="email" type="email" autocomplete="email" required></label>
             <label>Password<input id="password" type="password" minlength="10" maxlength="72" autocomplete="current-password" required></label>
+            <label id="confirmPasswordField" hidden>Confirm password<input id="confirmPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password"></label>
             <button class="primary" id="submitAuth" type="submit">Sign in</button>
           </form>
           <p class="security-note">Use at least 10 characters. Email confirmation is required before app access.</p>
           <button class="link" id="forgotPassword" type="button">Send a password-reset email</button>
           <p class="message" id="authMessage" role="status"></p>
+        </div>
+        <div id="verificationPending" hidden>
+          <p class="eyebrow">Check your inbox</p>
+          <h2>Confirm your email</h2>
+          <p class="card-copy">We sent a confirmation link. Open it to activate your account, then return here to sign in.</p>
+          <button class="primary" id="resendConfirmation" type="button" disabled>Resend available in 60s</button>
+          <button class="link" id="changeEmail" type="button">Use a different email</button>
+          <p class="message" id="verificationMessage" role="status"></p>
         </div>
         <div id="signedIn" hidden>
           <p class="eyebrow">Signed in</p><h2 id="accountEmail"></h2>
@@ -46,6 +56,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script src="account.js?v=1"></script>
+  <script src="account.js?v=2"></script>
 </body>
 </html>

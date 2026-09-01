@@ -27,7 +27,7 @@ const els = {
   taskFields: $("#taskFields"), taskDate: $("#taskDate"), taskTime: $("#taskTime"), taskPriority: $("#taskPriority"), taskOnCalendar: $("#taskOnCalendar"),
   goalFields: $("#goalFields"), goalDate: $("#goalDate"), goalProgress: $("#goalProgress"), goalProgressOutput: $("#goalProgressOutput"),
   eventFields: $("#eventFields"), eventDate: $("#eventDate"), eventTime: $("#eventTime"), saveItem: $("#saveItem"),
-  helpModal: $("#helpModal"), importData: $("#importData"), storageStatus: $("#storageStatus"),
+  storageStatus: $("#storageStatus"),
   accountLink: $("#accountLink"), signOut: $("#signOut"), migrateData: $("#migrateData")
 };
 
@@ -71,9 +71,6 @@ function bindEvents() {
     if (selected.getMonth() !== calendarCursor.getMonth()) calendarCursor = startOfMonth(selected);
     renderCalendar();
   });
-  $('#backupHelp').addEventListener('click', () => els.helpModal.showModal());
-  $('#exportData').addEventListener('click', exportData);
-  els.importData.addEventListener('change', importData);
   $('#resetData').addEventListener('click', resetData);
   els.signOut.addEventListener('click', () => cloudClient?.auth.signOut());
   els.migrateData.addEventListener('click', migrateDeviceData);
@@ -127,7 +124,7 @@ async function applySession(session) {
     state = await loadCloudState();
     cloudIsEmpty = !state.tasks.length && !state.goals.length && !state.events.length;
     els.migrateData.classList.toggle('hidden', !(cloudIsEmpty && deviceState));
-    setStorageStatus(`Cloud · ${currentUser.email || 'signed in'}`);
+    setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
     document.body.classList.remove('auth-pending');
     renderAll();
   } catch (error) {
@@ -160,7 +157,7 @@ async function persistItem(type,item) {
   setStorageStatus('Saving…');
   const { error } = await cloudClient.from(cloudTable(type)).upsert(cloudRow(type,item), { onConflict:'user_id,id' });
   if (error) throw error;
-  setStorageStatus(`Cloud · ${currentUser.email || 'signed in'}`);
+  setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
 }
 async function removeCloudItem(type,id) {
   const { error } = await cloudClient.from(cloudTable(type)).delete().eq('user_id',currentUser.id).eq('id',id);
@@ -175,7 +172,7 @@ async function migrateDeviceData() {
   try {
     const batches = [['daymark_tasks',deviceState.tasks.map(toCloudTask)],['daymark_goals',deviceState.goals.map(toCloudGoal)],['daymark_events',deviceState.events.map(toCloudEvent)]];
     for (const [table,rows] of batches) { if (!rows.length) continue; const {error}=await cloudClient.from(table).upsert(rows,{onConflict:'user_id,id'}); if(error) throw error; }
-    state=await loadCloudState(); cloudIsEmpty=false; els.migrateData.classList.add('hidden'); setStorageStatus(`Cloud · ${currentUser.email||'signed in'}`); renderAll();
+    state=await loadCloudState(); cloudIsEmpty=false; els.migrateData.classList.add('hidden'); setStorageStatus(`Cloud verified · ${currentUser.email||'signed in'}`); renderAll();
     alert('Your device data is now saved to your account. The original local copy was kept as a backup.');
   } catch(error) { console.error(error); setStorageStatus('Migration needs attention',true); alert('The move did not finish. Your original device data is safe. You can try again.'); }
   finally { els.migrateData.disabled=false; }
@@ -317,24 +314,8 @@ async function handleItemAction(event) {
 function findItem(type,id) { return (type === 'task' ? state.tasks : type === 'goal' ? state.goals : state.events).find((item) => item.id === id); }
 function upsert(list,item) { const index = list.findIndex((entry) => entry.id === item.id); if (index >= 0) list[index] = item; else list.push(item); }
 
-function exportData() {
-  const blob = new Blob([JSON.stringify({ version:1, exportedAt:new Date().toISOString(), ...state },null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href=url; link.download=`daymark-backup-${todayKey()}.json`; link.click(); URL.revokeObjectURL(url);
-}
-async function importData(event) {
-  const file = event.target.files[0]; if (!file) return;
-  if(!cloudIsEmpty){alert('Import is available only when your cloud account is empty, preventing accidental overwrites.');event.target.value='';return;}
-  try {
-    const imported=JSON.parse(await file.text());
-    if(!Array.isArray(imported.tasks)||!Array.isArray(imported.goals)||!Array.isArray(imported.events)) throw new Error('Invalid backup');
-    const batches=[['daymark_tasks',imported.tasks.map(toCloudTask)],['daymark_goals',imported.goals.map(toCloudGoal)],['daymark_events',imported.events.map(toCloudEvent)]];
-    for(const [table,rows] of batches){if(!rows.length)continue;const {error}=await cloudClient.from(table).upsert(rows,{onConflict:'user_id,id'});if(error)throw error;}
-    state=await loadCloudState();cloudIsEmpty=false;els.migrateData.classList.add('hidden');renderAll();alert('Daymark backup imported into your account.');
-  } catch(error) { console.error(error); alert('That backup could not be imported. Your existing cloud data was not replaced.'); }
-  finally { event.target.value=''; }
-}
 async function resetData() {
-  if(!confirm(`Reset every task, goal, and event ${currentUser?'in your cloud account':'on this device'}? Export first if you may need this data.`)) return;
+  if(!confirm('Permanently reset every task, goal, and event in your cloud account? This cannot be undone.')) return;
   try {
     if(currentUser) for(const table of ['daymark_tasks','daymark_goals','daymark_events']) { const {error}=await cloudClient.from(table).delete().eq('user_id',currentUser.id); if(error) throw error; }
     state={tasks:[],goals:[],events:[]}; cloudIsEmpty=Boolean(currentUser); renderAll();
