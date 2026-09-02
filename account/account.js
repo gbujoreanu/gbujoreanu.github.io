@@ -17,6 +17,7 @@
   const resend = document.getElementById("resendConfirmation");
   const requestedPath = new URLSearchParams(location.search).get("returnTo");
   const returnTo = ["/tracker/", "/golf/", "/money/", "/"].includes(requestedPath) ? requestedPath : null;
+  const isAuthCallback = new URLSearchParams(location.search).has("code") || location.hash.includes("access_token=");
   const confirmationUrl = `${location.origin}/account/${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`;
   let mode = "signin";
   let pendingEmail = "";
@@ -154,7 +155,7 @@
       stopResendCooldown();
       document.getElementById("accountEmail").textContent = session.user.email || "Your account";
       setAccountState("active", "Active · Email verified");
-      if (returnTo && event === "SIGNED_IN") location.replace(returnTo);
+      if (returnTo && isAuthCallback) location.replace(returnTo);
     } else setAccountState("inactive", "Inactive");
   }
 
