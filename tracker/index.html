@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" id="themeColor" content="#f5d90a">
-  <meta name="description" content="Daymark is a private, account-based task, goal, and calendar tracker.">
+  <meta name="description" content="Daymark is a private, account-based task, goal, scheduler, and calendar tracker.">
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const system=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.dataset.theme=s.followSystem?system:(s.theme||'neutral');document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='neutral'}</script>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body class="auth-pending">
   <header class="topbar">
@@ -26,10 +26,11 @@
         <button class="nav-item active" type="button" data-view-target="overview"><span class="nav-icon">◫</span><span>Overview</span></button>
         <button class="nav-item" type="button" data-view-target="tasks"><span class="nav-icon">✓</span><span>To Do</span><b id="navTaskCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="goals"><span class="nav-icon">◎</span><span>Goals</span><b id="navGoalCount">0</b></button>
+        <button class="nav-item" type="button" data-view-target="scheduler"><span class="nav-icon">◷</span><span>Scheduler</span></button>
         <button class="nav-item" type="button" data-view-target="calendar"><span class="nav-icon">□</span><span>Calendar</span></button>
         <button class="nav-item settings-nav" id="settingsNav" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
       </nav>
-      <div class="sidebar-note"><span>●</span><p>Everything is connected. Dated tasks and goals appear on your calendar automatically.</p></div>
+      <div class="sidebar-note"><span>●</span><p>Everything is connected. Timed tasks and schedule entries stay in sync with your calendar.</p></div>
     </aside>
 
     <main>
@@ -80,6 +81,26 @@
         <div class="goal-grid" id="goalList"></div>
       </section>
 
+      <section class="view" data-view="scheduler">
+        <div class="page-heading scheduler-heading"><div><p class="eyebrow">Scheduler</p><h1>Give the day<br>some shape.</h1><p>See timed work in context while keeping goals and unscheduled tasks visible.</p></div><button class="button primary" id="addScheduleEntry" type="button">+ Schedule entry</button></div>
+
+        <div class="scheduler-date-bar">
+          <button class="scheduler-adjacent previous" id="schedulerPreviousPreview" type="button" aria-label="Open previous day"><span>Previous</span><strong id="schedulerPreviousDate">—</strong><small id="schedulerPreviousSummary">No items</small></button>
+          <div class="scheduler-date-center"><p class="eyebrow" id="schedulerDateEyebrow">Selected day</p><h2 id="schedulerDateTitle">Today</h2><div class="scheduler-controls"><button class="icon-button light" id="prevSchedulerDay" type="button" aria-label="Previous day">←</button><button class="button secondary ink" id="schedulerToday" type="button">Today</button><button class="icon-button light" id="nextSchedulerDay" type="button" aria-label="Next day">→</button></div></div>
+          <button class="scheduler-adjacent next" id="schedulerNextPreview" type="button" aria-label="Open next day"><span>Next</span><strong id="schedulerNextDate">—</strong><small id="schedulerNextSummary">No items</small></button>
+        </div>
+
+        <div class="scheduler-top-grid">
+          <article class="scheduler-summary-panel"><div class="panel-heading"><div><p class="eyebrow">Goals</p><h2>Relevant today</h2></div><button class="text-button" type="button" data-view-target="goals">All goals →</button></div><div class="scheduler-summary-list" id="schedulerGoals"></div></article>
+          <article class="scheduler-summary-panel"><div class="panel-heading"><div><p class="eyebrow">Unscheduled tasks</p><h2>Due without a time</h2></div><button class="text-button" type="button" data-view-target="tasks">All tasks →</button></div><div class="scheduler-summary-list" id="schedulerUnscheduled"></div></article>
+        </div>
+
+        <article class="timeline-panel" id="schedulerSwipeArea">
+          <header class="timeline-heading"><div><p class="eyebrow">Day timeline</p><h2>12 AM – 11 PM</h2></div><p><span class="timeline-legend task"></span>Timed task <span class="timeline-legend schedule"></span>Schedule entry</p></header>
+          <div class="timeline-scroll" id="timelineScroll"><div class="timeline" id="schedulerTimeline"><div class="timeline-hours" id="timelineHours"></div><div class="timeline-grid" id="timelineGrid"></div><div class="timeline-items" id="timelineItems"></div><div class="timeline-now hidden" id="timelineNow"><span>Now</span></div></div></div>
+        </article>
+      </section>
+
       <section class="view" data-view="calendar">
         <div class="page-heading calendar-heading"><div><p class="eyebrow">Calendar</p><h1>See the month.<br>Shape the day.</h1><p>Tasks, goal targets, and events share one timeline.</p></div><button class="button primary" type="button" data-open-form="event">+ Add event</button></div>
         <div class="calendar-layout">
@@ -88,7 +109,7 @@
             <div class="weekday-row" id="weekdayRow"></div>
             <div class="calendar-grid" id="calendarGrid"></div>
           </article>
-          <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><div class="agenda-list" id="agendaList"></div><button class="button dark full" type="button" data-open-form="event">+ Add event here</button></aside>
+          <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><div class="agenda-list" id="agendaList"></div><div class="agenda-footer-actions"><button class="button dark full" id="viewSchedulerDay" type="button">View Scheduler →</button><button class="button secondary ink full" type="button" data-open-form="event">+ Add event here</button></div></aside>
         </div>
       </section>
     </main>
@@ -112,6 +133,23 @@
         <label class="field">Date<input id="eventDate" type="date" required></label><label class="field">Time<input id="eventTime" type="time"></label>
       </div>
       <div class="modal-actions"><button class="button secondary ink" type="button" data-close-modal>Cancel</button><button class="button primary" type="submit" id="saveItem">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal schedule-modal" id="scheduleModal">
+    <form id="scheduleForm">
+      <div class="modal-heading"><div><p class="eyebrow" id="scheduleFormEyebrow">New schedule entry</p><h2 id="scheduleFormTitle">Plan time</h2></div><button class="modal-close" id="closeScheduleModal" type="button" aria-label="Close">×</button></div>
+      <input id="scheduleId" type="hidden">
+      <label class="field full">Title<input id="scheduleTitle" type="text" maxlength="120" required placeholder="Work, gym, class…"></label>
+      <label class="field full">Notes<textarea id="scheduleNotes" rows="3" maxlength="1000" placeholder="Optional context…"></textarea></label>
+      <div class="form-grid schedule-time-grid">
+        <label class="field">Date<input id="scheduleDate" type="date" required></label>
+        <label class="field">Start time<input id="scheduleStart" type="time" required></label>
+        <label class="field">End time<input id="scheduleEnd" type="time"></label>
+        <label class="field">Duration in hours<input id="scheduleDuration" type="number" min="0.25" max="24" step="0.25" inputmode="decimal" placeholder="1.5"></label>
+      </div>
+      <p class="duration-preview" id="scheduleDurationPreview">Add an end time or duration.</p>
+      <div class="modal-actions"><button class="button secondary ink" id="deleteScheduleEntry" type="button">Delete</button><span class="modal-action-spacer"></span><button class="button secondary ink" id="cancelScheduleModal" type="button">Cancel</button><button class="button primary" type="submit" id="saveScheduleEntry">Save entry</button></div>
     </form>
   </dialog>
 
@@ -143,9 +181,9 @@
 
       <section class="settings-section data-settings" aria-labelledby="dataSettingsTitle">
         <div class="settings-section-heading"><div><p class="eyebrow">Data and privacy</p><h3 id="dataSettingsTitle">Your account, your records</h3></div></div>
-        <p>Tasks, goals, and events are stored in your private Supabase account. Per-user database rules prevent other accounts from reading or changing them.</p>
+        <p>Tasks, goals, events, and schedule entries are stored in your private Supabase account. Per-user database rules prevent other accounts from reading or changing them.</p>
         <button class="button secondary ink hidden" id="migrateData" type="button">Move older device data to cloud</button>
-        <div class="danger-zone"><div><strong>Reset Daymark data</strong><p>Permanently delete every task, goal, and event in this cloud account.</p></div><button class="button danger-button" id="resetData" type="button">Reset data</button></div>
+        <div class="danger-zone"><div><strong>Reset Daymark data</strong><p>Permanently delete every task, goal, event, and schedule entry in this cloud account.</p></div><button class="button danger-button" id="resetData" type="button">Reset data</button></div>
       </section>
     </div>
   </dialog>
@@ -153,6 +191,6 @@
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="app.js?v=4"></script>
+  <script type="module" src="app.js?v=5"></script>
 </body>
 </html>
