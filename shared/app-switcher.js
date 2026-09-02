@@ -88,10 +88,20 @@ function mountSwitcher(host) {
     }
     if (event.key === 'Escape') close(true);
   });
+  panel.addEventListener('click', (event) => {
+    const link = event.target.closest('a[role="menuitem"]');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    window.location.assign(link.href);
+  });
   panel.addEventListener('keydown', (event) => {
     const items = menuItems();
     const index = items.indexOf(document.activeElement);
-    if (event.key === 'Escape') {
+    const link = event.target.closest('a[role="menuitem"]');
+    if ((event.key === 'Enter' || event.key === ' ') && link) {
+      event.preventDefault();
+      window.location.assign(link.href);
+    } else if (event.key === 'Escape') {
       event.preventDefault();
       close(true);
     } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
