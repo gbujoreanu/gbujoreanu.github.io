@@ -105,9 +105,6 @@ function mountSwitcher(host) {
   document.addEventListener('pointerdown', (event) => {
     if (!host.contains(event.target)) close();
   });
-  host.addEventListener('focusout', () => {
-    queueMicrotask(() => { if (!host.contains(document.activeElement)) close(); });
-  });
 }
 
 document.querySelectorAll('[data-app-switcher]').forEach(mountSwitcher);
