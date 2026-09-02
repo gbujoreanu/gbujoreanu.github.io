@@ -11,6 +11,7 @@
   --ecosystem-focus:var(--focus-ring,var(--focus,currentColor));
   position:relative;z-index:90;color:var(--ecosystem-text);font-family:inherit
 }
+header:has(.ecosystem-switcher.open){position:relative!important;z-index:10000!important}
 .ecosystem-trigger{min-height:38px;display:inline-flex;align-items:center;gap:8px;padding:0 11px;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:9px;background:transparent;color:var(--header-text,#fff);font-family:inherit;font-size:.78rem;font-weight:800;line-height:1;cursor:pointer}
 .ecosystem-trigger:hover,.ecosystem-trigger[aria-expanded="true"]{border-color:color-mix(in srgb,currentColor 48%,transparent);background:color-mix(in srgb,currentColor 9%,transparent)}
 .ecosystem-trigger:focus-visible,.ecosystem-link:focus-visible{outline:2px solid var(--ecosystem-focus);outline-offset:3px}
