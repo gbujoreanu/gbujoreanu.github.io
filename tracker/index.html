@@ -8,12 +8,14 @@
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
   <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=1">
 </head>
 <body class="auth-pending">
   <header class="topbar">
     <div class="topbar-inner">
       <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><span class="brand-mark">D</span><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
       <div class="top-actions">
+        <div data-app-switcher="daymark"></div>
         <span class="local-badge" id="storageStatus" title="Cloud connection status">Connecting securely…</span>
         <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings"><span aria-hidden="true">⚙</span><span>Settings</span></button>
       </div>
@@ -216,6 +218,7 @@
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
+  <script type="module" src="../shared/app-switcher.js?v=1"></script>
   <script type="module" src="app.js?v=6"></script>
 </body>
 </html>

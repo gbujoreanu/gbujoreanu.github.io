@@ -8,11 +8,12 @@
   <title>Money — Your financial picture</title>
   <script>try{const s=JSON.parse(localStorage.getItem('money-settings-v1')||'{}');const t=['classic','ledger','clear','vault','market'];document.documentElement.dataset.theme=t.includes(s.theme)?s.theme:'classic';document.documentElement.dataset.density=s.density==='compact'?'compact':'comfortable'}catch(e){}</script>
   <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=1">
 </head>
 <body class="auth-pending">
   <header class="topbar"><div class="topbar-inner">
     <button class="brand" type="button" data-view-target="overview" aria-label="Money overview"><span class="brand-mark">M</span><span><strong>Money</strong><small>Know where it goes.</small></span></button>
-    <div class="top-actions"><span class="cloud-chip" id="cloudStatus">Connecting securely…</span><button class="settings-trigger" id="settingsTrigger" type="button"><span aria-hidden="true">⚙</span><span>Settings</span></button></div>
+    <div class="top-actions"><div data-app-switcher="money"></div><span class="cloud-chip" id="cloudStatus">Connecting securely…</span><button class="settings-trigger" id="settingsTrigger" type="button"><span aria-hidden="true">⚙</span><span>Settings</span></button></div>
   </div></header>
 
   <div class="app-shell">
@@ -80,6 +81,7 @@
   <footer><strong>Money</strong><span>Private tracking and estimates—not financial or tax advice.</span></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
+  <script type="module" src="../shared/app-switcher.js?v=1"></script>
   <script type="module" src="app.js?v=1"></script>
 </body>
 </html>
