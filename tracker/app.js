@@ -2,7 +2,9 @@ import { formatDuration, layoutTimelineItems, MINUTES_PER_DAY } from './schedule
 
 const STORAGE_KEY = "daymark-v1";
 const SETTINGS_KEY = "daymark-settings-v1";
-const DEFAULT_SETTINGS = { theme:'neutral', followSystem:false, density:'comfortable', weekStart:0, showCompletedCalendar:true, defaultPriority:'medium', defaultOnCalendar:true, confirmDelete:true };
+const DAYMARK_THEMES = ['classic','paper','focus','midnight','terminal'];
+const LEGACY_THEME_MAP = { neutral:'classic', light:'focus', dark:'midnight' };
+const DEFAULT_SETTINGS = { theme:'classic', followSystem:false, density:'comfortable', weekStart:0, showCompletedCalendar:true, defaultPriority:'medium', defaultOnCalendar:true, confirmDelete:true };
 const DAY = 86400000;
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -116,6 +118,9 @@ function bindEvents() {
   $('#settingsTrigger').addEventListener('click', openSettings);
   $('#settingsNav').addEventListener('click', openSettings);
   $('#closeSettings').addEventListener('click', () => els.settingsModal.close());
+  $$('[data-settings-open]').forEach((button) => button.addEventListener('click', () => showSettingsPanel(button.dataset.settingsOpen)));
+  $$('[data-settings-back]').forEach((button) => button.addEventListener('click', () => showSettingsPanel('main')));
+  els.settingsModal.addEventListener('close', () => showSettingsPanel('main', false));
   els.settingsModal.addEventListener('change', saveSettingsFromControls);
   $('#resetData').addEventListener('click', resetData);
   els.signOut.addEventListener('click', () => cloudClient?.auth.signOut());
@@ -165,7 +170,7 @@ function loadSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
     return {
-      theme: ['neutral','light','dark'].includes(saved.theme) ? saved.theme : DEFAULT_SETTINGS.theme,
+      theme: DAYMARK_THEMES.includes(LEGACY_THEME_MAP[saved.theme] || saved.theme) ? (LEGACY_THEME_MAP[saved.theme] || saved.theme) : DEFAULT_SETTINGS.theme,
       followSystem: Boolean(saved.followSystem), density: saved.density === 'compact' ? 'compact' : 'comfortable',
       weekStart: Number(saved.weekStart) === 1 ? 1 : 0, showCompletedCalendar: saved.showCompletedCalendar !== false,
       defaultPriority: ['high','medium','low'].includes(saved.defaultPriority) ? saved.defaultPriority : 'medium',
@@ -174,13 +179,19 @@ function loadSettings() {
   } catch (error) { return { ...DEFAULT_SETTINGS }; }
 }
 
-function resolvedTheme() { return settings.followSystem ? (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light') : settings.theme; }
+function resolvedTheme() { return settings.followSystem ? (matchMedia('(prefers-color-scheme:dark)').matches ? 'midnight' : 'focus') : settings.theme; }
 function applySettings() {
   const theme = resolvedTheme();
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.density = settings.density;
   const themeColor = document.getElementById('themeColor');
-  if (themeColor) themeColor.content = theme === 'dark' ? '#0a1114' : theme === 'light' ? '#21343c' : '#f5d90a';
+  const themeColors = { classic:'#11120f', paper:'#f5efe4', focus:'#eef3f6', midnight:'#0b1320', terminal:'#080b0a' };
+  if (themeColor) themeColor.content = themeColors[theme] || themeColors.classic;
+}
+function showSettingsPanel(panel, moveFocus = true) {
+  $$('[data-settings-panel]', els.settingsModal).forEach((item) => item.classList.toggle('active', item.dataset.settingsPanel === panel));
+  els.settingsModal.dataset.panel = panel;
+  if (moveFocus) setTimeout(() => (panel === 'main' ? $('[data-settings-open]', els.settingsModal) : $('[data-settings-back]', els.settingsModal))?.focus(), 0);
 }
 function openSettings() {
   els.settingsEmail.textContent = currentUser?.email || 'Signed in account';
@@ -190,7 +201,7 @@ function openSettings() {
   els.followSystem.checked = settings.followSystem; els.weekStart.value = String(settings.weekStart);
   els.showCompletedCalendar.checked = settings.showCompletedCalendar; els.defaultPriority.value = settings.defaultPriority;
   els.defaultOnCalendar.checked = settings.defaultOnCalendar; els.confirmDelete.checked = settings.confirmDelete;
-  els.settingsModal.showModal();
+  showSettingsPanel('main', false); els.settingsModal.showModal(); setTimeout(() => $('[data-settings-open]', els.settingsModal)?.focus(), 0);
 }
 function saveSettingsFromControls() {
   const selectedTheme = $('input[name="theme"]:checked'); const selectedDensity = $('input[name="density"]:checked');

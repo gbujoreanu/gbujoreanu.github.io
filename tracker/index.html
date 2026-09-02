@@ -6,8 +6,8 @@
   <meta name="theme-color" id="themeColor" content="#f5d90a">
   <meta name="description" content="Daymark is a private, account-based task, goal, scheduler, and calendar tracker.">
   <title>Daymark — Plan what matters</title>
-  <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const system=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.dataset.theme=s.followSystem?system:(s.theme||'neutral');document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='neutral'}</script>
-  <link rel="stylesheet" href="styles.css?v=5">
+  <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body class="auth-pending">
   <header class="topbar">
@@ -156,30 +156,55 @@
   <dialog class="settings-modal" id="settingsModal" aria-labelledby="settingsTitle">
     <div class="settings-sheet">
       <header class="settings-heading"><div><p class="eyebrow">Personalize Daymark</p><h2 id="settingsTitle">Settings</h2></div><button class="modal-close" id="closeSettings" type="button" aria-label="Close settings">×</button></header>
+      <div class="settings-panel active" data-settings-panel="main">
+        <p class="settings-intro">Choose an area. Your planning data stays in Supabase; appearance and workflow preferences stay on this device.</p>
+        <nav class="settings-categories" aria-label="Settings categories">
+          <button class="settings-category" type="button" data-settings-open="account"><span class="settings-category-icon">@</span><span><strong>Account</strong><small>Identity, connection, and sign out</small></span><b aria-hidden="true">→</b></button>
+          <button class="settings-category" type="button" data-settings-open="appearance"><span class="settings-category-icon">◐</span><span><strong>Appearance</strong><small>Theme, system appearance, and density</small></span><b aria-hidden="true">→</b></button>
+          <button class="settings-category" type="button" data-settings-open="planning"><span class="settings-category-icon">✓</span><span><strong>Tasks &amp; Goals</strong><small>Defaults, completed items, and deletion</small></span><b aria-hidden="true">→</b></button>
+          <button class="settings-category" type="button" data-settings-open="calendar"><span class="settings-category-icon">◷</span><span><strong>Scheduler &amp; Calendar</strong><small>Week layout and calendar defaults</small></span><b aria-hidden="true">→</b></button>
+          <button class="settings-category" type="button" data-settings-open="data"><span class="settings-category-icon">◇</span><span><strong>Privacy &amp; Data</strong><small>Cloud storage, migration, and reset</small></span><b aria-hidden="true">→</b></button>
+        </nav>
+      </div>
 
-      <section class="settings-section" aria-labelledby="accountSettingsTitle">
+      <section class="settings-panel settings-section" data-settings-panel="account" aria-labelledby="accountSettingsTitle">
+        <button class="settings-back" type="button" data-settings-back>← Settings</button>
         <div class="settings-section-heading"><div><p class="eyebrow">Account</p><h3 id="accountSettingsTitle">Private and connected</h3></div><span class="verified-chip">● Email verified</span></div>
         <dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Cloud status</dt><dd id="settingsCloud">Connecting…</dd></div></dl>
         <div class="settings-actions"><a class="button secondary ink" href="../account/">Open account page</a><a class="button secondary ink" href="../account/">Change or reset password</a><button class="button secondary ink" id="signOut" type="button">Sign out</button></div>
       </section>
 
-      <section class="settings-section" aria-labelledby="appearanceSettingsTitle">
+      <section class="settings-panel settings-section" data-settings-panel="appearance" aria-labelledby="appearanceSettingsTitle">
+        <button class="settings-back" type="button" data-settings-back>← Settings</button>
         <div class="settings-section-heading"><div><p class="eyebrow">Appearance</p><h3 id="appearanceSettingsTitle">Choose your atmosphere</h3></div></div>
-        <fieldset class="theme-picker"><legend>Theme</legend><label><input type="radio" name="theme" value="neutral"><span class="theme-swatch neutral"><i></i><b>Neutral</b><small>Bold and focused</small></span></label><label><input type="radio" name="theme" value="light"><span class="theme-swatch light"><i></i><b>Calm Light</b><small>Cool and open</small></span></label><label><input type="radio" name="theme" value="dark"><span class="theme-swatch dark"><i></i><b>Calm Dark</b><small>Quiet and grounded</small></span></label></fieldset>
-        <label class="setting-row"><span><strong>Follow system appearance</strong><small>Use Calm Light or Calm Dark with your device.</small></span><input id="followSystem" type="checkbox"></label>
+        <fieldset class="theme-picker"><legend>Theme</legend>
+          <label><input type="radio" name="theme" value="classic"><span class="theme-swatch classic"><i></i><b>Classic</b><small>Bold Daymark yellow</small></span></label>
+          <label><input type="radio" name="theme" value="paper"><span class="theme-swatch paper"><i></i><b>Paper</b><small>Warm planner calm</small></span></label>
+          <label><input type="radio" name="theme" value="focus"><span class="theme-swatch focus"><i></i><b>Focus</b><small>Crisp and minimal</small></span></label>
+          <label><input type="radio" name="theme" value="midnight"><span class="theme-swatch midnight"><i></i><b>Midnight</b><small>Deep low-light navy</small></span></label>
+          <label><input type="radio" name="theme" value="terminal"><span class="theme-swatch terminal"><i></i><b>Terminal</b><small>Precise technical dark</small></span></label>
+        </fieldset>
+        <label class="setting-row"><span><strong>Follow system appearance</strong><small>Use Focus by day and Midnight in dark mode.</small></span><input id="followSystem" type="checkbox"></label>
         <fieldset class="inline-options"><legend>Layout density</legend><label><input type="radio" name="density" value="comfortable"> Comfortable</label><label><input type="radio" name="density" value="compact"> Compact</label></fieldset>
       </section>
 
-      <section class="settings-section settings-grid-section" aria-labelledby="planningSettingsTitle">
-        <div class="settings-section-heading full"><div><p class="eyebrow">Planning defaults</p><h3 id="planningSettingsTitle">Make capture feel automatic</h3></div></div>
-        <label class="field">Week starts on<select id="weekStart"><option value="0">Sunday</option><option value="1">Monday</option></select></label>
+      <section class="settings-panel settings-section settings-grid-section" data-settings-panel="planning" aria-labelledby="planningSettingsTitle">
+        <button class="settings-back full" type="button" data-settings-back>← Settings</button>
+        <div class="settings-section-heading full"><div><p class="eyebrow">Tasks &amp; Goals</p><h3 id="planningSettingsTitle">Make capture feel automatic</h3></div></div>
         <label class="field">Default task priority<select id="defaultPriority"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label>
         <label class="setting-row"><span><strong>Show completed tasks</strong><small>Include completed tasks on calendars.</small></span><input id="showCompletedCalendar" type="checkbox"></label>
-        <label class="setting-row"><span><strong>Put new tasks on calendar</strong><small>Enable calendar display by default.</small></span><input id="defaultOnCalendar" type="checkbox"></label>
         <label class="setting-row full"><span><strong>Confirm before deleting</strong><small>Ask before removing individual tasks, goals, or events.</small></span><input id="confirmDelete" type="checkbox"></label>
       </section>
 
-      <section class="settings-section data-settings" aria-labelledby="dataSettingsTitle">
+      <section class="settings-panel settings-section settings-grid-section" data-settings-panel="calendar" aria-labelledby="calendarSettingsTitle">
+        <button class="settings-back full" type="button" data-settings-back>← Settings</button>
+        <div class="settings-section-heading full"><div><p class="eyebrow">Scheduler &amp; Calendar</p><h3 id="calendarSettingsTitle">Shape your planning week</h3></div></div>
+        <label class="field">Week starts on<select id="weekStart"><option value="0">Sunday</option><option value="1">Monday</option></select></label>
+        <label class="setting-row"><span><strong>Put new tasks on calendar</strong><small>Enable calendar display by default.</small></span><input id="defaultOnCalendar" type="checkbox"></label>
+      </section>
+
+      <section class="settings-panel settings-section data-settings" data-settings-panel="data" aria-labelledby="dataSettingsTitle">
+        <button class="settings-back" type="button" data-settings-back>← Settings</button>
         <div class="settings-section-heading"><div><p class="eyebrow">Data and privacy</p><h3 id="dataSettingsTitle">Your account, your records</h3></div></div>
         <p>Tasks, goals, events, and schedule entries are stored in your private Supabase account. Per-user database rules prevent other accounts from reading or changing them.</p>
         <button class="button secondary ink hidden" id="migrateData" type="button">Move older device data to cloud</button>
@@ -191,6 +216,6 @@
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="app.js?v=5"></script>
+  <script type="module" src="app.js?v=6"></script>
 </body>
 </html>
