@@ -35,3 +35,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:780px){.app-shell{display:block}.sidebar{top:70px;padding:7px}.main-nav{width:100%;display:grid;grid-template-columns:repeat(4,1fr);min-width:0}.nav-item{min-width:0;display:flex;flex-direction:column;gap:2px;padding:5px}.nav-item span{display:block;font-size:.76rem}.nav-item b{font-size:.66rem}.nav-item:hover{transform:none}.section-nav{top:78px;width:100%;overflow-x:auto;border-radius:14px}.section-nav>span{display:none}main{padding:24px 14px 70px}.page-heading h1{font-size:clamp(2.8rem,12vw,4.6rem)}.quick-actions{grid-template-columns:repeat(2,1fr)}.story-metric{min-height:145px;padding:18px}.story-metric strong{font-size:clamp(1.7rem,8vw,2.8rem)}.month-story-heading{display:grid}.overview-grid,.split-layout{grid-template-columns:1fr}.income-card-list{grid-template-columns:1fr}.income-summary{grid-template-columns:1fr}.bill-card{grid-template-columns:auto minmax(0,1fr) auto}.bill-card>.row-actions{grid-column:2/-1}.budget-parent,.budget-child{grid-template-columns:minmax(0,1fr) 100px}.budget-child{padding-left:32px}.onboarding-modal{width:100%;height:100%;max-height:100%;margin:0;border:0;border-radius:0}.onboarding-shell{min-height:100%;display:flex;flex-direction:column}.onboarding-step{flex:1}.choice-grid{grid-template-columns:1fr}.choice-grid span{min-height:82px}.starter-bills{grid-template-columns:1fr}}
 @media(max-width:430px){.top-actions{gap:5px}.quick-action{min-height:58px;padding:9px}.quick-action span{width:30px;height:30px}.month-story{border-radius:20px}.month-story-heading{padding:18px 17px 4px}.story-metric{min-height:132px;padding:16px}.insight-strip{grid-template-columns:1fr 1fr}.insight-strip article{min-height:112px}.savings-card{grid-template-columns:1fr}.savings-ring{width:76px;height:76px}.bill-preview{grid-template-columns:auto minmax(0,1fr)}.bill-preview>strong{grid-column:2}.onboarding-shell>header,.onboarding-step,.onboarding-shell>footer{padding-left:18px;padding-right:18px}.onboarding-progress{margin-left:18px;margin-right:18px}.onboarding-shell>footer{align-items:stretch;flex-direction:column-reverse}.onboarding-shell>footer>div,.onboarding-shell>footer button{width:100%}.starter-bills label{grid-template-columns:1fr 95px}}
 @media(prefers-reduced-motion:reduce){.quick-action,.nav-item,.onboarding-progress i{transition:none!important}.quick-action:hover{transform:none}}
+
+/* Money shell: a horizontal consumer-finance navigation band. */
+.brand-mark{width:42px;height:40px;padding:3px 10px 3px 0;border:0;border-right:1px solid color-mix(in srgb,#fff 22%,transparent);border-radius:0}
+.settings-trigger[aria-expanded="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,transparent)}
+.settings-account-copy{max-width:650px;margin:20px 0 0;color:var(--secondary)}
+@media(min-width:781px){
+  .app-shell{display:block;min-height:calc(100vh - 78px)}
+  .sidebar{position:sticky;top:78px;z-index:30;width:100%;height:auto;display:block;padding:0 clamp(24px,4vw,64px);border-right:0;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--panel) 96%,transparent);backdrop-filter:blur(14px)}
+  .main-nav{max-width:1400px;display:flex;gap:0;margin:auto}
+  .nav-item{min-width:142px;min-height:58px;display:grid;grid-template-columns:24px auto;justify-content:start;gap:9px;padding:0 18px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent}
+  .nav-item:hover{background:var(--soft);transform:none}
+  .nav-item.active{border-bottom-color:var(--brand);background:transparent;color:var(--text)}
+  .nav-item.active>svg{color:var(--brand)}
+  .privacy-note{display:none}
+  main{max-width:1520px;margin:auto;padding-top:36px}
+  .section-nav{top:148px}
+}

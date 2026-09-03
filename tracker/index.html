@@ -7,7 +7,7 @@
   <meta name="description" content="Daymark is a private, account-based task, goal, scheduler, and calendar tracker.">
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
   <link rel="stylesheet" href="../shared/app-switcher.css?v=3">
 </head>
 <body class="auth-pending">
@@ -28,7 +28,7 @@
       <div class="top-actions">
         <div data-app-switcher="daymark"></div>
         <span class="local-badge" id="storageStatus" title="Cloud connection status">Connecting securely…</span>
-        <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings"><svg aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
+        <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings" aria-expanded="false"><svg aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
       </div>
     </div>
   </header>
@@ -39,8 +39,8 @@
         <button class="nav-item active" type="button" data-view-target="overview"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-overview"/></svg><span>Overview</span></button>
         <button class="nav-item" type="button" data-view-target="tasks"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-task"/></svg><span>To Do</span><b id="navTaskCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="goals"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-goal"/></svg><span>Goals</span><b id="navGoalCount">0</b></button>
-        <button class="nav-item" type="button" data-view-target="scheduler"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-schedule"/></svg><span>Scheduler</span></button>
         <button class="nav-item" type="button" data-view-target="calendar"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-calendar"/></svg><span>Calendar</span></button>
+        <button class="nav-item" type="button" data-view-target="scheduler"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-schedule"/></svg><span>Scheduler</span></button>
         <button class="nav-item settings-nav" id="settingsNav" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
       </nav>
       <div class="sidebar-note"><span>●</span><p>Everything is connected. Timed tasks and schedule entries stay in sync with your calendar.</p></div>
@@ -184,7 +184,8 @@
         <button class="settings-back" type="button" data-settings-back>← Settings</button>
         <div class="settings-section-heading"><div><p class="eyebrow">Account</p><h3 id="accountSettingsTitle">Private and connected</h3></div><span class="verified-chip">Email verified</span></div>
         <dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Cloud status</dt><dd id="settingsCloud">Connecting…</dd></div></dl>
-        <div class="settings-actions"><a class="button secondary ink" href="../account/">Open account page</a><a class="button secondary ink" href="../account/">Change or reset password</a><button class="button secondary ink" id="signOut" type="button">Sign out</button></div>
+        <p class="settings-copy">Profile, handle, avatar, and security are managed in your shared ecosystem Account.</p>
+        <div class="settings-actions"><a class="button secondary ink" href="../account/?returnTo=/tracker/">Open Account &amp; Profile</a><button class="button secondary ink" id="signOut" type="button">Sign out</button></div>
       </section>
 
       <section class="settings-panel settings-section" data-settings-panel="appearance" aria-labelledby="appearanceSettingsTitle">
@@ -230,6 +231,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
   <script type="module" src="../shared/app-switcher.js?v=4"></script>
-  <script type="module" src="app.js?v=6"></script>
+  <script type="module" src="app.js?v=7"></script>
 </body>
 </html>

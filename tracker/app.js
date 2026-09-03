@@ -120,7 +120,7 @@ function bindEvents() {
   $('#closeSettings').addEventListener('click', () => els.settingsModal.close());
   $$('[data-settings-open]').forEach((button) => button.addEventListener('click', () => showSettingsPanel(button.dataset.settingsOpen)));
   $$('[data-settings-back]').forEach((button) => button.addEventListener('click', () => showSettingsPanel('main')));
-  els.settingsModal.addEventListener('close', () => showSettingsPanel('main', false));
+  els.settingsModal.addEventListener('close', () => { $('#settingsTrigger').setAttribute('aria-expanded', 'false'); showSettingsPanel('main', false); });
   els.settingsModal.addEventListener('change', saveSettingsFromControls);
   $('#resetData').addEventListener('click', resetData);
   els.signOut.addEventListener('click', () => cloudClient?.auth.signOut());
@@ -201,7 +201,7 @@ function openSettings() {
   els.followSystem.checked = settings.followSystem; els.weekStart.value = String(settings.weekStart);
   els.showCompletedCalendar.checked = settings.showCompletedCalendar; els.defaultPriority.value = settings.defaultPriority;
   els.defaultOnCalendar.checked = settings.defaultOnCalendar; els.confirmDelete.checked = settings.confirmDelete;
-  showSettingsPanel('main', false); els.settingsModal.showModal(); setTimeout(() => $('[data-settings-open]', els.settingsModal)?.focus(), 0);
+  showSettingsPanel('main', false); els.settingsModal.showModal(); $('#settingsTrigger').setAttribute('aria-expanded', 'true'); setTimeout(() => $('[data-settings-open]', els.settingsModal)?.focus(), 0);
 }
 function saveSettingsFromControls() {
   const selectedTheme = $('input[name="theme"]:checked'); const selectedDensity = $('input[name="density"]:checked');
