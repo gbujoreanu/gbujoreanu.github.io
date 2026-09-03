@@ -70,11 +70,11 @@ Daymark is calm and structured around time, planning, organization, timelines, a
 
 Fairway should feel like golf through scorecards, courses, round progression, and golf-specific hierarchy—not generic SaaS with green paint. It includes rounds, courses, scoring, statistics, Settings, and five independent themes.
 
-Next-design-pass feedback:
+The real-user UX/design pass is complete. Preserve these resulting conventions:
 
-- Improve the Add Round layout and new-user onboarding/empty states.
-- Replace placeholder-style branding and avoid emoji in the core UI.
-- Do not create fake/premade courses or use the developer's name as example content.
+- Treat Add Round as a staged golf workflow with a scorecard and review, not a database form.
+- Use the Fairway flag/course-contour mark and coherent SVG interface icons; avoid emoji in the core UI.
+- New accounts start without courses or sample records, and first-use guidance leads from course setup to the first round.
 
 ### Money
 
@@ -129,7 +129,7 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 
 1. Money UX/visual simplification — complete; continue real-world validation.
 2. Account/Profile redesign and private profile foundation — complete; avatar upload and public discovery deferred.
-3. Fairway UX/design and real-user-feedback pass — next.
+3. Fairway UX/design and real-user-feedback pass — complete; continue real-world validation.
 4. Daymark UX/design validation pass — planned.
 5. Money visual/design validation pass — planned.
 6. Cross-app first-user/onboarding polish — planned as needed.
