@@ -16,6 +16,7 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:20px;pa
 .agenda-actions{display:flex;gap:4px;margin-top:7px}
 .local-badge.sync-error{border-color:#a63d35;color:#ffaaa3}.top-actions .button:disabled{opacity:.55;cursor:wait}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.view{animation:none}.button.primary:hover{transform:none}}
+
 .topbar{padding:0}.topbar-inner{width:min(1600px,100%);height:100%;display:flex;align-items:center;justify-content:space-between;margin:auto;padding:0 28px}@media(max-width:760px){.topbar{padding:0}.topbar-inner{padding:0 14px}.brand small{display:none}.local-badge{display:block;width:10px;height:10px;padding:0;border:0;background:#64c88b;font-size:0}.local-badge.sync-error{background:#ff7770}}
 
 /* Responsive shell, themes, settings, and calendar refinement */
@@ -132,3 +133,17 @@ html[data-theme="terminal"] .timeline-block,html[data-theme="terminal"] .panel,h
 .scheduler-adjacent:hover,.scheduler-adjacent:focus-visible,.scheduler-summary-item:hover{border-color:var(--border-strong);background:var(--surface-raised)}
 .timeline-block:hover,.timeline-block:focus-visible{box-shadow:0 8px 24px color-mix(in srgb,var(--text-primary) 18%,transparent);filter:saturate(1.04) brightness(1.02)}
 .calendar-toolbar .icon-button:hover,.calendar-toolbar .icon-button:focus-visible{border-color:color-mix(in srgb,var(--header-text) 48%,transparent);background:color-mix(in srgb,var(--header-text) 10%,transparent);color:var(--header-text)}
+
+/* Focused navigation and settings polish */
+.svg-library{position:absolute;width:0;height:0;overflow:hidden}
+.brand-mark{width:44px;height:44px;padding:7px;border:1px solid color-mix(in srgb,var(--header-text) 24%,transparent);border-radius:50%;background:transparent;color:var(--accent);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transform:none}
+.brand strong{font-size:1.06rem;letter-spacing:-.02em}.brand small{letter-spacing:.015em}
+.nav-icon,.settings-trigger svg,.settings-category-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.settings-trigger svg{width:17px;height:17px}
+.settings-categories{gap:0;border-top:1px solid var(--border-default)}
+.settings-category{min-height:74px;padding:14px 4px;border:0;border-bottom:1px solid var(--border-default);border-radius:0;background:transparent}
+.settings-category:hover,.settings-category:focus-visible{border-color:var(--border-default);background:var(--surface-soft)}
+.settings-category-icon{width:34px;height:34px;border:1px solid var(--border-default);border-radius:50%;background:transparent;color:var(--text-secondary)}
+.settings-category-icon svg{width:17px;height:17px}
+.verified-chip{letter-spacing:.01em}
+@media(max-width:760px){.brand-mark{width:38px;height:38px}.nav-icon{display:none}}
