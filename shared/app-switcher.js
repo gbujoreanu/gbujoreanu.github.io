@@ -28,7 +28,8 @@ function createAppLink(app, currentId) {
 
 function mountSwitcher(host) {
   const currentId = host.dataset.appSwitcher;
-  if (!ECOSYSTEM_APPS.some((app) => app.id === currentId)) return;
+  const currentApp = [...ECOSYSTEM_APPS, ACCOUNT].find((app) => app.id === currentId);
+  if (!currentApp) return;
 
   instanceCount += 1;
   const panelId = `ecosystem-menu-${instanceCount}`;
@@ -40,7 +41,7 @@ function mountSwitcher(host) {
   trigger.setAttribute('aria-haspopup', 'menu');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', panelId);
-  trigger.setAttribute('aria-label', `Open app switcher. Current application: ${ECOSYSTEM_APPS.find((app) => app.id === currentId).name}`);
+  trigger.setAttribute('aria-label', `Open app switcher. Current application: ${currentApp.name}`);
   trigger.innerHTML = '<span class="ecosystem-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="ecosystem-trigger-label">Apps</span>';
 
   const panel = document.createElement('div');
@@ -61,7 +62,7 @@ function mountSwitcher(host) {
   divider.setAttribute('role', 'separator');
   panel.append(divider);
 
-  const account = createAppLink({ ...ACCOUNT, path: accountPath() }, currentId);
+  const account = createAppLink({ ...ACCOUNT, path: currentId === 'account' ? ACCOUNT.path : accountPath() }, currentId);
   account.classList.add('account-link');
   panel.append(account);
   host.append(trigger, panel);

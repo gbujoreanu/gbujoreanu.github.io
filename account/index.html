@@ -3,59 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sign in to sync your George Bujoreanu web apps across devices.">
-  <meta name="theme-color" content="#11120f">
-  <title>Account · George Bujoreanu</title>
-  <link rel="stylesheet" href="account.css?v=2">
+  <meta name="description" content="Manage your Bujoreanu Apps profile, shared account, and application access.">
+  <meta name="theme-color" content="#151816">
+  <title>Account · Bujoreanu Apps</title>
+  <link rel="stylesheet" href="account.css?v=3">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=4">
 </head>
 <body>
+  <header class="site-header">
+    <a class="wordmark" href="../" aria-label="Bujoreanu Apps portfolio"><span class="ecosystem-mark" aria-hidden="true"><i></i><i></i><i></i></span><span><strong>Bujoreanu</strong><small>Apps</small></span></a>
+    <div class="header-actions"><div data-app-switcher="account"></div><a class="portfolio-link" href="../">Portfolio</a></div>
+  </header>
+
   <main>
-    <a class="back" href="../">← Portfolio</a>
-    <section class="account-shell">
-      <div class="intro">
-        <p class="eyebrow">One private account</p>
-        <h1>Your apps,<br><em>wherever you are.</em></h1>
-        <p>One confirmed account securely syncs your Daymark and Fairway data across supported devices.</p>
-        <ul><li>Encrypted connection</li><li>Per-user database access</li><li>Confirmed account required</li></ul>
-      </div>
-      <div class="card">
+    <section class="auth-layout" id="signedOut">
+      <div class="auth-intro"><p class="eyebrow">One identity, separate apps</p><h1>Your place in<br>the ecosystem.</h1><p>Sign in once to securely access your private Daymark, Fairway, and Money records across supported devices.</p><div class="trust-list"><span>Verified email</span><span>Private app data</span><span>Shared session</span></div></div>
+      <section class="auth-card" aria-labelledby="authTitle">
         <div class="account-state inactive" id="accountState" role="status" aria-live="polite"><span aria-hidden="true"></span><strong>Inactive</strong></div>
-        <div id="signedOut">
-          <div class="tabs" role="tablist"><button class="active" type="button" data-mode="signin">Sign in</button><button type="button" data-mode="signup">Create account</button></div>
-          <form id="authForm">
-            <label>Email<input id="email" type="email" autocomplete="email" required></label>
-            <label>Password<input id="password" type="password" minlength="10" maxlength="72" autocomplete="current-password" required></label>
-            <label id="confirmPasswordField" hidden>Confirm password<input id="confirmPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password"></label>
-            <button class="primary" id="submitAuth" type="submit">Sign in</button>
-          </form>
-          <p class="security-note">Use at least 10 characters. Email confirmation is required before app access.</p>
-          <button class="link" id="forgotPassword" type="button">Send a password-reset email</button>
-          <p class="message" id="authMessage" role="status"></p>
+        <div class="tabs" role="tablist" aria-label="Authentication"><button class="active" type="button" role="tab" aria-selected="true" data-mode="signin">Sign in</button><button type="button" role="tab" aria-selected="false" data-mode="signup">Create account</button></div>
+        <form id="authForm"><h2 id="authTitle">Welcome back</h2><label>Email<input id="email" type="email" autocomplete="email" required></label><label>Password<input id="password" type="password" minlength="10" maxlength="72" autocomplete="current-password" required></label><label id="confirmPasswordField" hidden>Confirm password<input id="confirmPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password"></label><button class="button primary" id="submitAuth" type="submit">Sign in</button></form>
+        <p class="security-note">Use at least 10 characters. Email confirmation is required before app access.</p><button class="text-button" id="forgotPassword" type="button">Send a password-reset email</button><p class="message" id="authMessage" role="status"></p>
+      </section>
+    </section>
+
+    <section class="pending-card" id="verificationPending" hidden><div class="account-state pending"><span aria-hidden="true"></span><strong>Verification pending</strong></div><p class="eyebrow">Check your inbox</p><h1>Confirm your email.</h1><p>Open the confirmation link to activate your account, then return here to sign in.</p><div class="pending-actions"><button class="button primary" id="resendConfirmation" type="button" disabled>Resend available in 60s</button><button class="text-button" id="changeEmail" type="button">Use a different email</button></div><p class="message" id="verificationMessage" role="status"></p></section>
+
+    <section class="profile-hub" id="signedIn" hidden>
+      <section class="profile-hero" aria-labelledby="profileName">
+        <div class="avatar" id="profileAvatar" aria-hidden="true">?</div>
+        <div class="profile-identity"><p class="eyebrow">Ecosystem profile</p><h1 id="profileName">Your profile</h1><p class="handle" id="profileHandle">Choose a unique @handle</p><p class="bio" id="profileBio">Add a short introduction that can become part of your future discoverable profile.</p><button class="button dark" id="editProfile" type="button">Edit profile</button></div>
+        <div class="private-account"><span>Private account</span><strong id="accountEmail">—</strong><p><i aria-hidden="true">✓</i> Email verified</p></div>
+      </section>
+
+      <section class="apps-section" aria-labelledby="appsTitle">
+        <div class="section-heading"><div><p class="eyebrow">Your apps</p><h2 id="appsTitle">Pick up where you left off.</h2></div><p>One sign-in. Three private, independent applications.</p></div>
+        <div class="app-grid">
+          <a class="app-card daymark" href="../tracker/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="m8 14 2 2 5-5"/></svg></span><span><small>Productivity</small><strong>Daymark</strong><em>Tasks, goals, Calendar &amp; Scheduler</em></span><i aria-hidden="true">↗</i></a>
+          <a class="app-card fairway" href="../golf/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 21V3M7 4h10l-3 4 3 4H7M4 21h6"/></svg></span><span><small>Golf</small><strong>Fairway</strong><em>Rounds, courses &amp; statistics</em></span><i aria-hidden="true">↗</i></a>
+          <a class="app-card money" href="../money/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-7M22 18V3M2 21h22"/></svg></span><span><small>Finance</small><strong>Money</strong><em>Budgeting, savings &amp; financial planning</em></span><i aria-hidden="true">↗</i></a>
         </div>
-        <div id="verificationPending" hidden>
-          <p class="eyebrow">Check your inbox</p>
-          <h2>Confirm your email</h2>
-          <p class="card-copy">We sent a confirmation link. Open it to activate your account, then return here to sign in.</p>
-          <button class="primary" id="resendConfirmation" type="button" disabled>Resend available in 60s</button>
-          <button class="link" id="changeEmail" type="button">Use a different email</button>
-          <p class="message" id="verificationMessage" role="status"></p>
-        </div>
-        <div id="signedIn" hidden>
-          <p class="eyebrow">Signed in</p><h2 id="accountEmail"></h2>
-          <p>Your session works across the apps on this GitHub Pages site.</p>
-          <div class="actions"><a class="primary" href="../tracker/">Open Daymark</a><a href="../golf/">Open Golf</a></div>
-          <button class="link danger" id="signOut" type="button">Sign out</button>
-        </div>
-        <div id="recovery" hidden>
-          <p class="eyebrow">Password recovery</p><h2>Choose a new password</h2>
-          <form id="recoveryForm"><label>New password<input id="newPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password" required></label><button class="primary" type="submit">Update password</button></form>
-          <p class="message" id="recoveryMessage" role="status"></p>
-        </div>
+      </section>
+
+      <div class="account-sections">
+        <section class="account-section" aria-labelledby="securityTitle"><div class="section-number">01</div><div><p class="eyebrow">Account</p><h2 id="securityTitle">Security &amp; access</h2><p>Your verified email powers one renewable session across the ecosystem.</p><dl class="detail-list"><div><dt>Email</dt><dd id="securityEmail">—</dd></div><div><dt>Verification</dt><dd class="verified">Verified</dd></div><div><dt>Session</dt><dd>Active across your apps</dd></div></dl><div class="inline-actions"><button class="text-button" id="sendPasswordReset" type="button">Change password</button><button class="text-button danger" id="signOut" type="button">Sign out</button></div><p class="message" id="securityMessage" role="status"></p></div></section>
+        <section class="account-section" aria-labelledby="privacyTitle"><div class="section-number">02</div><div><p class="eyebrow">Privacy</p><h2 id="privacyTitle">Profile discoverability</h2><p>Prepare your safe profile for future people search. This never exposes your email or private app records.</p><label class="switch-row" for="discoverable"><span><strong>Allow profile discovery</strong><small>Only your name, handle, avatar, and bio may be discoverable later.</small></span><input id="discoverable" type="checkbox" role="switch"><i aria-hidden="true"></i></label><p class="message" id="privacyMessage" role="status"></p></div></section>
+        <section class="account-section data-separation" aria-labelledby="dataTitle"><div class="section-number">03</div><div><p class="eyebrow">Your data</p><h2 id="dataTitle">Connected identity. Separate records.</h2><p>Account owns your identity. Daymark owns productivity data, Fairway owns golf data, and Money owns financial data. Access to one never implies access to another person's information.</p></div></section>
       </div>
     </section>
+
+    <section class="pending-card" id="recovery" hidden><p class="eyebrow">Password recovery</p><h1>Choose a new password.</h1><form id="recoveryForm"><label>New password<input id="newPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password" required></label><button class="button primary" type="submit">Update password</button></form><p class="message" id="recoveryMessage" role="status"></p></section>
   </main>
+
+  <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle"><form class="profile-form" id="profileForm"><header><div><p class="eyebrow">Shared identity</p><h2 id="profileDialogTitle">Edit profile</h2></div><button class="close-button" id="closeProfile" type="button" aria-label="Close profile editor">×</button></header><div class="avatar-preview"><div class="avatar small" id="editAvatar" aria-hidden="true">?</div><p><strong>Initials avatar</strong><span>Secure image uploads are not enabled yet. Your initials provide a polished private fallback.</span></p></div><label>Display name<input id="displayName" maxlength="60" autocomplete="name" placeholder="How should people know you?"></label><label>Handle<div class="handle-input"><span>@</span><input id="handle" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" autocomplete="username" placeholder="your_handle" aria-describedby="handleHelp"></div><small id="handleHelp">3–24 characters. Start with a letter; use lowercase letters, numbers, or underscores.</small></label><label>Bio<textarea id="bio" maxlength="180" rows="4" placeholder="A short introduction"></textarea><small><span id="bioCount">0</span>/180</small></label><p class="message" id="profileMessage" role="status"></p><footer><button class="button quiet" id="cancelProfile" type="button">Cancel</button><button class="button dark" id="saveProfile" type="submit">Save profile</button></footer></form></dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script src="account.js?v=4"></script>
+  <script type="module" src="../shared/app-switcher.js?v=5"></script>
+  <script src="account.js?v=5"></script>
 </body>
 </html>

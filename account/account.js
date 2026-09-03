@@ -1,20 +1,23 @@
 (function () {
   "use strict";
+
   const client = window.AppAuth?.client;
-  const signedOut = document.getElementById("signedOut");
-  const signedIn = document.getElementById("signedIn");
-  const recovery = document.getElementById("recovery");
-  const verificationPending = document.getElementById("verificationPending");
-  const accountState = document.getElementById("accountState");
-  const form = document.getElementById("authForm");
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const confirmPassword = document.getElementById("confirmPassword");
-  const confirmPasswordField = document.getElementById("confirmPasswordField");
-  const message = document.getElementById("authMessage");
-  const verificationMessage = document.getElementById("verificationMessage");
-  const submit = document.getElementById("submitAuth");
-  const resend = document.getElementById("resendConfirmation");
+  const $ = (selector) => document.querySelector(selector);
+  const signedOut = $("#signedOut");
+  const signedIn = $("#signedIn");
+  const recovery = $("#recovery");
+  const verificationPending = $("#verificationPending");
+  const accountState = $("#accountState");
+  const form = $("#authForm");
+  const email = $("#email");
+  const password = $("#password");
+  const confirmPassword = $("#confirmPassword");
+  const confirmPasswordField = $("#confirmPasswordField");
+  const message = $("#authMessage");
+  const verificationMessage = $("#verificationMessage");
+  const submit = $("#submitAuth");
+  const resend = $("#resendConfirmation");
+  const profileDialog = $("#profileDialog");
   const requestedPath = new URLSearchParams(location.search).get("returnTo");
   const returnTo = ["/tracker/", "/golf/", "/money/", "/"].includes(requestedPath) ? requestedPath : null;
   const isAuthCallback = new URLSearchParams(location.search).has("code") || location.hash.includes("access_token=");
@@ -22,12 +25,35 @@
   let mode = "signin";
   let pendingEmail = "";
   let cooldownTimer = null;
+  let currentUser = null;
+  let profile = emptyProfile();
+  let profileTrigger = null;
 
   if (!client) return showMessage("Account service could not load. Please refresh.", true);
 
   document.querySelectorAll("[data-mode]").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+  form.addEventListener("submit", submitAuthentication);
+  resend.addEventListener("click", resendConfirmation);
+  $("#changeEmail").addEventListener("click", changeEmail);
+  $("#forgotPassword").addEventListener("click", requestSignedOutReset);
+  $("#signOut").addEventListener("click", () => client.auth.signOut());
+  $("#sendPasswordReset").addEventListener("click", requestSignedInReset);
+  $("#recoveryForm").addEventListener("submit", updatePassword);
+  $("#editProfile").addEventListener("click", openProfileEditor);
+  $("#closeProfile").addEventListener("click", closeProfileEditor);
+  $("#cancelProfile").addEventListener("click", closeProfileEditor);
+  $("#profileForm").addEventListener("submit", saveProfile);
+  $("#handle").addEventListener("input", normalizeHandleInput);
+  $("#bio").addEventListener("input", updateBioCount);
+  $("#displayName").addEventListener("input", updateEditorAvatar);
+  $("#discoverable").addEventListener("change", updateDiscoverability);
+  profileDialog.addEventListener("close", () => profileTrigger?.focus());
+  profileDialog.addEventListener("click", (event) => { if (event.target === profileDialog) closeProfileEditor(); });
 
-  form.addEventListener("submit", async (event) => {
+  client.auth.onAuthStateChange((event, session) => renderSession(session, event));
+  client.auth.getSession().then(({ data }) => renderSession(data.session));
+
+  async function submitAuthentication(event) {
     event.preventDefault();
     showMessage("");
     confirmPassword.removeAttribute("aria-invalid");
@@ -50,20 +76,18 @@
       return;
     }
     if (result.data.session && returnTo) location.replace(returnTo);
-  });
+  }
 
-  resend.addEventListener("click", async () => {
+  async function resendConfirmation() {
     if (!pendingEmail || resend.disabled) return;
     resend.disabled = true;
-    verificationMessage.textContent = "Sending…";
-    verificationMessage.classList.remove("error");
+    setInlineMessage(verificationMessage, "Sending…");
     const { error } = await client.auth.resend({ type: "signup", email: pendingEmail, options: { emailRedirectTo: confirmationUrl } });
-    verificationMessage.textContent = error ? friendlyAuthError(error) : "Confirmation email sent. Check your inbox and spam folder.";
-    verificationMessage.classList.toggle("error", Boolean(error));
+    setInlineMessage(verificationMessage, error ? friendlyAuthError(error) : "Confirmation email sent. Check your inbox and spam folder.", Boolean(error));
     startResendCooldown();
-  });
+  }
 
-  document.getElementById("changeEmail").addEventListener("click", async () => {
+  async function changeEmail() {
     pendingEmail = "";
     stopResendCooldown();
     await client.auth.signOut();
@@ -72,30 +96,39 @@
     setMode("signup");
     setAccountState("inactive", "Inactive");
     email.focus();
-  });
+  }
 
-  document.getElementById("forgotPassword").addEventListener("click", async () => {
+  async function requestSignedOutReset() {
     if (!email.value.trim()) return showMessage("Enter your email address first.", true);
     const { error } = await client.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: `${location.origin}/account/` });
     showMessage(error ? friendlyAuthError(error) : "If an account is eligible, a password-reset email has been sent.", Boolean(error));
-  });
-  document.getElementById("signOut").addEventListener("click", () => client.auth.signOut());
-  document.getElementById("recoveryForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const recoveryMessage = document.getElementById("recoveryMessage");
-    recoveryMessage.textContent = "Updating…";
-    const { error } = await client.auth.updateUser({ password: document.getElementById("newPassword").value });
-    recoveryMessage.textContent = error ? friendlyAuthError(error) : "Password updated. You can continue to your apps.";
-    recoveryMessage.classList.toggle("error", Boolean(error));
-    if (!error) setTimeout(() => location.replace(returnTo || "/account/"), 800);
-  });
+  }
 
-  client.auth.onAuthStateChange((event, session) => renderSession(session, event));
-  client.auth.getSession().then(({ data }) => renderSession(data.session));
+  async function requestSignedInReset() {
+    if (!currentUser?.email) return;
+    const output = $("#securityMessage");
+    setInlineMessage(output, "Sending…");
+    const { error } = await client.auth.resetPasswordForEmail(currentUser.email, { redirectTo: `${location.origin}/account/` });
+    setInlineMessage(output, error ? friendlyAuthError(error) : "Password-reset email sent. Use the link in that email to continue.", Boolean(error));
+  }
+
+  async function updatePassword(event) {
+    event.preventDefault();
+    const output = $("#recoveryMessage");
+    setInlineMessage(output, "Updating…");
+    const { error } = await client.auth.updateUser({ password: $("#newPassword").value });
+    setInlineMessage(output, error ? friendlyAuthError(error) : "Password updated. You can continue to your apps.", Boolean(error));
+    if (!error) setTimeout(() => location.replace(returnTo || "/account/"), 800);
+  }
 
   function setMode(nextMode) {
     mode = nextMode;
-    document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item.dataset.mode === mode));
+    document.querySelectorAll("[data-mode]").forEach((item) => {
+      const active = item.dataset.mode === mode;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", String(active));
+    });
+    $("#authTitle").textContent = mode === "signin" ? "Welcome back" : "Create your account";
     submit.textContent = mode === "signin" ? "Sign in" : "Create account";
     password.autocomplete = mode === "signin" ? "current-password" : "new-password";
     confirmPasswordField.hidden = mode !== "signup";
@@ -151,27 +184,129 @@
     verificationPending.hidden = true;
     signedOut.hidden = Boolean(session);
     signedIn.hidden = !session;
+    currentUser = session?.user || null;
     if (session) {
       stopResendCooldown();
-      document.getElementById("accountEmail").textContent = session.user.email || "Your account";
+      $("#accountEmail").textContent = session.user.email || "Your account";
+      $("#securityEmail").textContent = session.user.email || "Your account";
       setAccountState("active", "Active · Email verified");
+      loadProfile();
       if (returnTo && isAuthCallback) location.replace(returnTo);
-    } else setAccountState("inactive", "Inactive");
+    } else {
+      profile = emptyProfile();
+      renderProfile();
+      setAccountState("inactive", "Inactive");
+    }
   }
 
+  async function loadProfile() {
+    const { data, error } = await client.from("profiles").select("id,display_name,handle,avatar_url,bio,discoverable").eq("id", currentUser.id).maybeSingle();
+    if (error) {
+      setInlineMessage($("#privacyMessage"), "Profile details could not load. Please refresh.", true);
+      return;
+    }
+    profile = { ...emptyProfile(), ...(data || {}), id: currentUser.id };
+    renderProfile();
+  }
+
+  function renderProfile() {
+    const name = profile.display_name?.trim() || "Your profile";
+    const handleText = profile.handle ? `@${profile.handle}` : "Choose a unique @handle";
+    const bioText = profile.bio?.trim() || "Add a short introduction that can become part of your future discoverable profile.";
+    $("#profileName").textContent = name;
+    $("#profileHandle").textContent = handleText;
+    $("#profileBio").textContent = bioText;
+    $("#profileAvatar").textContent = initials(name, profile.handle);
+    $("#discoverable").checked = Boolean(profile.discoverable);
+  }
+
+  function openProfileEditor(event) {
+    profileTrigger = event.currentTarget;
+    $("#displayName").value = profile.display_name || "";
+    $("#handle").value = profile.handle || "";
+    $("#bio").value = profile.bio || "";
+    updateBioCount();
+    updateEditorAvatar();
+    setInlineMessage($("#profileMessage"), "");
+    profileDialog.showModal();
+    $("#displayName").focus();
+  }
+
+  function closeProfileEditor() {
+    if (profileDialog.open) profileDialog.close();
+  }
+
+  async function saveProfile(event) {
+    event.preventDefault();
+    const output = $("#profileMessage");
+    const displayName = $("#displayName").value.trim();
+    const handle = normalizeHandle($("#handle").value);
+    const bio = $("#bio").value.trim();
+    if (!displayName || displayName.length > 60) return setInlineMessage(output, "Enter a display name between 1 and 60 characters.", true);
+    if (!/^[a-z][a-z0-9_]{2,23}$/.test(handle)) return setInlineMessage(output, "Handle must be 3–24 characters, start with a letter, and use only lowercase letters, numbers, or underscores.", true);
+    const save = $("#saveProfile");
+    save.disabled = true;
+    setInlineMessage(output, "Saving…");
+    const { data, error } = await client.from("profiles").upsert({ id: currentUser.id, display_name: displayName, handle, bio: bio || null, discoverable: Boolean(profile.discoverable) }, { onConflict: "id" }).select("id,display_name,handle,avatar_url,bio,discoverable").single();
+    save.disabled = false;
+    if (error) return setInlineMessage(output, profileError(error), true);
+    profile = { ...emptyProfile(), ...data };
+    renderProfile();
+    closeProfileEditor();
+  }
+
+  async function updateDiscoverability(event) {
+    const checked = event.currentTarget.checked;
+    const output = $("#privacyMessage");
+    event.currentTarget.disabled = true;
+    setInlineMessage(output, "Saving…");
+    const { error } = await client.from("profiles").upsert({ id: currentUser.id, discoverable: checked }, { onConflict: "id" });
+    event.currentTarget.disabled = false;
+    if (error) {
+      event.currentTarget.checked = !checked;
+      return setInlineMessage(output, profileError(error), true);
+    }
+    profile.id = currentUser.id;
+    profile.discoverable = checked;
+    setInlineMessage(output, checked ? "Discoverability is on. No profile search exists yet." : "Discoverability is off.");
+  }
+
+  function normalizeHandleInput(event) {
+    const normalized = normalizeHandle(event.currentTarget.value).replace(/[^a-z0-9_]/g, "");
+    if (event.currentTarget.value !== normalized) event.currentTarget.value = normalized;
+  }
+
+  function normalizeHandle(value) {
+    return String(value || "").trim().toLowerCase().replace(/\s+/g, "_");
+  }
+
+  function updateBioCount() { $("#bioCount").textContent = String($("#bio").value.length); }
+  function updateEditorAvatar() { $("#editAvatar").textContent = initials($("#displayName").value, $("#handle").value); }
+  function initials(name, handle = "") {
+    const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+    if (parts.length) return `${parts[0][0]}${parts.length > 1 ? parts.at(-1)[0] : ""}`.toUpperCase();
+    return String(handle || "P").slice(0, 2).toUpperCase();
+  }
+
+  function emptyProfile() { return { id: null, display_name: "", handle: "", avatar_url: null, bio: "", discoverable: false }; }
   function setAccountState(state, text) {
     accountState.className = `account-state ${state}`;
     accountState.querySelector("strong").textContent = text;
   }
-
+  function profileError(error) {
+    const raw = String(error?.message || "Profile could not be saved.");
+    if (error?.code === "23505" || /profiles_handle_lower_key|duplicate key/i.test(raw)) return "That handle is already taken. Try another one.";
+    if (error?.code === "23514" || /profiles_handle_format/i.test(raw)) return "That handle does not meet the required format.";
+    return "Profile could not be saved. Please review your details and try again.";
+  }
   function friendlyAuthError(error) {
     const raw = String(error?.message || "Something went wrong. Please try again.");
     if (/rate limit|too many requests|email rate/i.test(raw)) return "Email limit reached for now. Please wait a few minutes before trying again.";
     return raw;
   }
-
-  function showMessage(text, error = false) {
-    message.textContent = text;
-    message.classList.toggle("error", error);
+  function showMessage(text, error = false) { setInlineMessage(message, text, error); }
+  function setInlineMessage(element, text, error = false) {
+    element.textContent = text;
+    element.classList.toggle("error", error);
   }
 })();
