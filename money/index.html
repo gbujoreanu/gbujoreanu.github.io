@@ -8,9 +8,10 @@
   <title>Money — Your financial picture</title>
   <script>try{const s=JSON.parse(localStorage.getItem('money-settings-v1')||'{}');const t=['classic','ledger','clear','vault','market'];document.documentElement.dataset.theme=t.includes(s.theme)?s.theme:'classic';document.documentElement.dataset.density=s.density==='compact'?'compact':'comfortable'}catch(e){}</script>
   <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="layout-fixes.css?v=1">
-  <link rel="stylesheet" href="../shared/app-switcher.css?v=5">
-  <link rel="stylesheet" href="../shared/identity.css?v=1">
+  <link rel="stylesheet" href="layout-fixes.css?v=3">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=7">
+  <link rel="stylesheet" href="../shared/identity.css?v=3">
+  <link rel="stylesheet" href="../shared/unified-header.css?v=1">
 </head>
 <body class="auth-pending">
   <svg class="svg-library" aria-hidden="true">
@@ -25,20 +26,20 @@
     <symbol id="money-icon-planning" viewBox="0 0 24 24"><path d="M4 18 9 12l4 3 7-9M16 6h4v4"/></symbol>
     <symbol id="money-icon-data" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/></symbol>
   </svg>
-  <header class="topbar"><div class="topbar-inner">
+  <header class="topbar unified-header" data-app-shell="money"><div class="topbar-inner unified-header-inner">
     <button class="brand" type="button" data-view-target="overview" aria-label="Money overview"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 36h28M13 31V18m7 13V11m7 20V21m7 10V15"/><path class="brand-accent" d="m11 15 9-7 8 8 9-10"/></svg><span><strong>Money</strong><small>Know where it goes.</small></span></button>
-    <div class="top-actions"><div data-app-switcher="money"></div><a class="ecosystem-identity" data-ecosystem-identity href="../account/?returnTo=/money/" aria-label="Open Account and Profile"><span class="identity-avatar" data-identity-avatar aria-hidden="true">A</span><span class="identity-label" data-identity-label>Account</span></a><span class="cloud-chip" id="cloudStatus">Connecting securely…</span><button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Money settings" aria-expanded="false"><svg aria-hidden="true"><use href="#money-icon-settings"/></svg><span>Settings</span></button></div>
-  </div></header>
-  <div class="load-notice" id="loadNotice" role="alert" hidden><span id="loadNoticeText"></span><button id="retryLoad" type="button">Try again</button></div>
-
-  <div class="app-shell">
-    <aside class="sidebar"><nav class="main-nav" aria-label="Money primary navigation">
+    <nav class="main-nav app-primary-nav" id="moneyPrimaryNav" data-app-nav aria-label="Money primary navigation">
       <button class="nav-item active" data-view-target="overview" data-nav-root="overview"><svg aria-hidden="true"><use href="#money-icon-overview"/></svg><b>Overview</b></button>
       <button class="nav-item" data-view-target="budget" data-nav-root="budget"><svg aria-hidden="true"><use href="#money-icon-budget"/></svg><b>Budget</b></button>
       <button class="nav-item" data-view-target="savings" data-nav-root="plan"><svg aria-hidden="true"><use href="#money-icon-plan"/></svg><b>Plan</b></button>
       <button class="nav-item" data-view-target="earnings" data-nav-root="more"><svg aria-hidden="true"><use href="#money-icon-more"/></svg><b>More</b></button>
-    </nav><p class="privacy-note"><span>●</span> Private account data. No bank credentials, card numbers, or tax identifiers.</p></aside>
+    </nav>
+    <button class="app-nav-trigger" type="button" aria-controls="moneyPrimaryNav" aria-expanded="false" aria-label="Open Money navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
+    <div class="top-actions"><div data-app-switcher="money"></div><div data-ecosystem-profile="money"></div><span class="sr-only" id="cloudStatus" role="status" aria-live="polite">Connecting securely…</span></div>
+  </div></header>
+  <div class="load-notice" id="loadNotice" role="alert" hidden><span id="loadNoticeText"></span><button id="retryLoad" type="button">Try again</button></div>
 
+  <div class="app-shell unified-app-shell">
     <main>
       <nav class="section-nav" id="sectionNav" aria-label="Current Money section"></nav>
       <section class="view active" data-view="overview">
@@ -85,7 +86,7 @@
 
   <dialog class="settings-modal" id="settingsModal" aria-labelledby="settingsTitle"><div class="settings-sheet"><header class="settings-heading"><div><p class="eyebrow">Money preferences</p><h2 id="settingsTitle">Settings</h2></div><button class="modal-close" id="closeSettings" aria-label="Close settings">×</button></header>
     <div class="settings-panel active" data-settings-panel="main"><p class="settings-intro">Choose an area. Financial records remain in your private Supabase account.</p><nav class="settings-categories" aria-label="Settings categories"><button data-settings-open="account"><span><svg aria-hidden="true"><use href="#money-icon-user"/></svg></span><b>Account<small>Identity, verification, and sign out</small></b><i>→</i></button><button data-settings-open="appearance"><span><svg aria-hidden="true"><use href="#money-icon-palette"/></svg></span><b>Appearance<small>Theme and density</small></b><i>→</i></button><button data-settings-open="budget"><span><svg aria-hidden="true"><use href="#money-icon-budget"/></svg></span><b>Budget<small>Monthly behavior and categories</small></b><i>→</i></button><button data-settings-open="earnings"><span><svg aria-hidden="true"><use href="#money-icon-earnings"/></svg></span><b>Earnings &amp; Pay<small>Estimate boundaries and defaults</small></b><i>→</i></button><button data-settings-open="planning"><span><svg aria-hidden="true"><use href="#money-icon-planning"/></svg></span><b>Financial Planning<small>Projection assumptions</small></b><i>→</i></button><button data-settings-open="data"><span><svg aria-hidden="true"><use href="#money-icon-data"/></svg></span><b>Privacy &amp; Data<small>Storage, security, and reset</small></b><i>→</i></button></nav></div>
-    <section class="settings-panel" data-settings-panel="account"><button class="settings-back" data-settings-back>← Settings</button><h3>Account</h3><dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Status</dt><dd>Email verified</dd></div><div><dt>Cloud</dt><dd id="settingsCloud">Connecting…</dd></div></dl><p class="settings-account-copy">Profile, handle, avatar, and security are managed in your shared ecosystem Account.</p><div class="settings-actions"><a class="button secondary" href="../account/?returnTo=/money/">Open Account &amp; Profile</a><button class="button secondary" id="signOut">Sign out</button></div></section>
+    <section class="settings-panel" data-settings-panel="account"><button class="settings-back" data-settings-back>← Settings</button><h3>Account</h3><dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Status</dt><dd>Email verified</dd></div></dl><p class="settings-account-copy">Profile, handle, avatar, and security are managed in your shared ecosystem Account.</p><div class="settings-actions"><a class="button secondary" href="../account/?returnTo=/money/">Open Account &amp; Profile</a><button class="button secondary" id="signOut">Sign out</button></div></section>
     <section class="settings-panel" data-settings-panel="appearance"><button class="settings-back" data-settings-back>← Settings</button><h3>Appearance</h3><fieldset class="theme-picker"><legend>Theme</legend><label><input type="radio" name="money-theme" value="classic"><span class="theme-card classic"><i></i><b>Classic</b><small>Approachable finance</small></span></label><label><input type="radio" name="money-theme" value="ledger"><span class="theme-card ledger"><i></i><b>Ledger</b><small>Warm and considered</small></span></label><label><input type="radio" name="money-theme" value="clear"><span class="theme-card clear"><i></i><b>Clear</b><small>Crisp dashboard</small></span></label><label><input type="radio" name="money-theme" value="vault"><span class="theme-card vault"><i></i><b>Vault</b><small>Deep premium green</small></span></label><label><input type="radio" name="money-theme" value="market"><span class="theme-card market"><i></i><b>Market</b><small>Graphite and data</small></span></label></fieldset><fieldset class="density-picker"><legend>Density</legend><label><input type="radio" name="money-density" value="comfortable"> Comfortable</label><label><input type="radio" name="money-density" value="compact"> Compact</label></fieldset></section>
     <section class="settings-panel" data-settings-panel="budget"><button class="settings-back" data-settings-back>← Settings</button><h3>Budget</h3><p>Future months copy the latest prior category amounts only when no budget exists for that month. Historical actual spending is never changed.</p><button class="button secondary" data-go-to="budget">Open Budget</button></section>
     <section class="settings-panel" data-settings-panel="earnings"><button class="settings-back" data-settings-back>← Settings</button><h3>Earnings &amp; Pay</h3><p>Withholding and take-home values are estimates based on your inputs. Actual reconciled pay takes precedence in historical reports.</p><button class="button secondary" data-go-to="earnings">Open Earnings</button></section>
@@ -96,7 +97,8 @@
   <footer><strong>Money</strong><span>Private tracking and estimates—not financial or tax advice.</span></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="../shared/app-switcher.js?v=6"></script>
-  <script type="module" src="app.js?v=5"></script>
+  <script type="module" src="../shared/app-switcher.js?v=8"></script>
+  <script type="module" src="../shared/unified-header.js?v=1"></script>
+  <script type="module" src="app.js?v=7"></script>
 </body>
 </html>

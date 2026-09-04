@@ -4,13 +4,7 @@ export const ECOSYSTEM_APPS = Object.freeze([
   Object.freeze({ id: 'money', name: 'Money', description: 'Budgeting, Earnings, savings, and retirement', path: '/money/', mark: '<svg viewBox="0 0 32 32"><path d="M5 25h22M8 22V13m6 9V8m6 14V15m6 7V10"/><path d="m7 10 7-5 6 6 6-7" class="mark-accent"/></svg>' })
 ]);
 
-const ACCOUNT = Object.freeze({ id: 'account', name: 'Account', description: 'Profile, password, and shared session', path: '/account/', mark: '<svg viewBox="0 0 32 32"><circle cx="16" cy="11" r="5"/><path d="M6 27c1.2-6 4.5-9 10-9s8.8 3 10 9"/></svg>' });
 let instanceCount = 0;
-
-function accountPath() {
-  const currentPath = `${location.pathname}${location.hash || ''}`;
-  return `${ACCOUNT.path}?returnTo=${encodeURIComponent(currentPath)}`;
-}
 
 function createAppLink(app, currentId) {
   const link = document.createElement('a');
@@ -28,8 +22,7 @@ function createAppLink(app, currentId) {
 
 function mountSwitcher(host) {
   const currentId = host.dataset.appSwitcher;
-  const currentApp = [...ECOSYSTEM_APPS, ACCOUNT].find((app) => app.id === currentId);
-  if (!currentApp) return;
+  const currentApp = ECOSYSTEM_APPS.find((app) => app.id === currentId) || { id:'account', name:'Account' };
 
   instanceCount += 1;
   const panelId = `ecosystem-menu-${instanceCount}`;
@@ -56,15 +49,6 @@ function mountSwitcher(host) {
   heading.innerHTML = '<span>Applications</span><small>One account, separate apps</small>';
   panel.append(heading);
   ECOSYSTEM_APPS.forEach((app) => panel.append(createAppLink(app, currentId)));
-
-  const divider = document.createElement('div');
-  divider.className = 'ecosystem-divider';
-  divider.setAttribute('role', 'separator');
-  panel.append(divider);
-
-  const account = createAppLink({ ...ACCOUNT, path: currentId === 'account' ? ACCOUNT.path : accountPath() }, currentId);
-  account.classList.add('account-link');
-  panel.append(account);
   host.append(trigger, panel);
 
   const menuItems = () => [...panel.querySelectorAll('[role="menuitem"]')];
@@ -72,13 +56,14 @@ function mountSwitcher(host) {
     panel.hidden = true;
     trigger.setAttribute('aria-expanded', 'false');
     host.classList.remove('open');
-    if (restoreFocus) trigger.focus();
+    if (restoreFocus) trigger.focus({ preventScroll:true });
   };
   const open = (focusFirst = false) => {
+    document.dispatchEvent(new CustomEvent('ecosystem-utility-open', { detail:{ host } }));
     panel.hidden = false;
     trigger.setAttribute('aria-expanded', 'true');
     host.classList.add('open');
-    if (focusFirst) menuItems()[0]?.focus();
+    if (focusFirst) menuItems()[0]?.focus({ preventScroll:true });
   };
 
   trigger.addEventListener('click', () => panel.hidden ? open() : close());
@@ -98,13 +83,16 @@ function mountSwitcher(host) {
     } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
       event.preventDefault();
       const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : event.key === 'ArrowDown' ? (index + 1) % items.length : (index - 1 + items.length) % items.length;
-      items[next].focus();
+      items[next].focus({ preventScroll:true });
     } else if (event.key === 'Tab') {
       close();
     }
   });
   document.addEventListener('pointerdown', (event) => {
     if (!host.contains(event.target)) close();
+  });
+  document.addEventListener('ecosystem-utility-open', (event) => {
+    if (event.detail?.host !== host) close();
   });
 }
 

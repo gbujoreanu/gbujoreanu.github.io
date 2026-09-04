@@ -1,5 +1,5 @@
 import { budgetRemaining, categoryRollups, fixedVariableTotals, formatMoney, hourlyGross, netWorth, parseMoney, paycheckEstimate, reconciledPay, retirementProjection, savingsProjection, savingsRate } from './calculations.js';
-import { mountEcosystemIdentity } from '../shared/identity.js';
+import { mountEcosystemProfileMenu } from '../shared/identity.js?v=3';
 
 const SETTINGS_KEY='money-settings-v1';
 const THEMES=['classic','ledger','clear','vault','market'];
@@ -27,7 +27,7 @@ async function applySession(session){
   if(!session?.user?.email_confirmed_at){if(session?.user)await client.auth.signOut();return redirectToLogin()}
   if(loadedUserId===session.user.id)return;
   if(sessionLoadPromise)return sessionLoadPromise;
-  currentUser=session.user;setCloud('Loading private records…');mountEcosystemIdentity({client,user:currentUser});
+  currentUser=session.user;setCloud('Loading private records…');void mountEcosystemProfileMenu({client,user:currentUser,appId:'money',onSettings:openSettings,onSignOut:()=>client.auth.signOut()});
   sessionLoadPromise=(async()=>{try{await loadState();if(!state.categories.length)await seedCategories();loadedUserId=currentUser.id;document.body.classList.remove('auth-pending');setCloud('Cloud verified');hideLoadNotice();populateControls();applyRoute();renderAll();maybeOpenOnboarding()}
   catch(error){loadedUserId=null;document.body.classList.remove('auth-pending');setCloud('Cloud load failed',true);showLoadError(error)}})();
   try{await sessionLoadPromise}finally{sessionLoadPromise=null}
@@ -53,9 +53,9 @@ function bindEvents(){
   $$('[data-view-target]').forEach((button)=>button.addEventListener('click',()=>showView(button.dataset.viewTarget)));
   $$('[data-quick]').forEach((button)=>button.addEventListener('click',()=>runQuickAction(button.dataset.quick)));
   window.addEventListener('hashchange',applyRoute);
-  $('#settingsTrigger').addEventListener('click',openSettings);$('#closeSettings').addEventListener('click',()=>$('#settingsModal').close());
+  $('#closeSettings').addEventListener('click',()=>$('#settingsModal').close());
   $$('[data-settings-open]').forEach((button)=>button.addEventListener('click',()=>showSettingsPanel(button.dataset.settingsOpen)));$$('[data-settings-back]').forEach((button)=>button.addEventListener('click',()=>showSettingsPanel('main')));
-  $('#settingsModal').addEventListener('close',()=>{$('#settingsTrigger').setAttribute('aria-expanded','false');showSettingsPanel('main',false)});$('#settingsModal').addEventListener('change',saveSettingsControls);$('#signOut').addEventListener('click',()=>client.auth.signOut());$('#resetMoney').addEventListener('click',resetMoney);
+  $('#settingsModal').addEventListener('close',()=>showSettingsPanel('main',false));$('#settingsModal').addEventListener('change',saveSettingsControls);$('#signOut').addEventListener('click',()=>client.auth.signOut());$('#resetMoney').addEventListener('click',resetMoney);
   $('#retryLoad').addEventListener('click',()=>applySession(currentUser?{user:currentUser}:null));
   $('#overviewMonth').addEventListener('change',renderOverview);$('#budgetMonth').addEventListener('change',async()=>{await ensureBudgetMonth($('#budgetMonth').value);renderBudget()});
   $('#categoryForm').addEventListener('submit',saveCategory);$('#categoryForm').addEventListener('reset',()=>setTimeout(()=>{$('#categoryId').value=''},0));
@@ -69,7 +69,7 @@ function bindEvents(){
 }
 
 function navRoot(view){return Object.entries(NAV_GROUPS).find(([,views])=>views.includes(view))?.[0]||'overview'}
-function renderSectionNav(){const root=navRoot(activeView),views=NAV_GROUPS[root];$('#sectionNav').hidden=root==='overview';$('#sectionNav').innerHTML=root==='overview'?'':`<span>${root==='budget'?'Everyday money':root==='plan'?'Plan ahead':'More tools'}</span>${views.map((view)=>`<button class="${view===activeView?'active':''}" data-section-view="${view}">${NAV_LABELS[view]}</button>`).join('')}${root==='more'?'<button data-section-settings="true">Settings</button>':''}`;$$('[data-section-view]',$('#sectionNav')).forEach((button)=>button.addEventListener('click',()=>showView(button.dataset.sectionView)));$('[data-section-settings]',$('#sectionNav'))?.addEventListener('click',openSettings)}
+function renderSectionNav(){const root=navRoot(activeView),views=NAV_GROUPS[root];$('#sectionNav').hidden=root==='overview';$('#sectionNav').innerHTML=root==='overview'?'':`<span>${root==='budget'?'Everyday money':root==='plan'?'Plan ahead':'More tools'}</span>${views.map((view)=>`<button class="${view===activeView?'active':''}" data-section-view="${view}">${NAV_LABELS[view]}</button>`).join('')}`;$$('[data-section-view]',$('#sectionNav')).forEach((button)=>button.addEventListener('click',()=>showView(button.dataset.sectionView)))}
 function showView(view,updateHash=true){activeView=view;$$('.view').forEach((item)=>item.classList.toggle('active',item.dataset.view===view));const root=navRoot(view);$$('.nav-item').forEach((item)=>item.classList.toggle('active',item.dataset.navRoot===root));renderSectionNav();if(updateHash&&location.hash!==`#${view}`)history.replaceState(null,'',`#${view}`);renderAll();window.scrollTo({top:0,behavior:'smooth'})}
 function applyRoute(){const view=location.hash.slice(1);showView(['overview','budget','transactions','bills','earnings','savings','retirement','assets','reports'].includes(view)?view:'overview',false)}
 function renderAll(){populateControls();renderOverview();renderBudget();renderTransactions();renderBills();renderEarnings();renderSavings();renderRetirement();renderAssets();renderReports()}
@@ -193,7 +193,7 @@ function applyRetirementScenario(value){if(value!=='custom')$('#retContribution'
 function loadSettings(){try{const saved=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');return{theme:THEMES.includes(saved.theme)?saved.theme:'classic',density:saved.density==='compact'?'compact':'comfortable',onboardingDismissed:saved.onboardingDismissed===true}}catch{return{...DEFAULT_SETTINGS}}}
 function applySettings(){document.documentElement.dataset.theme=settings.theme;document.documentElement.dataset.density=settings.density;const colors={classic:'#183b35',ledger:'#493c2d',clear:'#183b4d',vault:'#050f0c',market:'#050607'};$('#themeColor').content=colors[settings.theme]}
 function persistSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
-function openSettings(){showSettingsPanel('main',false);$('#settingsEmail').textContent=currentUser?.email||'Signed-in account';$('#settingsCloud').textContent=$('#cloudStatus').textContent;$$('input[name="money-theme"]').forEach(x=>x.checked=x.value===settings.theme);$$('input[name="money-density"]').forEach(x=>x.checked=x.value===settings.density);$('#settingsModal').showModal();$('#settingsTrigger').setAttribute('aria-expanded','true');setTimeout(()=>$('[data-settings-open]',$('#settingsModal'))?.focus(),0)}
+function openSettings(){showSettingsPanel('main',false);$('#settingsEmail').textContent=currentUser?.email||'Signed-in account';$$('input[name="money-theme"]').forEach(x=>x.checked=x.value===settings.theme);$$('input[name="money-density"]').forEach(x=>x.checked=x.value===settings.density);$('#settingsModal').showModal();setTimeout(()=>$('[data-settings-open]',$('#settingsModal'))?.focus(),0)}
 function showSettingsPanel(name,focus=true){$$('[data-settings-panel]',$('#settingsModal')).forEach(x=>x.classList.toggle('active',x.dataset.settingsPanel===name));if(focus)setTimeout(()=>(name==='main'?$('[data-settings-open]',$('#settingsModal')):$('[data-settings-back]',$('#settingsModal')))?.focus(),0)}
 function saveSettingsControls(){settings={...settings,theme:$('input[name="money-theme"]:checked')?.value||settings.theme,density:$('input[name="money-density"]:checked')?.value||settings.density};persistSettings();applySettings()}
 function settingsModalClose(){if($('#settingsModal').open)$('#settingsModal').close()}

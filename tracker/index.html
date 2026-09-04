@@ -8,9 +8,10 @@
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
   <link rel="stylesheet" href="styles.css?v=8">
-  <link rel="stylesheet" href="layout-fixes.css?v=1">
-  <link rel="stylesheet" href="../shared/app-switcher.css?v=5">
-  <link rel="stylesheet" href="../shared/identity.css?v=1">
+  <link rel="stylesheet" href="layout-fixes.css?v=3">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=7">
+  <link rel="stylesheet" href="../shared/identity.css?v=3">
+  <link rel="stylesheet" href="../shared/unified-header.css?v=1">
 </head>
 <body class="auth-pending">
   <svg class="svg-library" aria-hidden="true">
@@ -24,31 +25,26 @@
     <symbol id="dm-icon-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.5a1.8 1.8 0 0 0 0-3.6H12a1.7 1.7 0 0 1 0-3.4h3a6 6 0 0 0 0-12h-3Z"/><circle cx="7.5" cy="10" r=".8"/><circle cx="9.5" cy="6.5" r=".8"/><circle cx="14" cy="6" r=".8"/></symbol>
     <symbol id="dm-icon-data" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/></symbol>
   </svg>
-  <header class="topbar">
-    <div class="topbar-inner">
+  <header class="topbar unified-header" data-app-shell="daymark">
+    <div class="topbar-inner unified-header-inner">
       <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34h32M13 28h22M18 22h12"/><circle cx="24" cy="14" r="5"/></svg><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
-      <div class="top-actions">
-        <div data-app-switcher="daymark"></div>
-        <a class="ecosystem-identity" data-ecosystem-identity href="../account/?returnTo=/tracker/" aria-label="Open Account and Profile"><span class="identity-avatar" data-identity-avatar aria-hidden="true">A</span><span class="identity-label" data-identity-label>Account</span></a>
-        <span class="local-badge" id="storageStatus" title="Cloud connection status">Connecting securely…</span>
-        <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings" aria-expanded="false"><svg aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
-      </div>
-    </div>
-  </header>
-
-  <div class="app-shell">
-    <aside class="sidebar">
-      <nav class="main-nav" aria-label="Tracker navigation">
+      <nav class="main-nav app-primary-nav" id="daymarkPrimaryNav" data-app-nav aria-label="Daymark navigation">
         <button class="nav-item active" type="button" data-view-target="overview"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-overview"/></svg><span>Overview</span></button>
         <button class="nav-item" type="button" data-view-target="tasks"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-task"/></svg><span>To Do</span><b id="navTaskCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="goals"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-goal"/></svg><span>Goals</span><b id="navGoalCount">0</b></button>
         <button class="nav-item" type="button" data-view-target="calendar"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-calendar"/></svg><span>Calendar</span></button>
         <button class="nav-item" type="button" data-view-target="scheduler"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-schedule"/></svg><span>Scheduler</span></button>
-        <button class="nav-item settings-nav" id="settingsNav" type="button"><svg class="nav-icon" aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
       </nav>
-      <div class="sidebar-note"><span>●</span><p>Everything is connected. Timed tasks and schedule entries stay in sync with your calendar.</p></div>
-    </aside>
+      <button class="app-nav-trigger" type="button" aria-controls="daymarkPrimaryNav" aria-expanded="false" aria-label="Open Daymark navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span></button>
+      <div class="top-actions">
+        <div data-app-switcher="daymark"></div>
+        <div data-ecosystem-profile="daymark"></div>
+        <span class="sr-only" id="storageStatus" role="status" aria-live="polite">Connecting securely…</span>
+      </div>
+    </div>
+  </header>
 
+  <div class="app-shell unified-app-shell">
     <main>
       <section class="view active" data-view="overview">
         <div class="overview-hero">
@@ -186,7 +182,7 @@
       <section class="settings-panel settings-section" data-settings-panel="account" aria-labelledby="accountSettingsTitle">
         <button class="settings-back" type="button" data-settings-back>← Settings</button>
         <div class="settings-section-heading"><div><p class="eyebrow">Account</p><h3 id="accountSettingsTitle">Private and connected</h3></div><span class="verified-chip">Email verified</span></div>
-        <dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Cloud status</dt><dd id="settingsCloud">Connecting…</dd></div></dl>
+        <dl class="account-details"><div><dt>Signed in as</dt><dd id="settingsEmail">—</dd></div><div><dt>Verification</dt><dd>Email verified</dd></div></dl>
         <p class="settings-copy">Profile, handle, avatar, and security are managed in your shared ecosystem Account.</p>
         <div class="settings-actions"><a class="button secondary ink" href="../account/?returnTo=/tracker/">Open Account &amp; Profile</a><button class="button secondary ink" id="signOut" type="button">Sign out</button></div>
       </section>
@@ -233,7 +229,8 @@
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="../shared/app-switcher.js?v=6"></script>
-  <script type="module" src="app.js?v=8"></script>
+  <script type="module" src="../shared/app-switcher.js?v=8"></script>
+  <script type="module" src="../shared/unified-header.js?v=1"></script>
+  <script type="module" src="app.js?v=10"></script>
 </body>
 </html>

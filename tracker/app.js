@@ -1,5 +1,5 @@
 import { formatDuration, layoutTimelineItems, MINUTES_PER_DAY } from './scheduler.js';
-import { mountEcosystemIdentity } from '../shared/identity.js';
+import { mountEcosystemProfileMenu } from '../shared/identity.js?v=3';
 
 const STORAGE_KEY = "daymark-v1";
 const SETTINGS_KEY = "daymark-settings-v1";
@@ -45,7 +45,7 @@ const els = {
   scheduleNotes: $("#scheduleNotes"), scheduleDate: $("#scheduleDate"), scheduleStart: $("#scheduleStart"), scheduleEnd: $("#scheduleEnd"),
   scheduleDuration: $("#scheduleDuration"), scheduleDurationPreview: $("#scheduleDurationPreview"), deleteScheduleEntry: $("#deleteScheduleEntry"),
   storageStatus: $("#storageStatus"), signOut: $("#signOut"), migrateData: $("#migrateData"),
-  settingsModal: $("#settingsModal"), settingsEmail: $("#settingsEmail"), settingsCloud: $("#settingsCloud"),
+  settingsModal: $("#settingsModal"), settingsEmail: $("#settingsEmail"),
   followSystem: $("#followSystem"), weekStart: $("#weekStart"), showCompletedCalendar: $("#showCompletedCalendar"),
   defaultPriority: $("#defaultPriority"), defaultOnCalendar: $("#defaultOnCalendar"), confirmDelete: $("#confirmDelete")
 };
@@ -116,12 +116,10 @@ function bindEvents() {
     if (Math.abs(distance) >= 70) changeSchedulerDay(distance < 0 ? 1 : -1);
   }, { passive:true });
   window.addEventListener('hashchange', applyRoute);
-  $('#settingsTrigger').addEventListener('click', openSettings);
-  $('#settingsNav').addEventListener('click', openSettings);
   $('#closeSettings').addEventListener('click', () => els.settingsModal.close());
   $$('[data-settings-open]').forEach((button) => button.addEventListener('click', () => showSettingsPanel(button.dataset.settingsOpen)));
   $$('[data-settings-back]').forEach((button) => button.addEventListener('click', () => showSettingsPanel('main')));
-  els.settingsModal.addEventListener('close', () => { $('#settingsTrigger').setAttribute('aria-expanded', 'false'); showSettingsPanel('main', false); });
+  els.settingsModal.addEventListener('close', () => showSettingsPanel('main', false));
   els.settingsModal.addEventListener('change', saveSettingsFromControls);
   $('#resetData').addEventListener('click', resetData);
   els.signOut.addEventListener('click', () => cloudClient?.auth.signOut());
@@ -196,13 +194,12 @@ function showSettingsPanel(panel, moveFocus = true) {
 }
 function openSettings() {
   els.settingsEmail.textContent = currentUser?.email || 'Signed in account';
-  els.settingsCloud.textContent = els.storageStatus.textContent;
   $$('input[name="theme"]').forEach((input) => { input.checked = input.value === settings.theme; input.disabled = settings.followSystem; });
   $$('input[name="density"]').forEach((input) => { input.checked = input.value === settings.density; });
   els.followSystem.checked = settings.followSystem; els.weekStart.value = String(settings.weekStart);
   els.showCompletedCalendar.checked = settings.showCompletedCalendar; els.defaultPriority.value = settings.defaultPriority;
   els.defaultOnCalendar.checked = settings.defaultOnCalendar; els.confirmDelete.checked = settings.confirmDelete;
-  showSettingsPanel('main', false); els.settingsModal.showModal(); $('#settingsTrigger').setAttribute('aria-expanded', 'true'); setTimeout(() => $('[data-settings-open]', els.settingsModal)?.focus(), 0);
+  showSettingsPanel('main', false); els.settingsModal.showModal(); setTimeout(() => $('[data-settings-open]', els.settingsModal)?.focus(), 0);
 }
 function saveSettingsFromControls() {
   const selectedTheme = $('input[name="theme"]:checked'); const selectedDensity = $('input[name="density"]:checked');
@@ -215,22 +212,6 @@ function saveSettingsFromControls() {
 }
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => { if (settings.followSystem) applySettings(); });
 
-function seedState() {
-  const today = new Date();
-  return {
-    tasks: [
-      { id: uid(), title: 'Review this week’s priorities', notes: 'Choose the three outcomes that matter most.', dueDate: dateOffset(today, 0), dueTime: '09:00', priority: 'high', status: 'open', onCalendar: true, createdAt: Date.now() },
-      { id: uid(), title: 'Plan the next project milestone', notes: 'Break the next deliverable into clear steps.', dueDate: dateOffset(today, 2), dueTime: '14:30', priority: 'medium', status: 'open', onCalendar: true, createdAt: Date.now() },
-      { id: uid(), title: 'Archive completed notes', notes: '', dueDate: dateOffset(today, -1), dueTime: '', priority: 'low', status: 'done', onCalendar: true, createdAt: Date.now() }
-    ],
-    goals: [
-      { id: uid(), title: 'Ship a project I am proud of', notes: 'Polish the core experience and share the finished work.', targetDate: dateOffset(today, 21), progress: 45, createdAt: Date.now() },
-      { id: uid(), title: 'Build a consistent weekly system', notes: 'Review tasks and goals every Sunday.', targetDate: dateOffset(today, 35), progress: 70, createdAt: Date.now() }
-    ],
-    events: [{ id: uid(), title: 'Weekly review', notes: 'Reset priorities for the week ahead.', date: dateOffset(today, 1), time: '17:00', createdAt: Date.now() }]
-  };
-}
-
 async function applySession(session) {
   if (session?.user && !session.user.email_confirmed_at) { await cloudClient.auth.signOut(); return location.replace('../account/?returnTo=/tracker/'); }
   const nextUser = session?.user || null;
@@ -241,7 +222,7 @@ async function applySession(session) {
     return location.replace('../account/?returnTo=/tracker/');
   }
   els.signOut.classList.remove('hidden');
-  mountEcosystemIdentity({ client:cloudClient, user:currentUser });
+  void mountEcosystemProfileMenu({ client:cloudClient, user:currentUser, appId:'daymark', onSettings:openSettings, onSignOut:()=>cloudClient.auth.signOut() });
   setStorageStatus('Loading cloud data…');
   try {
     state = await loadCloudState();
@@ -304,7 +285,7 @@ async function removeCloudScheduleEntry(id) {
   const { error } = await cloudClient.from('daymark_schedule_entries').delete().eq('user_id',currentUser.id).eq('id',id);
   if (error) throw error;
 }
-function setStorageStatus(text,isError=false) { els.storageStatus.textContent=text; els.storageStatus.classList.toggle('sync-error',isError); if(els.settingsCloud) els.settingsCloud.textContent=text; }
+function setStorageStatus(text,isError=false) { els.storageStatus.textContent=text; els.storageStatus.classList.toggle('sync-error',isError); }
 
 async function migrateDeviceData() {
   if (!currentUser || !deviceState || !cloudIsEmpty) return;
@@ -428,7 +409,7 @@ function renderScheduler() {
   if (activeView === 'scheduler' && lastScrolledSchedulerDate !== selectedDate) {
     lastScrolledSchedulerDate = selectedDate;
     const firstMinute = items.length ? Math.min(...items.map((item)=>item.startMinute)) : selectedDate===todayKey() ? new Date().getHours()*60 : 8*60;
-    requestAnimationFrame(() => { els.timelineScroll.scrollTop = Math.max(0, firstMinute / 60 * schedulerHourHeight() - 70); });
+    if (innerWidth > 600) requestAnimationFrame(() => { els.timelineScroll.scrollTop = Math.max(0, firstMinute / 60 * schedulerHourHeight() - 70); });
   }
 }
 
@@ -448,8 +429,9 @@ function timelineItemsForDay(date) {
 
 function timelineItemMarkup(item) {
   const action = item.type === 'task' ? 'edit-task' : 'edit-schedule';
-  const classes = `timeline-block ${item.type} ${item.done?'done':''}`;
-  const style = `--start-minute:${item.startMinute};--duration-minute:${Math.max(30,item.endMinute-item.startMinute)};--lane:${item.lane};--lane-count:${item.laneCount}`;
+  const crowded = item.laneCount > 2;
+  const classes = `timeline-block ${item.type} ${item.done?'done':''} ${item.laneCount>1?'overlapping':''} ${crowded?'crowded':''} ${item.lane%2?'lane-odd':'lane-even'}`;
+  const style = `--start-minute:${item.startMinute};--duration-minute:${Math.max(30,item.endMinute-item.startMinute)};--lane:${item.lane};--lane-count:${item.laneCount};--stack-row:${Math.floor(item.lane/2)}`;
   return `<button class="${classes}" style="${style}" type="button" data-action="${action}" data-id="${item.id}" aria-label="Edit ${escapeHtml(item.title)}"><span class="timeline-block-time">${escapeHtml(item.timeLabel)}</span><strong>${escapeHtml(item.title)}</strong>${item.duration?`<small>${escapeHtml(item.duration)}</small>`:item.notes?`<small>${escapeHtml(item.notes)}</small>`:''}</button>`;
 }
 
@@ -469,7 +451,7 @@ function formatHour(hour) { return new Date(2000,0,1,hour).toLocaleTimeString('e
 function localDayBounds(date) { const start=parseDate(date);start.setHours(0,0,0,0);const end=new Date(start);end.setDate(end.getDate()+1);return{start,end}; }
 function minutesIntoDay(value,dayStart) { return Math.max(0,Math.min(MINUTES_PER_DAY,(value-dayStart)/60000)); }
 function timeToMinutes(value) { const [hour,minute]=String(value).split(':').map(Number);return hour*60+minute; }
-function schedulerHourHeight() { return innerWidth<=760?52:64; }
+function schedulerHourHeight() { return innerWidth<=600?56:innerWidth<=760?52:64; }
 
 function renderCalendar() {
   const year = calendarCursor.getFullYear(), month = calendarCursor.getMonth();

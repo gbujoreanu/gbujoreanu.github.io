@@ -5,3 +5,31 @@
 .identity-avatar img{width:100%;height:100%;display:block;object-fit:cover}
 .identity-label{min-width:0;overflow:hidden;font-size:.7rem;font-weight:800;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:760px){.ecosystem-identity{width:38px;padding:3px;justify-content:center}.identity-label{display:none}}
+
+.ecosystem-profile{
+  --profile-surface:var(--surface-panel,var(--panel,#fff));
+  --profile-raised:var(--surface-raised,var(--raised,#f2f2f2));
+  --profile-soft:var(--surface-soft,var(--soft,#f8f8f8));
+  --profile-text:var(--text-primary,var(--text,#171717));
+  --profile-muted:var(--text-muted,var(--muted,#666));
+  --profile-border:var(--border-default,var(--border,#ddd));
+  --profile-focus:var(--focus-ring,var(--focus,currentColor));
+  position:relative;z-index:90;color:var(--profile-text);font-family:inherit
+}
+.ecosystem-profile-trigger{min-height:38px;display:inline-flex;align-items:center;gap:8px;padding:3px 9px 3px 4px;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:999px;background:transparent;color:var(--header-text,#fff);font-family:inherit;font-size:.72rem;font-weight:800;cursor:pointer}
+.ecosystem-profile-trigger:hover,.ecosystem-profile-trigger[aria-expanded=true]{border-color:color-mix(in srgb,currentColor 48%,transparent);background:color-mix(in srgb,currentColor 9%,transparent)}
+.ecosystem-profile-trigger:focus-visible,.ecosystem-profile-action:focus-visible{outline:2px solid var(--profile-focus);outline-offset:3px}
+.ecosystem-profile-chevron{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s ease}
+.ecosystem-profile-trigger[aria-expanded=true] .ecosystem-profile-chevron{transform:rotate(180deg)}
+.ecosystem-profile-menu{position:absolute;z-index:9999;top:calc(100% + 10px);right:0;width:min(318px,calc(100vw - 24px));padding:10px;border:1px solid var(--profile-border);border-radius:15px;background:var(--profile-surface);color:var(--profile-text);box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.ecosystem-profile-menu[hidden]{display:none}
+.ecosystem-profile-summary{min-height:62px;display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:11px;margin:0 3px 8px;padding:5px 5px 12px;border-bottom:1px solid var(--profile-border)}
+.profile-summary-avatar{width:38px;height:38px;background:var(--profile-raised)}
+.ecosystem-profile-summary strong,.ecosystem-profile-summary small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ecosystem-profile-summary strong{font-size:.82rem}.ecosystem-profile-summary small{margin-top:2px;color:var(--profile-muted);font-size:.65rem}
+.ecosystem-profile-action{width:100%;min-height:54px;display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:10px;padding:7px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--profile-text);font-family:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.ecosystem-profile-action:hover{border-color:var(--profile-border);background:var(--profile-raised)}
+.ecosystem-profile-action svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ecosystem-profile-action span,.ecosystem-profile-action strong,.ecosystem-profile-action small{display:block}.ecosystem-profile-action strong{font-size:.76rem}.ecosystem-profile-action small{margin-top:1px;color:var(--profile-muted);font-size:.61rem}
+.ecosystem-sign-out{margin-top:6px;border-top:1px solid var(--profile-border);border-radius:0 0 9px 9px;color:var(--danger,var(--red,#a63d35))}
+@media(max-width:760px){.ecosystem-profile-trigger{width:38px;padding:3px;justify-content:center}.ecosystem-profile-label,.ecosystem-profile-chevron{display:none}.ecosystem-profile-menu{position:fixed;top:74px;right:10px;left:10px;width:auto;max-height:calc(100vh - 86px);overflow:auto}.ecosystem-profile-action{min-height:58px}}
+@media(prefers-reduced-motion:reduce){.ecosystem-profile-chevron{transition:none}}

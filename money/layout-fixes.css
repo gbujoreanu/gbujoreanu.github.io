@@ -1,9 +1,10 @@
 html,body,.app-shell,main,.view,.panel,.overview-grid,.split-layout,.three-grid,.data-list,.budget-list,.stack-list,.report-list{max-width:100%;min-width:0}
+.unified-app-shell .section-nav{top:84px}
 .load-notice{position:relative;z-index:35;display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 18px;border-bottom:1px solid color-mix(in srgb,var(--danger) 38%,var(--border));background:color-mix(in srgb,var(--danger) 9%,var(--page));color:var(--text);font-size:.76rem}
 .load-notice[hidden]{display:none}.load-notice button{min-height:34px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);font-weight:800;cursor:pointer}
 .section-nav{overflow-x:auto;scrollbar-width:thin;overscroll-behavior-inline:contain}
 .list-row>*{min-width:0}.list-row h3,.list-row p{overflow-wrap:anywhere}.row-actions{flex-wrap:wrap;justify-content:flex-end}
 .bar-chart{min-width:0;gap:clamp(5px,1vw,12px)}.bar-column{min-width:30px}
 .budget-parent,.budget-child{min-width:0}.budget-cell,.budget-cell b{min-width:0;overflow-wrap:anywhere}
-@media(max-width:780px){.load-notice{align-items:flex-start;justify-content:space-between}.budget-list{overflow-x:clip}.bar-column{min-width:36px}}
+@media(max-width:780px){.unified-app-shell .section-nav{top:76px}.load-notice{align-items:flex-start;justify-content:space-between}.budget-list{overflow-x:clip}.bar-column{min-width:36px}}
 @media(max-width:430px){.load-notice{flex-direction:column;gap:7px}.load-notice button{width:100%}.list-row .money-value{max-width:42vw;overflow:hidden;text-overflow:ellipsis}}

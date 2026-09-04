@@ -56,9 +56,13 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Treat desktop and mobile as first-class experiences.
 - Use progressive disclosure and avoid unnecessary complexity.
 - Prefer semantic browser behavior and real links for normal navigation.
+- Keep one structurally aligned app header across Daymark, Fairway, and Money without visually cloning their product identities. The shared utility area is intentionally limited to **Apps + Profile**; current-app Settings belongs under Profile.
+- Shared dropdowns and mobile navigation must preserve sticky positioning and must never alter the document scroll position when opened, closed, or focused. Mobile navigation is purpose-built rather than a compressed desktop row.
 - Support keyboard use, visible focus, touch, screen readers, reduced motion, useful errors, and responsive layouts without horizontal overflow.
 - Empty states should explain the next useful action. Do not add fake/sample data merely to fill a screen.
+- New users must never receive developer, portfolio, personal, or demo records. The public portfolio and the private application ecosystem are separate products; personalization comes only from the signed-in user's own profile and records.
 - Avoid placeholder branding, emoji as primary interface icons, and repetitive generic dashboard/card layouts.
+- Account/Profile remains the neutral future home for ecosystem relationship management. Friends, Family, and other social work must fit without requiring another global-header redesign and must not be hardwired into an individual app's shared utilities.
 - Validate real data, loading, empty, and failure states.
 
 **Daymark, Fairway, and Money share design quality, not identical design.**

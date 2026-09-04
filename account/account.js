@@ -1,4 +1,4 @@
-import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.js";
+import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.js?v=3";
 
 (function () {
   "use strict";
@@ -199,11 +199,17 @@ import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.
       setAccountState("active", "Active · Email verified");
       loadProfile();
       if (returnTo && isAuthCallback) location.replace(returnTo);
+      else honorAccountAnchor();
     } else {
       profile = emptyProfile();
       renderProfile();
       setAccountState("inactive", "Inactive");
     }
+  }
+
+  function honorAccountAnchor() {
+    if (!['#profileName','#securityTitle'].includes(location.hash)) return;
+    requestAnimationFrame(() => document.querySelector(location.hash)?.scrollIntoView({ block:'start' }));
   }
 
   async function loadProfile() {

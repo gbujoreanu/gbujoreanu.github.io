@@ -10,3 +10,4 @@
 .avatar-actions .text-button{min-height:38px}
 .avatar-actions .text-button[hidden]{display:none}
 @media(max-width:480px){.avatar-preview{align-items:flex-start}.avatar-actions{align-items:stretch;flex-direction:column;gap:4px}.avatar-actions .button,.avatar-actions .text-button{width:100%}}
+#profileName,#securityTitle{scroll-margin-top:100px}
