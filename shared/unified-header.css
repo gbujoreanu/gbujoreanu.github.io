@@ -9,7 +9,7 @@
 .unified-header .app-primary-nav button.active{background:transparent;color:var(--header-text,#fff);box-shadow:none}
 .unified-header .app-primary-nav button svg{width:17px;height:17px;flex:0 0 auto;color:currentColor;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .unified-header .app-primary-nav button b,.unified-header .app-primary-nav button span{font:inherit;color:inherit}
-.unified-header .app-primary-nav button small,.unified-header .app-primary-nav button>b:not(:only-child),.unified-header .app-primary-nav .nav-item>b{display:none}
+.unified-header .app-primary-nav button small,.unified-header .app-primary-nav #navTaskCount,.unified-header .app-primary-nav #navGoalCount{display:none}
 .unified-header .top-actions,.unified-header .header-actions{grid-column:4;display:flex;align-items:center;justify-content:flex-end;gap:8px}
 .app-nav-trigger{display:none;grid-column:3;min-width:40px;min-height:40px;align-items:center;justify-content:center;gap:7px;padding:0 10px;border:1px solid color-mix(in srgb,var(--header-text,#fff) 25%,transparent);border-radius:8px;background:transparent;color:var(--header-text,#fff);font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}
 .app-nav-trigger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
