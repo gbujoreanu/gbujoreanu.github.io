@@ -8,7 +8,9 @@
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
   <link rel="stylesheet" href="styles.css?v=8">
-  <link rel="stylesheet" href="../shared/app-switcher.css?v=3">
+  <link rel="stylesheet" href="layout-fixes.css?v=1">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=5">
+  <link rel="stylesheet" href="../shared/identity.css?v=1">
 </head>
 <body class="auth-pending">
   <svg class="svg-library" aria-hidden="true">
@@ -27,6 +29,7 @@
       <button class="brand" type="button" data-view-target="overview" aria-label="Daymark overview"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34h32M13 28h22M18 22h12"/><circle cx="24" cy="14" r="5"/></svg><span><strong>Daymark</strong><small>Make the day count.</small></span></button>
       <div class="top-actions">
         <div data-app-switcher="daymark"></div>
+        <a class="ecosystem-identity" data-ecosystem-identity href="../account/?returnTo=/tracker/" aria-label="Open Account and Profile"><span class="identity-avatar" data-identity-avatar aria-hidden="true">A</span><span class="identity-label" data-identity-label>Account</span></a>
         <span class="local-badge" id="storageStatus" title="Cloud connection status">Connecting securely…</span>
         <button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Daymark settings" aria-expanded="false"><svg aria-hidden="true"><use href="#dm-icon-settings"/></svg><span>Settings</span></button>
       </div>
@@ -230,7 +233,7 @@
   <footer><span>Daymark</span><p>Private by default. Built for momentum.</p></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="../shared/app-switcher.js?v=4"></script>
-  <script type="module" src="app.js?v=7"></script>
+  <script type="module" src="../shared/app-switcher.js?v=6"></script>
+  <script type="module" src="app.js?v=8"></script>
 </body>
 </html>

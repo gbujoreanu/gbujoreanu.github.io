@@ -7,7 +7,8 @@
   <meta name="theme-color" content="#151816">
   <title>Account · Bujoreanu Apps</title>
   <link rel="stylesheet" href="account.css?v=3">
-  <link rel="stylesheet" href="../shared/app-switcher.css?v=4">
+  <link rel="stylesheet" href="avatar.css?v=1">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=5">
 </head>
 <body>
   <header class="site-header">
@@ -38,9 +39,9 @@
       <section class="apps-section" aria-labelledby="appsTitle">
         <div class="section-heading"><div><p class="eyebrow">Your apps</p><h2 id="appsTitle">Pick up where you left off.</h2></div><p>One sign-in. Three private, independent applications.</p></div>
         <div class="app-grid">
-          <a class="app-card daymark" href="../tracker/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="m8 14 2 2 5-5"/></svg></span><span><small>Productivity</small><strong>Daymark</strong><em>Tasks, goals, Calendar &amp; Scheduler</em></span><i aria-hidden="true">↗</i></a>
-          <a class="app-card fairway" href="../golf/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 21V3M7 4h10l-3 4 3 4H7M4 21h6"/></svg></span><span><small>Golf</small><strong>Fairway</strong><em>Rounds, courses &amp; statistics</em></span><i aria-hidden="true">↗</i></a>
-          <a class="app-card money" href="../money/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18V9M10 18V5M16 18v-7M22 18V3M2 21h22"/></svg></span><span><small>Finance</small><strong>Money</strong><em>Budgeting, savings &amp; financial planning</em></span><i aria-hidden="true">↗</i></a>
+          <a class="app-card daymark" href="../tracker/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 23h22M8 19h16M11 15h10"/><circle cx="16" cy="10" r="3.5"/></svg></span><span><small>Productivity</small><strong>Daymark</strong><em>Tasks, goals, Calendar &amp; Scheduler</em></span><i aria-hidden="true">↗</i></a>
+          <a class="app-card fairway" href="../golf/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 27c5-7 9-10 13-10 3.5 0 5 1 7-2v12H8Z"/><path d="M12 24V6m0 1h10l-3 3 3 3H12"/><circle cx="12" cy="25" r="1.7"/></svg></span><span><small>Golf</small><strong>Fairway</strong><em>Rounds, courses &amp; statistics</em></span><i aria-hidden="true">↗</i></a>
+          <a class="app-card money" href="../money/"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 25h22M8 22V13m6 9V8m6 14V15m6 7V10"/><path d="m7 10 7-5 6 6 6-7"/></svg></span><span><small>Finance</small><strong>Money</strong><em>Budgeting, savings &amp; financial planning</em></span><i aria-hidden="true">↗</i></a>
         </div>
       </section>
 
@@ -54,11 +55,11 @@
     <section class="pending-card" id="recovery" hidden><p class="eyebrow">Password recovery</p><h1>Choose a new password.</h1><form id="recoveryForm"><label>New password<input id="newPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password" required></label><button class="button primary" type="submit">Update password</button></form><p class="message" id="recoveryMessage" role="status"></p></section>
   </main>
 
-  <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle"><form class="profile-form" id="profileForm"><header><div><p class="eyebrow">Shared identity</p><h2 id="profileDialogTitle">Edit profile</h2></div><button class="close-button" id="closeProfile" type="button" aria-label="Close profile editor">×</button></header><div class="avatar-preview"><div class="avatar small" id="editAvatar" aria-hidden="true">?</div><p><strong>Initials avatar</strong><span>Secure image uploads are not enabled yet. Your initials provide a polished private fallback.</span></p></div><label>Display name<input id="displayName" maxlength="60" autocomplete="name" placeholder="How should people know you?"></label><label>Handle<div class="handle-input"><span>@</span><input id="handle" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" autocomplete="username" placeholder="your_handle" aria-describedby="handleHelp"></div><small id="handleHelp">3–24 characters. Start with a letter; use lowercase letters, numbers, or underscores.</small></label><label>Bio<textarea id="bio" maxlength="180" rows="4" placeholder="A short introduction"></textarea><small><span id="bioCount">0</span>/180</small></label><p class="message" id="profileMessage" role="status"></p><footer><button class="button quiet" id="cancelProfile" type="button">Cancel</button><button class="button dark" id="saveProfile" type="submit">Save profile</button></footer></form></dialog>
+  <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle"><form class="profile-form" id="profileForm"><header><div><p class="eyebrow">Shared identity</p><h2 id="profileDialogTitle">Edit profile</h2></div><button class="close-button" id="closeProfile" type="button" aria-label="Close profile editor">×</button></header><div class="avatar-preview"><div class="avatar small" id="editAvatar" aria-hidden="true">?</div><div class="avatar-editor-copy"><strong>Profile picture</strong><span>JPG, PNG, or WebP. Maximum 5 MB.</span><div class="avatar-actions"><label class="button quiet avatar-picker">Choose image<input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp"></label><button class="text-button danger" id="removeAvatar" type="button">Remove</button></div></div></div><label>Display name<input id="displayName" maxlength="60" autocomplete="name" placeholder="How should people know you?"></label><label>Handle<div class="handle-input"><span>@</span><input id="handle" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" autocomplete="username" placeholder="your_handle" aria-describedby="handleHelp"></div><small id="handleHelp">3–24 characters. Start with a letter; use lowercase letters, numbers, or underscores.</small></label><label>Bio<textarea id="bio" maxlength="180" rows="4" placeholder="A short introduction"></textarea><small><span id="bioCount">0</span>/180</small></label><p class="message" id="profileMessage" role="status"></p><footer><button class="button quiet" id="cancelProfile" type="button">Cancel</button><button class="button dark" id="saveProfile" type="submit">Save profile</button></footer></form></dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="../shared/app-switcher.js?v=5"></script>
-  <script src="account.js?v=5"></script>
+  <script type="module" src="../shared/app-switcher.js?v=6"></script>
+  <script type="module" src="account.js?v=6"></script>
 </body>
 </html>

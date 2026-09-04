@@ -1,0 +1,7 @@
+.ecosystem-identity{min-height:38px;max-width:190px;display:inline-flex;align-items:center;gap:8px;padding:3px 9px 3px 4px;border:1px solid color-mix(in srgb,currentColor 24%,transparent);border-radius:999px;color:var(--header-text,#fff);text-decoration:none}
+.ecosystem-identity:hover{background:color-mix(in srgb,currentColor 9%,transparent)}
+.ecosystem-identity:focus-visible{outline:2px solid var(--focus-ring,var(--focus,currentColor));outline-offset:3px}
+.identity-avatar{width:29px;height:29px;display:grid;place-items:center;overflow:hidden;flex:0 0 auto;border:1px solid color-mix(in srgb,currentColor 25%,transparent);border-radius:50%;background:color-mix(in srgb,currentColor 12%,transparent);font-size:.66rem;font-weight:850;letter-spacing:-.02em}
+.identity-avatar img{width:100%;height:100%;display:block;object-fit:cover}
+.identity-label{min-width:0;overflow:hidden;font-size:.7rem;font-weight:800;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){.ecosystem-identity{width:38px;padding:3px;justify-content:center}.identity-label{display:none}}

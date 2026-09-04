@@ -1,4 +1,5 @@
 import { budgetRemaining, categoryRollups, fixedVariableTotals, formatMoney, hourlyGross, netWorth, parseMoney, paycheckEstimate, reconciledPay, retirementProjection, savingsProjection, savingsRate } from './calculations.js';
+import { mountEcosystemIdentity } from '../shared/identity.js';
 
 const SETTINGS_KEY='money-settings-v1';
 const THEMES=['classic','ledger','clear','vault','market'];
@@ -11,6 +12,7 @@ const $=(selector,root=document)=>root.querySelector(selector);
 const $$=(selector,root=document)=>[...root.querySelectorAll(selector)];
 let currentUser=null,settings=loadSettings(),activeView='overview',onboardingStep=1;
 let state=Object.fromEntries(Object.keys(TABLES).map((key)=>[key,[]]));
+let loadedUserId=null,sessionLoadPromise=null;
 
 initialize();
 
@@ -23,9 +25,12 @@ async function initialize(){
 
 async function applySession(session){
   if(!session?.user?.email_confirmed_at){if(session?.user)await client.auth.signOut();return redirectToLogin()}
-  currentUser=session.user;setCloud('Loading private records…');
-  try{await loadState();if(!state.categories.length)await seedCategories();document.body.classList.remove('auth-pending');setCloud(`Cloud verified · ${currentUser.email}`);populateControls();applyRoute();renderAll();maybeOpenOnboarding()}
-  catch{document.body.classList.remove('auth-pending');setCloud('Cloud load failed',true);alert('Money could not load your private records. The database migration may still need to be applied.')}
+  if(loadedUserId===session.user.id)return;
+  if(sessionLoadPromise)return sessionLoadPromise;
+  currentUser=session.user;setCloud('Loading private records…');mountEcosystemIdentity({client,user:currentUser});
+  sessionLoadPromise=(async()=>{try{await loadState();if(!state.categories.length)await seedCategories();loadedUserId=currentUser.id;document.body.classList.remove('auth-pending');setCloud('Cloud verified');hideLoadNotice();populateControls();applyRoute();renderAll();maybeOpenOnboarding()}
+  catch(error){loadedUserId=null;document.body.classList.remove('auth-pending');setCloud('Cloud load failed',true);showLoadError(error)}})();
+  try{await sessionLoadPromise}finally{sessionLoadPromise=null}
 }
 
 function redirectToLogin(){location.replace(`${location.origin}/account/?returnTo=/money/`)}
@@ -51,6 +56,7 @@ function bindEvents(){
   $('#settingsTrigger').addEventListener('click',openSettings);$('#closeSettings').addEventListener('click',()=>$('#settingsModal').close());
   $$('[data-settings-open]').forEach((button)=>button.addEventListener('click',()=>showSettingsPanel(button.dataset.settingsOpen)));$$('[data-settings-back]').forEach((button)=>button.addEventListener('click',()=>showSettingsPanel('main')));
   $('#settingsModal').addEventListener('close',()=>{$('#settingsTrigger').setAttribute('aria-expanded','false');showSettingsPanel('main',false)});$('#settingsModal').addEventListener('change',saveSettingsControls);$('#signOut').addEventListener('click',()=>client.auth.signOut());$('#resetMoney').addEventListener('click',resetMoney);
+  $('#retryLoad').addEventListener('click',()=>applySession(currentUser?{user:currentUser}:null));
   $('#overviewMonth').addEventListener('change',renderOverview);$('#budgetMonth').addEventListener('change',async()=>{await ensureBudgetMonth($('#budgetMonth').value);renderBudget()});
   $('#categoryForm').addEventListener('submit',saveCategory);$('#categoryForm').addEventListener('reset',()=>setTimeout(()=>{$('#categoryId').value=''},0));
   $('#transactionForm').addEventListener('submit',saveTransaction);$('#transactionForm').addEventListener('reset',()=>setTimeout(()=>{$('#transactionId').value=''},0));['transactionSearch','transactionFilter','transactionSort'].forEach((id)=>$(`#${id}`).addEventListener('input',renderTransactions));
@@ -219,3 +225,6 @@ function bar(label,value,max){return`<div class="bar-column" title="${escapeHtml
 function lineChart(values){if(!values.length)return empty('No projection data.');const width=600,height=180,pad=10,max=Math.max(1,...values),min=Math.min(0,...values),span=Math.max(1,max-min),points=values.map((value,index)=>`${pad+index*(width-pad*2)/Math.max(1,values.length-1)},${height-pad-(value-min)/span*(height-pad*2)}`).join(' ');return`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Projection chart"><line class="grid" x1="${pad}" y1="${height-pad}" x2="${width-pad}" y2="${height-pad}"></line><polyline points="${points}"></polyline></svg>`}
 function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]))}
 function setCloud(message,error=false){$('#cloudStatus').textContent=message;$('#cloudStatus').classList.toggle('error',error)}
+function isSchemaError(error){const code=String(error?.code||'');const message=String(error?.message||'');return ['42P01','42703','PGRST204','PGRST205'].includes(code)||/relation .* does not exist|column .* does not exist|schema cache/i.test(message)}
+function showLoadError(error){const schema=isSchemaError(error);console.error('Money cloud load failed.',{code:error?.code||'unknown',kind:schema?'schema':'connection'});$('#loadNoticeText').textContent=schema?'Money needs its database migration before private records can load.':'Money could not reach your private cloud records. Your data was not changed.';$('#loadNotice').hidden=false}
+function hideLoadNotice(){$('#loadNotice').hidden=true}

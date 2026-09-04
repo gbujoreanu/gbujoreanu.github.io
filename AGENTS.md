@@ -28,8 +28,8 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Static frontends are hosted with GitHub Pages; do not add a server unless a requirement truly needs one.
 - Supabase provides shared authentication/session handling and the database.
 - Browser-safe Supabase publishable/anon configuration may be public; privileged credentials may not.
-- `/shared/` contains intentionally small shared platform code, including the Supabase client/session integration and metadata-driven App Switcher.
-- Account/Profile is the neutral shared identity layer. Current profiles support display name, unique handle, bio, discoverability preference, and initials fallback. `avatar_url` exists, but secure image upload is not implemented.
+- `/shared/` contains intentionally small shared platform code, including the Supabase client/session integration, metadata-driven App Switcher, theme-aware application marks, and shared profile/avatar rendering helper.
+- Account/Profile is the neutral shared identity layer. Current profiles support display name, unique handle, bio, discoverability preference, initials fallback, and a private uploaded avatar.
 - Schema changes belong in version-controlled files under `/supabase/migrations/`; database isolation tests belong under `/supabase/tests/`.
 - Daymark, Fairway, and Money retain independent navigation, business logic, data authorization, settings, themes, and visual identities.
 
@@ -43,6 +43,7 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Preserve owner-only access for private application records and prevent forged ownership, ownership reassignment, IDOR, and cross-user references.
 - Test authenticated User A against User B as well as anonymous access for every affected domain.
 - Email is private. Any future discoverable profile must expose only deliberately safe fields, never email or private app records.
+- Profile avatars use the private `avatars` Storage bucket. Object paths begin with the owning user's UUID, browser uploads are limited to JPG/PNG/WebP under 5 MB, and Storage policies restrict select/insert/update/delete to that owner path.
 - Money data is always private. Daymark data is private unless a future feature explicitly shares a specific item.
 - Friendship or discoverability must never automatically grant access to private application data.
 - Preserve existing data and use non-destructive, version-controlled migrations.
@@ -82,7 +83,7 @@ Money covers Budget, Transactions, Bills, Earnings, Savings, Retirement, Assets/
 
 ### Account
 
-Account is the neutral ecosystem identity and authentication hub. It manages sign-up/sign-in, verified email, password reset, shared session, display name, handle, bio, discoverability preference, initials avatar fallback, security actions, and access links to each app. Discoverability is currently a stored preference; public profile search/view and secure avatar uploads are not yet implemented.
+Account is the neutral ecosystem identity and authentication hub. It manages sign-up/sign-in, verified email, password reset, shared session, display name, handle, bio, discoverability preference, secure avatar upload/replace/remove, initials fallback, security actions, and access links to each app. Discoverability is currently a stored preference; public profile search/view is not implemented.
 
 ## User-facing testing
 
@@ -128,7 +129,7 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 ## Roadmap
 
 1. Money UX/visual simplification — complete; continue real-world validation.
-2. Account/Profile redesign and private profile foundation — complete; avatar upload and public discovery deferred.
+2. Account/Profile redesign, shared identity rendering, and private avatar storage — complete; public discovery deferred.
 3. Fairway UX/design and real-user-feedback pass — complete; continue real-world validation.
 4. Daymark UX/design validation pass — planned.
 5. Money visual/design validation pass — planned.
@@ -144,3 +145,7 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 ## Updating this file
 
 Keep this concise. It is not a changelog, commit history, bug diary, CSS log, or deployment history. Do not append every task. Update and consolidate it only when architecture, security boundaries, major capabilities, shared platform behavior, durable conventions, design principles, or roadmap status materially change.
+
+## Implementation handoff convention
+
+After every substantial implementation task, report a concise **Completion Update** and **Next Recommended Work**. Recommend one concrete next task with a short dependency-based reason, then list the next 2–4 roadmap items in order. Do not automatically begin that work; leave it for review and approval.

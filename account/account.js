@@ -1,3 +1,5 @@
+import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.js";
+
 (function () {
   "use strict";
 
@@ -28,6 +30,9 @@
   let currentUser = null;
   let profile = emptyProfile();
   let profileTrigger = null;
+  let pendingAvatarFile = null;
+  let removeAvatarRequested = false;
+  let avatarPreviewUrl = null;
 
   if (!client) return showMessage("Account service could not load. Please refresh.", true);
 
@@ -46,6 +51,8 @@
   $("#handle").addEventListener("input", normalizeHandleInput);
   $("#bio").addEventListener("input", updateBioCount);
   $("#displayName").addEventListener("input", updateEditorAvatar);
+  $("#avatarFile").addEventListener("change", selectAvatar);
+  $("#removeAvatar").addEventListener("click", removeAvatar);
   $("#discoverable").addEventListener("change", updateDiscoverability);
   profileDialog.addEventListener("close", () => profileTrigger?.focus());
   profileDialog.addEventListener("click", (event) => { if (event.target === profileDialog) closeProfileEditor(); });
@@ -200,13 +207,12 @@
   }
 
   async function loadProfile() {
-    const { data, error } = await client.from("profiles").select("id,display_name,handle,avatar_url,bio,discoverable").eq("id", currentUser.id).maybeSingle();
-    if (error) {
+    try {
+      profile = { ...emptyProfile(), ...(await loadEcosystemIdentity(client, currentUser) || {}), id:currentUser.id };
+      renderProfile();
+    } catch (error) {
       setInlineMessage($("#privacyMessage"), "Profile details could not load. Please refresh.", true);
-      return;
     }
-    profile = { ...emptyProfile(), ...(data || {}), id: currentUser.id };
-    renderProfile();
   }
 
   function renderProfile() {
@@ -216,12 +222,13 @@
     $("#profileName").textContent = name;
     $("#profileHandle").textContent = handleText;
     $("#profileBio").textContent = bioText;
-    $("#profileAvatar").textContent = initials(name, profile.handle);
+    renderIdentityAvatar($("#profileAvatar"), profile, currentUser);
     $("#discoverable").checked = Boolean(profile.discoverable);
   }
 
   function openProfileEditor(event) {
     profileTrigger = event.currentTarget;
+    clearAvatarDraft();
     $("#displayName").value = profile.display_name || "";
     $("#handle").value = profile.handle || "";
     $("#bio").value = profile.bio || "";
@@ -234,6 +241,7 @@
 
   function closeProfileEditor() {
     if (profileDialog.open) profileDialog.close();
+    clearAvatarDraft();
   }
 
   async function saveProfile(event) {
@@ -247,12 +255,26 @@
     const save = $("#saveProfile");
     save.disabled = true;
     setInlineMessage(output, "Saving…");
-    const { data, error } = await client.from("profiles").upsert({ id: currentUser.id, display_name: displayName, handle, bio: bio || null, discoverable: Boolean(profile.discoverable) }, { onConflict: "id" }).select("id,display_name,handle,avatar_url,bio,discoverable").single();
-    save.disabled = false;
-    if (error) return setInlineMessage(output, profileError(error), true);
-    profile = { ...emptyProfile(), ...data };
-    renderProfile();
-    closeProfileEditor();
+    let uploadedPath = null;
+    try {
+      if (pendingAvatarFile) {
+        const extension = ({ "image/jpeg":"jpg", "image/png":"png", "image/webp":"webp" })[pendingAvatarFile.type];
+        uploadedPath = `${currentUser.id}/${crypto.randomUUID()}.${extension}`;
+        const upload = await client.storage.from("avatars").upload(uploadedPath, pendingAvatarFile, { contentType:pendingAvatarFile.type, cacheControl:"3600", upsert:false });
+        if (upload.error) throw upload.error;
+      }
+      const nextAvatarPath = uploadedPath || (removeAvatarRequested ? null : profile.avatar_path || null);
+      const { error } = await client.from("profiles").upsert({ id: currentUser.id, display_name: displayName, handle, bio: bio || null, discoverable: Boolean(profile.discoverable), avatar_path:nextAvatarPath }, { onConflict: "id" });
+      if (error) throw error;
+      const oldAvatarPath = profile.avatar_path;
+      profile = { ...emptyProfile(), ...(await loadEcosystemIdentity(client, currentUser) || {}), id:currentUser.id };
+      if (oldAvatarPath && oldAvatarPath !== profile.avatar_path) await client.storage.from("avatars").remove([oldAvatarPath]);
+      renderProfile();
+      closeProfileEditor();
+    } catch (error) {
+      if (uploadedPath) await client.storage.from("avatars").remove([uploadedPath]);
+      setInlineMessage(output, avatarProfileError(error), true);
+    } finally { save.disabled = false; }
   }
 
   async function updateDiscoverability(event) {
@@ -281,14 +303,54 @@
   }
 
   function updateBioCount() { $("#bioCount").textContent = String($("#bio").value.length); }
-  function updateEditorAvatar() { $("#editAvatar").textContent = initials($("#displayName").value, $("#handle").value); }
-  function initials(name, handle = "") {
-    const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
-    if (parts.length) return `${parts[0][0]}${parts.length > 1 ? parts.at(-1)[0] : ""}`.toUpperCase();
-    return String(handle || "P").slice(0, 2).toUpperCase();
+  function selectAvatar(event) {
+    const file = event.currentTarget.files?.[0] || null;
+    if (!file) return;
+    if (!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+      event.currentTarget.value = "";
+      return setInlineMessage($("#profileMessage"), "Choose a JPG, PNG, or WebP image.", true);
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      event.currentTarget.value = "";
+      return setInlineMessage($("#profileMessage"), "Choose an image smaller than 5 MB.", true);
+    }
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    pendingAvatarFile = file;
+    removeAvatarRequested = false;
+    avatarPreviewUrl = URL.createObjectURL(file);
+    setInlineMessage($("#profileMessage"), "Image ready. Save your profile to upload it.");
+    updateEditorAvatar();
   }
 
-  function emptyProfile() { return { id: null, display_name: "", handle: "", avatar_url: null, bio: "", discoverable: false }; }
+  function removeAvatar() {
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    avatarPreviewUrl = null;
+    pendingAvatarFile = null;
+    removeAvatarRequested = true;
+    $("#avatarFile").value = "";
+    setInlineMessage($("#profileMessage"), "Profile picture will be removed when you save.");
+    updateEditorAvatar();
+  }
+
+  function clearAvatarDraft() {
+    if (avatarPreviewUrl) URL.revokeObjectURL(avatarPreviewUrl);
+    avatarPreviewUrl = null;
+    pendingAvatarFile = null;
+    removeAvatarRequested = false;
+    if ($("#avatarFile")) $("#avatarFile").value = "";
+  }
+
+  function updateEditorAvatar() {
+    const previewIdentity = avatarPreviewUrl
+      ? { display_name:$("#displayName").value, handle:$("#handle").value, signedAvatarUrl:avatarPreviewUrl }
+      : removeAvatarRequested
+        ? { display_name:$("#displayName").value, handle:$("#handle").value, signedAvatarUrl:null }
+        : { ...profile, display_name:$("#displayName").value || profile.display_name, handle:$("#handle").value || profile.handle };
+    renderIdentityAvatar($("#editAvatar"), previewIdentity, currentUser);
+    $("#removeAvatar").hidden = !profile.avatar_path && !pendingAvatarFile;
+  }
+
+  function emptyProfile() { return { id:null, display_name:"", handle:"", avatar_url:null, avatar_path:null, signedAvatarUrl:null, bio:"", discoverable:false }; }
   function setAccountState(state, text) {
     accountState.className = `account-state ${state}`;
     accountState.querySelector("strong").textContent = text;
@@ -298,6 +360,12 @@
     if (error?.code === "23505" || /profiles_handle_lower_key|duplicate key/i.test(raw)) return "That handle is already taken. Try another one.";
     if (error?.code === "23514" || /profiles_handle_format/i.test(raw)) return "That handle does not meet the required format.";
     return "Profile could not be saved. Please review your details and try again.";
+  }
+  function avatarProfileError(error) {
+    const raw = String(error?.message || "");
+    if (/bucket|avatar_path|schema cache|column/i.test(raw)) return "Profile pictures are not ready yet because the secure avatar migration has not been applied.";
+    if (/mime|content type|file size|payload/i.test(raw)) return "That image type or size is not allowed. Use a JPG, PNG, or WebP under 5 MB.";
+    return profileError(error);
   }
   function friendlyAuthError(error) {
     const raw = String(error?.message || "Something went wrong. Please try again.");

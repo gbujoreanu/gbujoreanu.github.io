@@ -8,7 +8,9 @@
   <title>Money — Your financial picture</title>
   <script>try{const s=JSON.parse(localStorage.getItem('money-settings-v1')||'{}');const t=['classic','ledger','clear','vault','market'];document.documentElement.dataset.theme=t.includes(s.theme)?s.theme:'classic';document.documentElement.dataset.density=s.density==='compact'?'compact':'comfortable'}catch(e){}</script>
   <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="../shared/app-switcher.css?v=3">
+  <link rel="stylesheet" href="layout-fixes.css?v=1">
+  <link rel="stylesheet" href="../shared/app-switcher.css?v=5">
+  <link rel="stylesheet" href="../shared/identity.css?v=1">
 </head>
 <body class="auth-pending">
   <svg class="svg-library" aria-hidden="true">
@@ -25,8 +27,9 @@
   </svg>
   <header class="topbar"><div class="topbar-inner">
     <button class="brand" type="button" data-view-target="overview" aria-label="Money overview"><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 36h28M13 31V18m7 13V11m7 20V21m7 10V15"/><path class="brand-accent" d="m11 15 9-7 8 8 9-10"/></svg><span><strong>Money</strong><small>Know where it goes.</small></span></button>
-    <div class="top-actions"><div data-app-switcher="money"></div><span class="cloud-chip" id="cloudStatus">Connecting securely…</span><button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Money settings" aria-expanded="false"><svg aria-hidden="true"><use href="#money-icon-settings"/></svg><span>Settings</span></button></div>
+    <div class="top-actions"><div data-app-switcher="money"></div><a class="ecosystem-identity" data-ecosystem-identity href="../account/?returnTo=/money/" aria-label="Open Account and Profile"><span class="identity-avatar" data-identity-avatar aria-hidden="true">A</span><span class="identity-label" data-identity-label>Account</span></a><span class="cloud-chip" id="cloudStatus">Connecting securely…</span><button class="settings-trigger" id="settingsTrigger" type="button" aria-label="Open Money settings" aria-expanded="false"><svg aria-hidden="true"><use href="#money-icon-settings"/></svg><span>Settings</span></button></div>
   </div></header>
+  <div class="load-notice" id="loadNotice" role="alert" hidden><span id="loadNoticeText"></span><button id="retryLoad" type="button">Try again</button></div>
 
   <div class="app-shell">
     <aside class="sidebar"><nav class="main-nav" aria-label="Money primary navigation">
@@ -93,7 +96,7 @@
   <footer><strong>Money</strong><span>Private tracking and estimates—not financial or tax advice.</span></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
-  <script type="module" src="../shared/app-switcher.js?v=4"></script>
-  <script type="module" src="app.js?v=4"></script>
+  <script type="module" src="../shared/app-switcher.js?v=6"></script>
+  <script type="module" src="app.js?v=5"></script>
 </body>
 </html>

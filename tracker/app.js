@@ -1,4 +1,5 @@
 import { formatDuration, layoutTimelineItems, MINUTES_PER_DAY } from './scheduler.js';
+import { mountEcosystemIdentity } from '../shared/identity.js';
 
 const STORAGE_KEY = "daymark-v1";
 const SETTINGS_KEY = "daymark-settings-v1";
@@ -240,12 +241,13 @@ async function applySession(session) {
     return location.replace('../account/?returnTo=/tracker/');
   }
   els.signOut.classList.remove('hidden');
+  mountEcosystemIdentity({ client:cloudClient, user:currentUser });
   setStorageStatus('Loading cloud data…');
   try {
     state = await loadCloudState();
     cloudIsEmpty = !state.tasks.length && !state.goals.length && !state.events.length && !state.scheduleEntries.length;
     els.migrateData.classList.toggle('hidden', !(cloudIsEmpty && deviceState));
-    setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
+    setStorageStatus('Cloud verified');
     els.settingsEmail.textContent = currentUser.email || 'Signed in account';
     document.body.classList.remove('auth-pending');
     renderAll();
@@ -286,7 +288,7 @@ async function persistItem(type,item) {
   setStorageStatus('Saving…');
   const { error } = await cloudClient.from(cloudTable(type)).upsert(cloudRow(type,item), { onConflict:'user_id,id' });
   if (error) throw error;
-  setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
+  setStorageStatus('Cloud verified');
 }
 async function removeCloudItem(type,id) {
   const { error } = await cloudClient.from(cloudTable(type)).delete().eq('user_id',currentUser.id).eq('id',id);
@@ -296,7 +298,7 @@ async function persistScheduleEntry(item) {
   setStorageStatus('Saving…');
   const { error } = await cloudClient.from('daymark_schedule_entries').upsert(toCloudScheduleEntry(item), { onConflict:'user_id,id' });
   if (error) throw error;
-  setStorageStatus(`Cloud verified · ${currentUser.email || 'signed in'}`);
+  setStorageStatus('Cloud verified');
 }
 async function removeCloudScheduleEntry(id) {
   const { error } = await cloudClient.from('daymark_schedule_entries').delete().eq('user_id',currentUser.id).eq('id',id);
@@ -311,7 +313,7 @@ async function migrateDeviceData() {
   try {
     const batches = [['daymark_tasks',deviceState.tasks.map(toCloudTask)],['daymark_goals',deviceState.goals.map(toCloudGoal)],['daymark_events',deviceState.events.map(toCloudEvent)]];
     for (const [table,rows] of batches) { if (!rows.length) continue; const {error}=await cloudClient.from(table).upsert(rows,{onConflict:'user_id,id'}); if(error) throw error; }
-    state=await loadCloudState(); cloudIsEmpty=false; els.migrateData.classList.add('hidden'); setStorageStatus(`Cloud verified · ${currentUser.email||'signed in'}`); renderAll();
+    state=await loadCloudState(); cloudIsEmpty=false; els.migrateData.classList.add('hidden'); setStorageStatus('Cloud verified'); renderAll();
     alert('Your device data is now saved to your account. The original local copy was kept as a backup.');
   } catch(error) { console.error(error); setStorageStatus('Migration needs attention',true); alert('The move did not finish. Your original device data is safe. You can try again.'); }
   finally { els.migrateData.disabled=false; }
