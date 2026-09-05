@@ -28,7 +28,7 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Static frontends are hosted with GitHub Pages; do not add a server unless a requirement truly needs one.
 - Supabase provides shared authentication/session handling and the database.
 - Browser-safe Supabase publishable/anon configuration may be public; privileged credentials may not.
-- `/shared/` contains intentionally small shared platform code, including the Supabase client/session integration, metadata-driven App Switcher, theme-aware application marks, shared profile/avatar rendering, and relationship API helpers. App-specific social UI remains inside each app.
+- `/shared/` contains intentionally small shared platform code, including the Supabase client/session integration, metadata-driven App Switcher, theme-aware application marks, shared profile/avatar rendering, relationship API helpers, and household data-access helpers. App-specific social and family UI remains inside the owning app.
 - Account/Profile is the neutral shared identity layer. Current profiles support display name, unique handle, bio, discoverability preference, initials fallback, and a private uploaded avatar.
 - Schema changes belong in version-controlled files under `/supabase/migrations/`; database isolation tests belong under `/supabase/tests/`.
 - Daymark, Fairway, and Money retain independent navigation, business logic, data authorization, settings, themes, and visual identities.
@@ -47,6 +47,7 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Money data is always private. Daymark data is private unless a future feature explicitly shares a specific item.
 - Follows are one-way and never expose private app data. Friendships are mutual and currently provide a social relationship for Fairway without exposing private rounds, Daymark, or Money.
 - Blocking removes follows, friendship, and pending requests between the two users and excludes them from discovery. Relationship changes must never reassign source ownership.
+- A user belongs to at most one family household, with the simple role of owner or member. Household membership is only a trusted relationship: it grants no automatic Daymark, Money, or Fairway data access. Owners manage invitations and members; members may leave; only owners may delete a household.
 - Preserve existing data and use non-destructive, version-controlled migrations.
 - Do not store private application or financial records in localStorage. Local device UI preferences are acceptable.
 - Review Supabase Auth security settings when relevant; leaked-password protection currently requires manual project configuration.
@@ -88,7 +89,7 @@ Money covers Budget, Transactions, Bills, Earnings, Savings, Retirement, Assets/
 
 ### Account
 
-Account is the neutral ecosystem identity and authentication hub. It manages sign-up/sign-in, verified email, password reset, shared session, display name, handle, bio, discoverability, secure avatar upload/replace/remove, initials fallback, Connections, security actions, and access links to each app. Connections separates Friends, Requests, Following, Followers, Find People, and Blocked. Safe search returns only discoverable profile fields and never email or private app records.
+Account is the neutral ecosystem identity and authentication hub. It manages sign-up/sign-in, verified email, password reset, shared session, display name, handle, bio, discoverability, secure avatar upload/replace/remove, initials fallback, Connections, Family, security actions, and access links to each app. Connections separates Friends, Requests, Following, Followers, Find People, and Blocked. Family manages one owner/member household and its invitations without granting private app access. Safe search returns only discoverable profile fields and never email or private app records.
 
 ## User-facing testing
 
@@ -138,12 +139,13 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 2. Account/Profile redesign, shared identity rendering, and private avatar storage — complete; public discovery deferred.
 3. Fairway UX/design and real-user-feedback pass — complete; continue real-world validation.
 4. Safe profile discovery, following/followers, friend requests, friendships, blocking, Account Connections, and Fairway Friends — complete; continue multi-user field validation.
-5. Family/household foundation and Account Family management — recommended next; backend scaffolding from earlier work must be re-audited before use.
-6. Password recovery and auth-hardening UX pass — planned.
-7. Daymark UX/design validation pass — planned.
-8. Money visual/design validation pass — planned.
-9. Explicit shared rounds, Daymark sharing, and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
-10. Messaging — later and low priority.
+5. Family/household foundation and Account Family management — complete; private app sharing remains explicitly unimplemented.
+6. Fairway planned rounds and friend invitations — recommended next; reuse friendship relationships without exposing private historical rounds.
+7. Password recovery and auth-hardening UX pass — planned.
+8. Daymark UX/design validation pass — planned.
+9. Money visual/design validation pass — planned.
+10. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
+11. Messaging — later and low priority.
 
 ## Updating this file
 

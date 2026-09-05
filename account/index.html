@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="account.css?v=3">
   <link rel="stylesheet" href="avatar.css?v=1">
   <link rel="stylesheet" href="connections.css?v=3">
+  <link rel="stylesheet" href="family.css?v=1">
   <link rel="stylesheet" href="../shared/app-switcher.css?v=7">
 </head>
 <body>
@@ -53,6 +54,12 @@
         <p class="connections-message" data-connections-message role="status"></p><div class="connection-results" data-connection-results></div>
       </section>
 
+      <section class="family-section" data-family hidden aria-labelledby="familyTitle">
+        <div class="family-heading"><div><p class="eyebrow">Family</p><h2 id="familyTitle">A trusted circle, without automatic access.</h2></div><p>Create or join one family group. Membership prepares future sharing but never opens anyone’s Daymark or Money records.</p></div>
+        <p class="family-message" data-family-message role="status" aria-live="polite"></p>
+        <div class="family-content" data-family-content></div>
+      </section>
+
       <div class="account-sections">
         <section class="account-section" aria-labelledby="securityTitle"><div class="section-number">01</div><div><p class="eyebrow">Account</p><h2 id="securityTitle">Security &amp; access</h2><p>Your verified email powers one renewable session across the ecosystem.</p><dl class="detail-list"><div><dt>Email</dt><dd id="securityEmail">—</dd></div><div><dt>Verification</dt><dd class="verified">Verified</dd></div><div><dt>Session</dt><dd>Active across your apps</dd></div></dl><div class="inline-actions"><button class="text-button" id="sendPasswordReset" type="button">Change password</button><button class="text-button danger" id="signOut" type="button">Sign out</button></div><p class="message" id="securityMessage" role="status"></p></div></section>
         <section class="account-section" aria-labelledby="privacyTitle"><div class="section-number">02</div><div><p class="eyebrow">Privacy</p><h2 id="privacyTitle">Profile discoverability</h2><p>Control whether people can find your safe public profile. This never exposes your email or private app records.</p><label class="switch-row" for="discoverable"><span><strong>Allow profile discovery</strong><small>Only your name, handle, avatar, and bio can appear in search.</small></span><input id="discoverable" type="checkbox" role="switch"><i aria-hidden="true"></i></label><p class="message" id="privacyMessage" role="status"></p></div></section>
@@ -65,10 +72,15 @@
 
   <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle"><form class="profile-form" id="profileForm"><header><div><p class="eyebrow">Shared identity</p><h2 id="profileDialogTitle">Edit profile</h2></div><button class="close-button" id="closeProfile" type="button" aria-label="Close profile editor">×</button></header><div class="avatar-preview"><div class="avatar small" id="editAvatar" aria-hidden="true">?</div><div class="avatar-editor-copy"><strong>Profile picture</strong><span>JPG, PNG, or WebP. Maximum 5 MB.</span><div class="avatar-actions"><label class="button quiet avatar-picker">Choose image<input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp"></label><button class="text-button danger" id="removeAvatar" type="button">Remove</button></div></div></div><label>Display name<input id="displayName" maxlength="60" autocomplete="name" placeholder="How should people know you?"></label><label>Handle<div class="handle-input"><span>@</span><input id="handle" minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" autocomplete="username" placeholder="your_handle" aria-describedby="handleHelp"></div><small id="handleHelp">3–24 characters. Start with a letter; use lowercase letters, numbers, or underscores.</small></label><label>Bio<textarea id="bio" maxlength="180" rows="4" placeholder="A short introduction"></textarea><small><span id="bioCount">0</span>/180</small></label><p class="message" id="profileMessage" role="status"></p><footer><button class="button quiet" id="cancelProfile" type="button">Cancel</button><button class="button dark" id="saveProfile" type="submit">Save profile</button></footer></form></dialog>
 
+  <dialog class="family-dialog" id="createFamilyDialog" aria-labelledby="createFamilyTitle"><div class="family-dialog-inner"><header class="family-dialog-header"><div><p class="eyebrow">Family group</p><h2 id="createFamilyTitle">Create your family.</h2><p>This creates a trusted relationship only. Private app records stay separate.</p></div><button class="close-button" type="button" data-close-family-dialog aria-label="Close create family dialog">×</button></header><form id="createFamilyForm"><label for="familyName">Family name</label><input id="familyName" maxlength="80" required placeholder="My Family"><p class="family-dialog-message" data-family-dialog-message role="status"></p><div class="family-dialog-actions"><button class="button quiet" type="button" data-close-family-dialog>Cancel</button><button class="button dark" type="submit">Create Family</button></div></form></div></dialog>
+
+  <dialog class="family-dialog" id="inviteFamilyDialog" aria-labelledby="inviteFamilyTitle"><div class="family-dialog-inner"><header class="family-dialog-header"><div><p class="eyebrow">Invite member</p><h2 id="inviteFamilyTitle">Find an ecosystem user.</h2><p>Search discoverable profiles by display name or @handle. Email is never searchable.</p></div><button class="close-button" type="button" data-close-family-dialog aria-label="Close invite member dialog">×</button></header><form id="familyInviteSearch"><label class="sr-only" for="familyInviteQuery">Search people</label><input id="familyInviteQuery" type="search" maxlength="60" placeholder="Display name or @handle"><button class="button dark" type="submit">Search</button></form><p class="family-dialog-message" data-family-invite-message role="status"></p><div class="family-candidates" data-family-candidates></div></div></dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../shared/supabase.js?v=1"></script>
   <script type="module" src="../shared/app-switcher.js?v=8"></script>
-  <script type="module" src="account.js?v=7"></script>
+  <script type="module" src="account.js?v=8"></script>
   <script type="module" src="connections.js?v=2"></script>
+  <script type="module" src="family.js?v=1"></script>
 </body>
 </html>

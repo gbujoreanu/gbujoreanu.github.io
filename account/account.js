@@ -208,7 +208,7 @@ import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.
   }
 
   function honorAccountAnchor() {
-    if (!['#profileName','#securityTitle'].includes(location.hash)) return;
+    if (!['#profileName','#securityTitle','#familyTitle'].includes(location.hash)) return;
     requestAnimationFrame(() => document.querySelector(location.hash)?.scrollIntoView({ block:'start' }));
   }
 

@@ -15,6 +15,21 @@ update public.profiles set discoverable=true,
   display_name=case id when current_setting('relationship_test.a')::uuid then 'Relationship Test A' else 'Relationship Test B' end
 where id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
 
+-- Isolate the test lifecycle from legitimate relationships between the selected
+-- accounts. The surrounding transaction restores every row on rollback.
+delete from public.ecosystem_friendships
+where user_low_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid)
+  and user_high_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
+delete from public.ecosystem_friend_requests
+where sender_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid)
+  and recipient_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
+delete from public.ecosystem_follows
+where follower_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid)
+  and followed_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
+delete from public.ecosystem_blocks
+where blocker_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid)
+  and blocked_id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
+
 set local role authenticated;
 select set_config('request.jwt.claim.sub',current_setting('relationship_test.a'),true);
 
