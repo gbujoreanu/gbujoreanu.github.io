@@ -8,6 +8,7 @@
   <title>Account · Bujoreanu Apps</title>
   <link rel="stylesheet" href="account.css?v=3">
   <link rel="stylesheet" href="avatar.css?v=1">
+  <link rel="stylesheet" href="connections.css?v=2">
   <link rel="stylesheet" href="../shared/app-switcher.css?v=7">
 </head>
 <body>
@@ -45,6 +46,13 @@
         </div>
       </section>
 
+      <section class="connections-section" data-connections hidden aria-labelledby="connectionsTitle">
+        <div class="connections-heading"><div><p class="eyebrow">Connections</p><h2 id="connectionsTitle">Your people, clearly organized.</h2></div><p>Follow discoverable profiles and manage mutual friendships without exposing private app data.</p></div>
+        <form class="connection-search" data-people-search><label class="sr-only" for="peopleSearch">Search people</label><input id="peopleSearch" type="search" maxlength="60" placeholder="Search display name or @handle"><button class="button dark" type="submit">Search people</button></form>
+        <div class="connection-tabs" role="tablist" aria-label="Connections"><button type="button" role="tab" aria-selected="true" class="active" data-connection-tab="friends">Friends</button><button type="button" role="tab" aria-selected="false" data-connection-tab="requests">Requests</button><button type="button" role="tab" aria-selected="false" data-connection-tab="following">Following</button><button type="button" role="tab" aria-selected="false" data-connection-tab="followers">Followers</button><button type="button" role="tab" aria-selected="false" data-connection-tab="people">Find People</button><button type="button" role="tab" aria-selected="false" data-connection-tab="blocked">Blocked</button></div>
+        <p class="connections-message" data-connections-message role="status"></p><div class="connection-results" data-connection-results></div>
+      </section>
+
       <div class="account-sections">
         <section class="account-section" aria-labelledby="securityTitle"><div class="section-number">01</div><div><p class="eyebrow">Account</p><h2 id="securityTitle">Security &amp; access</h2><p>Your verified email powers one renewable session across the ecosystem.</p><dl class="detail-list"><div><dt>Email</dt><dd id="securityEmail">—</dd></div><div><dt>Verification</dt><dd class="verified">Verified</dd></div><div><dt>Session</dt><dd>Active across your apps</dd></div></dl><div class="inline-actions"><button class="text-button" id="sendPasswordReset" type="button">Change password</button><button class="text-button danger" id="signOut" type="button">Sign out</button></div><p class="message" id="securityMessage" role="status"></p></div></section>
         <section class="account-section" aria-labelledby="privacyTitle"><div class="section-number">02</div><div><p class="eyebrow">Privacy</p><h2 id="privacyTitle">Profile discoverability</h2><p>Prepare your safe profile for future people search. This never exposes your email or private app records.</p><label class="switch-row" for="discoverable"><span><strong>Allow profile discovery</strong><small>Only your name, handle, avatar, and bio may be discoverable later.</small></span><input id="discoverable" type="checkbox" role="switch"><i aria-hidden="true"></i></label><p class="message" id="privacyMessage" role="status"></p></div></section>
@@ -61,5 +69,6 @@
   <script src="../shared/supabase.js?v=1"></script>
   <script type="module" src="../shared/app-switcher.js?v=8"></script>
   <script type="module" src="account.js?v=7"></script>
+  <script type="module" src="connections.js?v=2"></script>
 </body>
 </html>
