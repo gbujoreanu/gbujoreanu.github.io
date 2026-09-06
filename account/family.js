@@ -14,6 +14,8 @@ const inviteDialog = document.querySelector('#inviteFamilyDialog');
 let user = null;
 let state = { household:null,members:[],incoming:[],outgoing:[] };
 let candidates = [];
+let familySearchTimer=0;
+let familySearchRequest=0;
 
 if (client && root) {
   root.addEventListener('click',handleFamilyClick);
@@ -21,6 +23,7 @@ if (client && root) {
   inviteDialog?.addEventListener('click',handleDialogClick);
   document.querySelector('#createFamilyForm')?.addEventListener('submit',submitCreate);
   document.querySelector('#familyInviteSearch')?.addEventListener('submit',searchPeople);
+  document.querySelector('#familyInviteQuery')?.addEventListener('input',scheduleFamilySearch);
   client.auth.onAuthStateChange((_event,session)=>setUser(session?.user || null));
   client.auth.getSession().then(({data})=>setUser(data.session?.user || null));
 }
@@ -148,13 +151,24 @@ async function submitCreate(event) {
 async function searchPeople(event) {
   event.preventDefault();
   const query=document.querySelector('#familyInviteQuery').value.trim();
-  if (!query) return renderCandidates('Enter a display name or @handle.');
-  const submit=event.submitter; submit.disabled=true; renderCandidates('Searching…');
+  if (query.replace(/^@/,'').length<2) return renderCandidates('Type at least 2 characters.');
+  await runFamilySearch(query,event.submitter);
+}
+
+function scheduleFamilySearch(event) {
+  clearTimeout(familySearchTimer);const query=event.currentTarget.value.trim();
+  if(query.replace(/^@/,'').length<2){familySearchRequest++;candidates=[];renderCandidates(query?'Type at least 2 characters.':'Search by display name or @handle.');return}
+  renderCandidates('Finding people…');familySearchTimer=setTimeout(()=>runFamilySearch(query),300);
+}
+
+async function runFamilySearch(query,submit=null) {
+  const request=++familySearchRequest;
+  if(submit)submit.disabled=true; renderCandidates('Searching…');
   try {
-    candidates=await searchHouseholdCandidates(client,query);
-    renderCandidates(candidates.length ? '' : 'No available profiles found.');
-  } catch (error) { renderCandidates(householdError(error),true); }
-  finally { submit.disabled=false; }
+    const next=await searchHouseholdCandidates(client,query);if(request!==familySearchRequest)return;candidates=next;
+    renderCandidates(candidates.length ? '' : 'No matching discoverable profiles found.');
+  } catch (error) { if(request===familySearchRequest)renderCandidates(householdError(error),true); }
+  finally { if(submit)submit.disabled=false; }
 }
 
 function renderCandidates(message='',error=false) {
@@ -166,9 +180,10 @@ function renderCandidates(message='',error=false) {
     const info=document.createElement('div'); info.className='family-person-info';
     const title=document.createElement('strong'); title.textContent=personLabel(person);
     const handle=document.createElement('span'); handle.textContent=person.handle ? `@${person.handle}` : 'Discoverable profile'; info.append(title,handle);
-    const alreadyInvited=person.invitation_state==='already_invited';
-    const button=actionButton(alreadyInvited?'Already invited':'Invite','invite-candidate',alreadyInvited?'':'primary',person.id);
-    button.disabled=alreadyInvited;
+    const labels={already_invited:'Already invited',already_member:'Already a member',unavailable:'Unavailable'};
+    const unavailable=person.invitation_state!=='available';
+    const button=actionButton(labels[person.invitation_state]||'Invite','invite-candidate',unavailable?'':'primary',person.id);
+    button.disabled=unavailable;
     row.append(avatar,info,button); output.append(row);
   });
 }

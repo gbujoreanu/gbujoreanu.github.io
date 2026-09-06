@@ -10,11 +10,14 @@ let user = null;
 let active = 'friends';
 let rows = [];
 let searchQuery = '';
+let searchTimer = 0;
+let searchRequest = 0;
 
 if (client && root) {
   root.addEventListener('click', handleClick);
   root.addEventListener('keydown', handleTabKeys);
   root.querySelector('[data-people-search]').addEventListener('submit', runSearch);
+  root.querySelector('#peopleSearch').addEventListener('input', scheduleSearch);
   client.auth.onAuthStateChange((_event, session) => setUser(session?.user || null));
   client.auth.getSession().then(({data}) => setUser(data.session?.user || null));
 }
@@ -27,28 +30,41 @@ async function setUser(next) {
 }
 
 async function loadActive() {
+  const request = ++searchRequest;
   setMessage('Loading connections…');
   setBusy(true);
   try {
-    rows = active === 'blocked'
+    const nextRows = active === 'blocked'
       ? await listBlockedUsers(client)
       : active === 'people' && !searchQuery
         ? []
         : await listRelationshipPeople(client, active === 'people' ? 'search' : active, searchQuery);
+    if (request !== searchRequest) return;
+    rows = nextRows;
     render();
     setMessage('');
   } catch (error) {
+    if (request !== searchRequest) return;
     rows = [];
     render();
     setMessage(socialError(error), true);
-  } finally { setBusy(false); }
+  } finally { if (request === searchRequest) setBusy(false); }
 }
 
 async function runSearch(event) {
   event.preventDefault();
   searchQuery = root.querySelector('#peopleSearch').value.trim();
   active = 'people';
+  if (searchQuery.replace(/^@/,'').length < 2) { rows=[];render();setMessage('Type at least 2 characters.');return; }
   await loadActive();
+}
+
+function scheduleSearch(event) {
+  clearTimeout(searchTimer);
+  searchQuery=event.currentTarget.value.trim();active='people';
+  if(searchQuery.replace(/^@/,'').length<2){searchRequest++;rows=[];render();setMessage(searchQuery?'Type at least 2 characters.':'');return}
+  setMessage('Finding people…');
+  searchTimer=setTimeout(()=>loadActive(),300);
 }
 
 async function handleClick(event) {

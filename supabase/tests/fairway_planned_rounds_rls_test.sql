@@ -65,9 +65,11 @@ do $$ declare found integer; begin
 end $$;
 
 select set_config('request.jwt.claim.sub',current_setting('round_test.b'),true);
-do $$ declare rounds jsonb; begin
-  rounds:=public.fairway_planned_rounds();
-  if jsonb_array_length(rounds)<>1 or rounds->0->>'viewer_status'<>'invited' then raise exception 'Pending invitation unavailable'; end if;
+do $$ declare pending_round jsonb; begin
+  select item into pending_round
+  from jsonb_array_elements(public.fairway_planned_rounds()) item
+  where item->>'id'=current_setting('round_test.id');
+  if pending_round is null or pending_round->>'viewer_status'<>'invited' then raise exception 'Pending invitation unavailable'; end if;
   begin
     perform public.fairway_update_planned_round(current_setting('round_test.id')::uuid,'planned-round-test-course','2030-09-12T15:00:00Z','America/New_York','Forged edit');
     raise exception 'Non-host updated round';
@@ -128,14 +130,18 @@ end $$;
 
 select public.fairway_cancel_planned_round(current_setting('round_test.id')::uuid);
 do $$ declare found integer; begin
-  select count(*) into found from public.fairway_round_sessions
-  where id=current_setting('round_test.id')::uuid and status='cancelled';
-  if found<>1 then raise exception 'Host cancellation failed'; end if;
-  select jsonb_array_length(public.fairway_planned_rounds()) into found;
+  select count(*) into found
+  from jsonb_array_elements(public.fairway_planned_rounds()) item
+  where item->>'id'=current_setting('round_test.id');
   if found<>0 then raise exception 'Cancelled round remained upcoming'; end if;
 end $$;
 
 reset role;
+do $$ declare found integer; begin
+  select count(*) into found from public.fairway_round_sessions
+  where id=current_setting('round_test.id')::uuid and status='cancelled';
+  if found<>1 then raise exception 'Host cancellation failed'; end if;
+end $$;
 set local role anon;
 do $$
 begin

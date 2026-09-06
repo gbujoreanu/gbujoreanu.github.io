@@ -75,7 +75,7 @@ Daymark is calm and structured around time, planning, organization, timelines, a
 
 ### Fairway
 
-Fairway should feel like golf through scorecards, courses, round progression, and golf-specific hierarchy—not generic SaaS with green paint. It includes rounds, courses, scoring, statistics, a golf-oriented Friends directory, Settings, and five independent themes. Relationship data comes from the shared API helper while Fairway owns its presentation.
+Fairway should feel like golf through scorecards, courses, round progression, and golf-specific hierarchy—not generic SaaS with green paint. It includes rounds, courses, scoring, statistics, a golf-oriented Friends directory, planned rounds, shared group scorecards, Settings, and five independent themes. Relationship data comes from the shared API helper while Fairway owns its presentation. Group scorecards belong to a planned-round session: accepted participants may edit only their own card, while the host/designated scorer may edit all accepted participants' cards.
 
 The real-user UX/design pass is complete. Preserve these resulting conventions:
 
@@ -141,12 +141,13 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 4. Safe profile discovery, following/followers, friend requests, friendships, blocking, Account Connections, and Fairway Friends — complete; continue multi-user field validation.
 5. Family/household foundation and Account Family management — complete; private app sharing remains explicitly unimplemented.
 6. Fairway planned rounds and friend invitations — complete; planning remains distinct from historical scorecards and does not publish to Daymark.
-7. Fairway shared/group scorecards for planned-round participants — recommended next.
-8. Password recovery and auth-hardening UX pass — planned.
-9. Daymark UX/design validation pass — planned.
-10. Money visual/design validation pass — planned.
-11. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
-12. Messaging — later and low priority.
+7. Fairway shared/group scorecards for planned-round participants — complete; sharing/export remains unimplemented.
+8. Fairway completed-scorecard sharing/export — recommended next.
+9. Password recovery and auth-hardening UX pass — planned.
+10. Daymark UX/design validation pass — planned.
+11. Money visual/design validation pass — planned.
+12. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
+13. Messaging — later and low priority.
 
 ## Updating this file
 
