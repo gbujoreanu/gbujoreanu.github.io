@@ -58,6 +58,13 @@ do $$ declare found integer; begin
     '@household_'||left(replace(current_setting('household_test.b'),'-',''),8),20)
     where id=current_setting('household_test.b')::uuid and invitation_state='available';
   if found<>1 then raise exception 'Household @handle candidate search failed'; end if;
+  select count(*) into found from public.ecosystem_household_candidates('Test B',20)
+    where id=current_setting('household_test.b')::uuid and invitation_state='available';
+  if found<>1 then raise exception 'Household partial display-name search failed'; end if;
+  select count(*) into found from public.ecosystem_household_candidates(
+    upper('household_'||left(replace(current_setting('household_test.b'),'-',''),5)),20)
+    where id=current_setting('household_test.b')::uuid and invitation_state='available';
+  if found<>1 then raise exception 'Household case-insensitive partial handle search failed'; end if;
   select count(*) into found from public.ecosystem_household_candidates('',20);
   if found<>0 then raise exception 'Blank household search enumerated users'; end if;
 end $$;
