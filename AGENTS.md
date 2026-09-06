@@ -140,12 +140,13 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 3. Fairway UX/design and real-user-feedback pass — complete; continue real-world validation.
 4. Safe profile discovery, following/followers, friend requests, friendships, blocking, Account Connections, and Fairway Friends — complete; continue multi-user field validation.
 5. Family/household foundation and Account Family management — complete; private app sharing remains explicitly unimplemented.
-6. Fairway planned rounds and friend invitations — recommended next; reuse friendship relationships without exposing private historical rounds.
-7. Password recovery and auth-hardening UX pass — planned.
-8. Daymark UX/design validation pass — planned.
-9. Money visual/design validation pass — planned.
-10. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
-11. Messaging — later and low priority.
+6. Fairway planned rounds and friend invitations — complete; planning remains distinct from historical scorecards and does not publish to Daymark.
+7. Fairway shared/group scorecards for planned-round participants — recommended next.
+8. Password recovery and auth-hardening UX pass — planned.
+9. Daymark UX/design validation pass — planned.
+10. Money visual/design validation pass — planned.
+11. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
+12. Messaging — later and low priority.
 
 ## Updating this file
 

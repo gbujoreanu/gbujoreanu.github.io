@@ -1,4 +1,4 @@
-import { listRelationshipPeople,withSignedAvatars } from './social.js?v=3';
+import { withSignedAvatars } from './social.js?v=4';
 
 export async function getHouseholdState(client) {
   const { data,error } = await client.rpc('ecosystem_household_state');
@@ -13,7 +13,11 @@ export async function getHouseholdState(client) {
 }
 
 export async function searchHouseholdCandidates(client,query) {
-  return listRelationshipPeople(client,'search',query);
+  const value=String(query).trim();
+  if (!value) return [];
+  const { data,error }=await client.rpc('ecosystem_household_candidates',{search_text:value,result_limit:30});
+  if (error) throw error;
+  return withSignedAvatars(client,data || []);
 }
 
 export async function createHousehold(client,name) {

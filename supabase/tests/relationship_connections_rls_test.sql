@@ -12,7 +12,8 @@ begin
 end $$;
 
 update public.profiles set discoverable=true,
-  display_name=case id when current_setting('relationship_test.a')::uuid then 'Relationship Test A' else 'Relationship Test B' end
+  display_name=case id when current_setting('relationship_test.a')::uuid then 'Relationship Test A' else 'Relationship Test B' end,
+  handle='relationship_'||left(replace(id::text,'-',''),8)
 where id in(current_setting('relationship_test.a')::uuid,current_setting('relationship_test.b')::uuid,current_setting('relationship_test.c')::uuid);
 
 -- Isolate the test lifecycle from legitimate relationships between the selected
@@ -41,6 +42,10 @@ do $$ declare found integer; begin
   select count(*) into found from public.ecosystem_relationship_people('Relationship Test B','search',20)
   where id=current_setting('relationship_test.b')::uuid;
   if found<>1 then raise exception 'Discoverable User B was not found safely'; end if;
+  select count(*) into found from public.ecosystem_relationship_people(
+    '@relationship_'||left(replace(current_setting('relationship_test.b'),'-',''),8),'search',20
+  ) where id=current_setting('relationship_test.b')::uuid;
+  if found<>1 then raise exception '@handle discovery failed'; end if;
   begin
     insert into public.ecosystem_follows(follower_id,followed_id) values(auth.uid(),current_setting('relationship_test.b')::uuid);
     raise exception 'Direct follow-table insert succeeded';
@@ -61,6 +66,29 @@ do $$ declare found integer; begin
     if sqlerrm='Self follow succeeded' then raise; end if;
   end;
 end $$;
+
+-- A non-discoverable follower is still legitimately visible to the followed user,
+-- and that user may follow back without opening public discovery.
+reset role;
+update public.profiles set discoverable=false where id=current_setting('relationship_test.a')::uuid;
+set local role authenticated;
+select set_config('request.jwt.claim.sub',current_setting('relationship_test.b'),true);
+do $$ declare found integer; begin
+  select count(*) into found from public.ecosystem_relationship_people('', 'followers', 20)
+  where id=current_setting('relationship_test.a')::uuid and is_follower;
+  if found<>1 then raise exception 'Original follower was not visible to User B'; end if;
+end $$;
+select public.ecosystem_set_follow(current_setting('relationship_test.a')::uuid,true);
+do $$ declare found integer; begin
+  select count(*) into found from public.ecosystem_follows
+  where follower_id=auth.uid() and followed_id=current_setting('relationship_test.a')::uuid;
+  if found<>1 then raise exception 'Follow Back failed'; end if;
+end $$;
+select public.ecosystem_set_follow(current_setting('relationship_test.a')::uuid,false);
+reset role;
+update public.profiles set discoverable=true where id=current_setting('relationship_test.a')::uuid;
+set local role authenticated;
+select set_config('request.jwt.claim.sub',current_setting('relationship_test.a'),true);
 
 select set_config('request.jwt.claim.sub',current_setting('relationship_test.c'),true);
 do $$ declare found integer; begin

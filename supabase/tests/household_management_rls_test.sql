@@ -13,6 +13,7 @@ end $$;
 
 update public.profiles
 set discoverable=true,
+    handle='household_'||left(replace(id::text,'-',''),8),
     display_name=case id
       when current_setting('household_test.a')::uuid then 'Household Test A'
       when current_setting('household_test.b')::uuid then 'Household Test B'
@@ -23,6 +24,16 @@ where id in(
   current_setting('household_test.b')::uuid,
   current_setting('household_test.c')::uuid
 );
+
+-- Temporarily isolate the selected accounts from any legitimate household state.
+-- The surrounding transaction restores every affected row on rollback.
+delete from public.ecosystem_households
+where owner_id in(current_setting('household_test.a')::uuid,current_setting('household_test.b')::uuid,current_setting('household_test.c')::uuid);
+delete from public.ecosystem_household_invitations
+where sender_id in(current_setting('household_test.a')::uuid,current_setting('household_test.b')::uuid,current_setting('household_test.c')::uuid)
+   or recipient_id in(current_setting('household_test.a')::uuid,current_setting('household_test.b')::uuid,current_setting('household_test.c')::uuid);
+delete from public.ecosystem_household_members
+where user_id in(current_setting('household_test.a')::uuid,current_setting('household_test.b')::uuid,current_setting('household_test.c')::uuid);
 
 with inserted as (
   insert into public.daymark_schedule_entries(user_id,title,starts_at,ends_at,time_zone)
@@ -41,6 +52,15 @@ select set_config('household_test.money',(select id::text from inserted),true);
 set local role authenticated;
 select set_config('request.jwt.claim.sub',current_setting('household_test.a'),true);
 select set_config('household_test.id',public.ecosystem_create_household('Household Test Group')::text,true);
+
+do $$ declare found integer; begin
+  select count(*) into found from public.ecosystem_household_candidates(
+    '@household_'||left(replace(current_setting('household_test.b'),'-',''),8),20)
+    where id=current_setting('household_test.b')::uuid and invitation_state='available';
+  if found<>1 then raise exception 'Household @handle candidate search failed'; end if;
+  select count(*) into found from public.ecosystem_household_candidates('',20);
+  if found<>0 then raise exception 'Blank household search enumerated users'; end if;
+end $$;
 
 do $$
 begin
@@ -66,6 +86,13 @@ end $$;
 select set_config('household_test.invite',public.ecosystem_invite_household(
   current_setting('household_test.id')::uuid,current_setting('household_test.b')::uuid
 )::text,true);
+
+do $$ declare found integer; begin
+  select count(*) into found from public.ecosystem_household_candidates(
+    '@household_'||left(replace(current_setting('household_test.b'),'-',''),8),20)
+    where id=current_setting('household_test.b')::uuid and invitation_state='already_invited';
+  if found<>1 then raise exception 'Pending household invite state missing from search'; end if;
+end $$;
 
 do $$ declare state jsonb; begin
   state:=public.ecosystem_household_state();

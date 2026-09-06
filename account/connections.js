@@ -1,7 +1,7 @@
 import {
   listRelationshipPeople,setFollow,requestFriend,cancelFriendRequest,respondFriend,
   removeFriend,blockUser,unblockUser,listBlockedUsers,personLabel,socialError
-} from '../shared/social.js?v=3';
+} from '../shared/social.js?v=4';
 import { renderIdentityAvatar } from '../shared/identity.js?v=3';
 
 const client = window.AppAuth?.client;

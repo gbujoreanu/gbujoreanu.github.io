@@ -2,8 +2,8 @@ import {
   getHouseholdState,searchHouseholdCandidates,createHousehold,inviteHouseholdMember,
   respondHouseholdInvitation,cancelHouseholdInvitation,removeHouseholdMember,
   deleteHousehold,householdError
-} from '../shared/households.js?v=1';
-import { personLabel } from '../shared/social.js?v=3';
+} from '../shared/households.js?v=2';
+import { personLabel } from '../shared/social.js?v=4';
 import { renderIdentityAvatar } from '../shared/identity.js?v=3';
 
 const client = window.AppAuth?.client;
@@ -151,8 +151,7 @@ async function searchPeople(event) {
   if (!query) return renderCandidates('Enter a display name or @handle.');
   const submit=event.submitter; submit.disabled=true; renderCandidates('Searching…');
   try {
-    const memberIds=new Set(state.members.map(member=>member.id));
-    candidates=(await searchHouseholdCandidates(client,query)).filter(person=>!memberIds.has(person.id));
+    candidates=await searchHouseholdCandidates(client,query);
     renderCandidates(candidates.length ? '' : 'No available profiles found.');
   } catch (error) { renderCandidates(householdError(error),true); }
   finally { submit.disabled=false; }
@@ -167,7 +166,10 @@ function renderCandidates(message='',error=false) {
     const info=document.createElement('div'); info.className='family-person-info';
     const title=document.createElement('strong'); title.textContent=personLabel(person);
     const handle=document.createElement('span'); handle.textContent=person.handle ? `@${person.handle}` : 'Discoverable profile'; info.append(title,handle);
-    const button=actionButton('Invite','invite-candidate','primary',person.id); row.append(avatar,info,button); output.append(row);
+    const alreadyInvited=person.invitation_state==='already_invited';
+    const button=actionButton(alreadyInvited?'Already invited':'Invite','invite-candidate',alreadyInvited?'':'primary',person.id);
+    button.disabled=alreadyInvited;
+    row.append(avatar,info,button); output.append(row);
   });
 }
 

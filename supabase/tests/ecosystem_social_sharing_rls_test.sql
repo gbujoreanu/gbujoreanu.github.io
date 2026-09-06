@@ -76,7 +76,7 @@ do $$ declare visible integer; begin
   select count(*) into visible from public.daymark_shared_items() where item_id='social-test-task' and title='Synthetic private task';
   if visible<>1 then raise exception 'Accepted Daymark share was unavailable to User B'; end if;
   select count(*) into visible from public.platform_daymark_events() where source_id=current_setting('social_test.round');
-  if visible<>1 then raise exception 'Accepted Fairway round was not published to User B Daymark'; end if;
+  if visible<>0 then raise exception 'Planned Fairway round was published to Daymark before explicit integration'; end if;
 end $$;
 
 select set_config('request.jwt.claim.sub',current_setting('social_test.a'),true);
