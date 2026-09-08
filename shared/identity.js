@@ -12,6 +12,14 @@ export async function loadEcosystemIdentity(client, user) {
     result = await client.from('profiles').select('id,display_name,handle,avatar_url,bio,discoverable').eq('id', user.id).maybeSingle();
   }
   if (result.error) throw result.error;
+  if (!result.data) {
+    // Repair only the caller's missing row; the database assigns permanent identity.
+    const ensured = await client.rpc('account_ensure_profile');
+    if (ensured.error) throw ensured.error;
+    result = await client.from('profiles').select(fields).eq('id', user.id).maybeSingle();
+    if (result.error) throw result.error;
+    if (!result.data) throw new Error('Your profile could not be loaded. Please retry.');
+  }
   const profile = { id:user.id, display_name:'', handle:'', avatar_url:null, avatar_path:null, bio:'', discoverable:false, ...(result.data || {}) };
   let signedAvatarUrl = null;
   if (profile.avatar_path) {
@@ -23,7 +31,7 @@ export async function loadEcosystemIdentity(client, user) {
 
 export function renderIdentityAvatar(element, identity, fallbackUser = null) {
   if (!element) return;
-  const initials = profileInitials(identity?.display_name, identity?.handle || fallbackUser?.email?.split('@')[0]);
+  const initials = profileInitials(identity?.display_name, identity?.handle);
   element.replaceChildren();
   element.classList.toggle('has-image', Boolean(identity?.signedAvatarUrl));
   if (identity?.signedAvatarUrl) {
@@ -32,6 +40,11 @@ export function renderIdentityAvatar(element, identity, fallbackUser = null) {
     image.alt = '';
     image.decoding = 'async';
     image.referrerPolicy = 'no-referrer';
+    image.addEventListener('error', () => {
+      if (image.parentNode !== element) return; // A newer avatar may already be displayed.
+      element.classList.remove('has-image');
+      element.textContent = initials;
+    }, { once: true });
     element.append(image);
   } else element.textContent = initials;
 }

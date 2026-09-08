@@ -1,4 +1,4 @@
-import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.js?v=3";
+import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.js?v=4";
 
 (function () {
   "use strict";
@@ -296,7 +296,7 @@ import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.
     }
     profile.id = currentUser.id;
     profile.discoverable = checked;
-    setInlineMessage(output, checked ? "Discoverability is on. No profile search exists yet." : "Discoverability is off.");
+    setInlineMessage(output, checked ? "Discoverability is on. People can find your name and handle in Connections and Family search. Your email stays private." : "Discoverability is off. You won't appear in user search.");
   }
 
   function normalizeHandleInput(event) {
@@ -363,6 +363,7 @@ import { loadEcosystemIdentity, renderIdentityAvatar } from "../shared/identity.
   }
   function profileError(error) {
     const raw = String(error?.message || "Profile could not be saved.");
+    if (/Numbered fallback handles are reserved/i.test(raw)) return "Numbered user handles are reserved. Keep your assigned handle or choose a different name.";
     if (error?.code === "23505" || /profiles_handle_lower_key|duplicate key/i.test(raw)) return "That handle is already taken. Try another one.";
     if (error?.code === "23514" || /profiles_handle_format/i.test(raw)) return "That handle does not meet the required format.";
     return "Profile could not be saved. Please review your details and try again.";

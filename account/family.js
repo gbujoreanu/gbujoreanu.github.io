@@ -4,7 +4,7 @@ import {
   deleteHousehold,householdError
 } from '../shared/households.js?v=2';
 import { personLabel } from '../shared/social.js?v=4';
-import { renderIdentityAvatar } from '../shared/identity.js?v=3';
+import { renderIdentityAvatar } from '../shared/identity.js?v=4';
 
 const client = window.AppAuth?.client;
 const root = document.querySelector('[data-family]');
@@ -30,6 +30,9 @@ if (client && root) {
 
 async function setUser(next) {
   if (user?.id===next?.id) return;
+  clearTimeout(familySearchTimer);
+  familySearchRequest++;
+  candidates=[];
   user=next;
   root.hidden=!user;
   if (user) await loadState();
@@ -150,6 +153,9 @@ async function submitCreate(event) {
 
 async function searchPeople(event) {
   event.preventDefault();
+  clearTimeout(familySearchTimer);
+  familySearchRequest++;
+  candidates=[];
   const query=document.querySelector('#familyInviteQuery').value.trim();
   if (query.replace(/^@/,'').length<2) return renderCandidates('Type at least 2 characters.');
   await runFamilySearch(query,event.submitter);
@@ -157,7 +163,9 @@ async function searchPeople(event) {
 
 function scheduleFamilySearch(event) {
   clearTimeout(familySearchTimer);const query=event.currentTarget.value.trim();
-  if(query.replace(/^@/,'').length<2){familySearchRequest++;candidates=[];renderCandidates(query?'Type at least 2 characters.':'Search by display name or @handle.');return}
+  familySearchRequest++;
+  candidates=[];
+  if(query.replace(/^@/,'').length<2){renderCandidates(query?'Type at least 2 characters.':'Search by display name or @handle.');return}
   renderCandidates('Finding people…');familySearchTimer=setTimeout(()=>runFamilySearch(query),300);
 }
 
@@ -180,7 +188,10 @@ function renderCandidates(message='',error=false) {
     const info=document.createElement('div'); info.className='family-person-info';
     const title=document.createElement('strong'); title.textContent=personLabel(person);
     const handle=document.createElement('span'); handle.textContent=person.handle ? `@${person.handle}` : 'Discoverable profile'; info.append(title,handle);
-    const labels={already_invited:'Already invited',already_member:'Already a member',unavailable:'Unavailable'};
+    const labels={already_invited:'Already invited',already_member:'Already member',unavailable:'Unavailable'};
+    if (person.invitation_state==='available') {
+      const status=document.createElement('span'); status.textContent='Available'; info.append(status);
+    }
     const unavailable=person.invitation_state!=='available';
     const button=actionButton(labels[person.invitation_state]||'Invite','invite-candidate',unavailable?'':'primary',person.id);
     button.disabled=unavailable;
@@ -196,6 +207,12 @@ inviteDialog?.addEventListener('click',async(event)=>{
     await inviteHouseholdMember(client,state.household.id,button.dataset.id);
     inviteDialog.close(); await loadState('Invitation sent.');
   } catch (error) { setDialogMessage(inviteDialog,householdError(error),true); button.disabled=false; }
+});
+
+inviteDialog?.addEventListener('close',()=>{
+  clearTimeout(familySearchTimer);
+  familySearchRequest++;
+  candidates=[];
 });
 
 async function runAction(button,operation,success) {

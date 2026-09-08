@@ -2,7 +2,7 @@ import {
   listRelationshipPeople,setFollow,requestFriend,cancelFriendRequest,respondFriend,
   removeFriend,blockUser,unblockUser,listBlockedUsers,personLabel,socialError
 } from '../shared/social.js?v=4';
-import { renderIdentityAvatar } from '../shared/identity.js?v=3';
+import { renderIdentityAvatar } from '../shared/identity.js?v=4';
 
 const client = window.AppAuth?.client;
 const root = document.querySelector('[data-connections]');
@@ -24,6 +24,9 @@ if (client && root) {
 
 async function setUser(next) {
   if (user?.id === next?.id) return;
+  clearTimeout(searchTimer);
+  searchRequest++;
+  rows = [];
   user = next;
   root.hidden = !user;
   if (user) await loadActive();
@@ -53,6 +56,9 @@ async function loadActive() {
 
 async function runSearch(event) {
   event.preventDefault();
+  clearTimeout(searchTimer);
+  searchRequest++;
+  setBusy(false);
   searchQuery = root.querySelector('#peopleSearch').value.trim();
   active = 'people';
   if (searchQuery.replace(/^@/,'').length < 2) { rows=[];render();setMessage('Type at least 2 characters.');return; }
@@ -61,8 +67,13 @@ async function runSearch(event) {
 
 function scheduleSearch(event) {
   clearTimeout(searchTimer);
+  // Invalidate immediately, not after the debounce: an older response can arrive meanwhile.
+  searchRequest++;
+  rows=[];
+  setBusy(false);
   searchQuery=event.currentTarget.value.trim();active='people';
-  if(searchQuery.replace(/^@/,'').length<2){searchRequest++;rows=[];render();setMessage(searchQuery?'Type at least 2 characters.':'');return}
+  render();
+  if(searchQuery.replace(/^@/,'').length<2){setMessage(searchQuery?'Type at least 2 characters.':'');return}
   setMessage('Finding people…');
   searchTimer=setTimeout(()=>loadActive(),300);
 }
@@ -70,6 +81,7 @@ function scheduleSearch(event) {
 async function handleClick(event) {
   const tab = event.target.closest('[data-connection-tab]');
   if (tab) {
+    clearTimeout(searchTimer);
     active = tab.dataset.connectionTab;
     updateTabs();
     await loadActive();
