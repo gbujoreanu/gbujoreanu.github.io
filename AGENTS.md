@@ -4,7 +4,7 @@
 
 Before making changes:
 
-1. Read this file.
+1. Read this file and `ROADMAP.md`.
 2. Inspect the relevant existing implementation before modifying it.
 3. Inspect the relevant Supabase schema for database work.
 4. Preserve the architecture, security boundaries, and existing user data.
@@ -135,19 +135,7 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 
 ## Roadmap
 
-1. Money UX/visual simplification — complete; continue real-world validation.
-2. Account/Profile redesign, shared identity rendering, and private avatar storage — complete; public discovery deferred.
-3. Fairway UX/design and real-user-feedback pass — complete; continue real-world validation.
-4. Safe profile discovery, following/followers, friend requests, friendships, blocking, Account Connections, and Fairway Friends — complete; continue multi-user field validation.
-5. Family/household foundation and Account Family management — complete; private app sharing remains explicitly unimplemented.
-6. Fairway planned rounds and friend invitations — complete; planning remains distinct from historical scorecards and does not publish to Daymark.
-7. Fairway shared/group scorecards for planned-round participants — complete; sharing/export remains unimplemented.
-8. Fairway completed-scorecard sharing/export — recommended next.
-9. Password recovery and auth-hardening UX pass — planned.
-10. Daymark UX/design validation pass — planned.
-11. Money visual/design validation pass — planned.
-12. Explicit Daymark sharing and cross-app events — deferred; do not expose unfinished scaffolding without a focused implementation/security pass.
-13. Messaging — later and low priority.
+`ROADMAP.md` is the single task-status source, using only Done, Ready, and Backlog. Done means implemented, not immutable or free of bugs. Work only on the Ready task explicitly selected by the user, keeping each implementation task focused on one main feature or fix. Do not invent or promote future work from recommendations, architecture examples, or unfinished scaffolding. The user may revise the roadmap at any time. Do not automatically start another task.
 
 ## Updating this file
 
@@ -155,4 +143,4 @@ Keep this concise. It is not a changelog, commit history, bug diary, CSS log, or
 
 ## Implementation handoff convention
 
-After every substantial implementation task, report a concise **Completion Update** and **Next Recommended Work**. Recommend one concrete next task with a short dependency-based reason, then list the next 2–4 roadmap items in order. Do not automatically begin that work; leave it for review and approval.
+After completing work, update `ROADMAP.md`: move completed items to Done, preserve remaining Ready/Backlog items, and incorporate roadmap decisions the user gave during the chat. Include the updated roadmap in a concise **Completion Update**. Do not automatically recommend, select, or begin another task unless the user asks.
