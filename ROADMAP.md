@@ -7,25 +7,17 @@
 - Daymark: tasks, goals, Calendar, and the daily Scheduler with saved schedule entries.
 - Fairway: courses, individual rounds, score entry/review, history, statistics, and first-use guidance.
 - Money: budgeting, transactions, bills, earnings/paychecks, savings, retirement, assets/net worth, and reports.
-- Connections and Fairway Friends relationship foundation: discovery, follows/followers, friend requests, friendships, and blocking. Shared search reliability remains the Ready task.
+- Connections and Fairway Friends relationship foundation: discovery, follows/followers, friend requests, friendships, and blocking.
 - Account Family household/invitation/membership foundation: creation, invitations, membership management, leaving, and deletion. Further validation and changes remain possible.
-- Connections and Family type-ahead search with eligibility states; reliability fixes remain in Ready.
+- Connections and Family type-ahead search: partial names/handles, @handle matching, eligibility states, and stale-response protection.
+- New-user profile provisioning and safe identity repair: permanent User### fallbacks, searchable-by-default new profiles, preserved existing choices, and discoverability opt-out with blocking/RLS/email privacy.
 - Fairway planned rounds, friend invitations, host controls, and participant responses.
 - Fairway group scorecards: participant/self scoring, host scoring, incremental saves, mobile hole navigation, and completion. Personal-history/handicap linkage is not included.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
 
-## New-user profile provisioning and shared search fix
-
-- Repair missing/incomplete existing profiles safely.
-- Ensure new users reliably receive usable profiles.
-- Support permanent fallback User### identities where needed.
-- Preserve chosen names, handles, and avatars.
-- Make Connections search reliable.
-- Make Family search reliable.
-- Make eligible new users searchable.
-- Preserve discoverability, blocking, RLS, and email privacy.
+No task selected.
 
 # Backlog
 

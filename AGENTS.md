@@ -30,6 +30,7 @@ The portfolio, Account, Daymark, Money, shared frontend code, and Supabase migra
 - Browser-safe Supabase publishable/anon configuration may be public; privileged credentials may not.
 - `/shared/` contains intentionally small shared platform code, including the Supabase client/session integration, metadata-driven App Switcher, theme-aware application marks, shared profile/avatar rendering, relationship API helpers, and household data-access helpers. App-specific social and family UI remains inside the owning app.
 - Account/Profile is the neutral shared identity layer. Current profiles support display name, unique handle, bio, discoverability preference, initials fallback, and a private uploaded avatar.
+- Profiles are provisioned by the auth signup trigger with a permanent, server-assigned increasing number. Missing identity fields receive `User ###` / `@user###` fallbacks; chosen fields are preserved. The private number ledger survives account deletion and numbers must never be recycled or reset. New profiles default to discoverable; existing discoverability choices remain unchanged and users can opt out.
 - Schema changes belong in version-controlled files under `/supabase/migrations/`; database isolation tests belong under `/supabase/tests/`.
 - Daymark, Fairway, and Money retain independent navigation, business logic, data authorization, settings, themes, and visual identities.
 
