@@ -8,6 +8,7 @@
 - Fairway: courses, individual rounds, score entry/review, history, statistics, and first-use guidance.
 - Money: budgeting, transactions, bills, earnings/paychecks, savings, retirement, assets/net worth, and reports.
 - Connections and Fairway Friends relationship foundation: discovery, follows/followers, friend requests, friendships, blocking, and a responsive action hierarchy.
+- Fairway Friends action polish: primary Plan Round, secondary action menu, destructive confirmations, larger mobile targets, and resilient action/loading handling.
 - Account Family household/invitation/membership foundation: creation, invitations, membership management, leaving, and deletion. Further validation and changes remain possible.
 - Connections and Family type-ahead search: partial names/handles, @handle matching, eligibility states, and stale-response protection.
 - New-user profile provisioning and safe identity repair: permanent User### fallbacks, searchable-by-default new profiles, preserved existing choices, and discoverability opt-out with blocking/RLS/email privacy.
