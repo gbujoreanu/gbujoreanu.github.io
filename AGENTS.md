@@ -129,7 +129,7 @@ Cross-app references use platform events keyed by `owner_id + source_app + sourc
 Planned examples:
 
 - A Daymark Scheduler work block may explicitly publish worked time to Money Earnings.
-- Fairway remains authoritative for its Calendar/Scheduler references; `/golf/#upcoming/<round-id>` opens the source round. Tee-time markers do not imply an estimated round duration.
+- Fairway remains authoritative for its Calendar/Scheduler references; `/golf/#upcoming/<round-id>` opens the source round. Daymark shows a two-hour block for 9-hole rounds and a four-hour block for 18-hole rounds.
 - A Money bill may publish only its name and due date to the same owner's Daymark. Amount, notes, categories, and other financial fields must never enter the platform event payload.
 
 Sharing a Supabase project does not authorize one app to read another app's private tables.

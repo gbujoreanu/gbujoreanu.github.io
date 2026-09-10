@@ -1,6 +1,6 @@
 import { formatDuration, layoutTimelineItems, MINUTES_PER_DAY } from './scheduler.js';
 import { mountEcosystemProfileMenu } from '../shared/identity.js?v=3';
-import { fairwayCalendarEntries, fairwayTimelineItems, fairwayDetail } from './fairway-events.js';
+import { fairwayCalendarEntries, fairwayTimelineItems, fairwayDetail } from './fairway-events.js?v=2';
 
 const STORAGE_KEY = "daymark-v1";
 const SETTINGS_KEY = "daymark-settings-v1";
@@ -432,7 +432,7 @@ function renderScheduler() {
   const fairwayToday=fairwayEntries.filter(entry=>entry.date===selectedDate);
   const fairwayPanel=$('#schedulerFairway');
   fairwayPanel.hidden=!fairwayToday.length;
-  fairwayPanel.innerHTML=fairwayToday.map(entry=>`<a class="fairway-round-summary" href="${escapeHtml(entry.href)}"><strong>${escapeHtml(entry.title)} · ${escapeHtml(formatTime(entry.time))}</strong><span>${escapeHtml(fairwayDetail(entry))}</span><small>Open in Fairway → · Tee time only; end time not specified</small></a>`).join('');
+  fairwayPanel.innerHTML=fairwayToday.map(entry=>`<a class="fairway-round-summary" href="${escapeHtml(entry.href)}"><strong>${escapeHtml(entry.title)} · ${escapeHtml(formatTime(entry.time))}–${escapeHtml(formatTime(entry.endTime))}</strong><span>${escapeHtml(fairwayDetail(entry))}</span><small>Open in Fairway →</small></a>`).join('');
   const unscheduled = state.tasks.filter((task) => task.dueDate === selectedDate && !task.dueTime);
   els.schedulerGoals.innerHTML = goals.length ? goals.map((goal) => `<button class="scheduler-summary-item goal" type="button" data-action="edit-goal" data-id="${goal.id}"><span>${Number(goal.progress)>=100?'Complete':'Target today'}</span><strong>${escapeHtml(goal.title)}</strong><small>${goal.progress}% progress</small></button>`).join('') : emptyMarkup('No goal targets for this day.');
   els.schedulerUnscheduled.innerHTML = unscheduled.length ? unscheduled.map((task) => `<button class="scheduler-summary-item task ${task.status==='done'?'done':''}" type="button" data-action="edit-task" data-id="${task.id}"><span>${escapeHtml(task.priority)} priority</span><strong>${escapeHtml(task.title)}</strong><small>${task.status==='done'?'Completed':'No time assigned'}</small></button>`).join('') : emptyMarkup('No tasks are waiting for a time.');
@@ -517,7 +517,7 @@ function renderAgenda(entries) {
 }
 
 function agendaItemMarkup(entry) {
-  if(entry.type==='fairway')return `<div class="agenda-item fairway"><strong>${escapeHtml(entry.course)}</strong><span>Tee time · ${escapeHtml(formatTime(entry.time))}</span><span>${escapeHtml(fairwayDetail(entry))}</span><div class="agenda-actions"><a class="small-action" href="${escapeHtml(entry.href)}">Open in Fairway →</a></div></div>`;
+  if(entry.type==='fairway')return `<div class="agenda-item fairway"><strong>${escapeHtml(entry.course)}</strong><span>${escapeHtml(formatTime(entry.time))}–${escapeHtml(formatTime(entry.endTime))}</span><span>${escapeHtml(fairwayDetail(entry))}</span><div class="agenda-actions"><a class="small-action" href="${escapeHtml(entry.href)}">Open in Fairway →</a></div></div>`;
   const schedule = entry.type==='schedule' ? state.scheduleEntries.find((item)=>item.id===entry.sourceId) : null;
   const detail = schedule ? `${formatClock(new Date(schedule.startsAt))} – ${formatClock(new Date(schedule.endsAt))} · ${formatDuration((new Date(schedule.endsAt)-new Date(schedule.startsAt))/60000)}`
     : entry.time ? formatTime(entry.time) : entry.type==='goal' ? 'Goal target' : entry.type==='task' ? 'Task due' : 'All day';

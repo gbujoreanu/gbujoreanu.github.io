@@ -15,11 +15,12 @@
 - Fairway planned rounds, friend invitations, host controls, and participant responses.
 - Fairway scheduled rounds automatically appear as source-linked Daymark Calendar/Scheduler items for hosts and accepted participants, with live authorization and date/time updates.
 - Fairway group scorecards: participant/self scoring, host scoring, incremental saves, completion, polished desktop scorecard, and contained vertical 18-hole mobile scorecard with accessible round totals. Personal-history/handicap linkage is not included.
+- Fairway 9-hole and 18-hole rounds across planning, individual and group scorecards, history, and completion; Daymark uses source-linked two-hour or four-hour round durations.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
 
-No task currently selected.
+- No task currently selected.
 
 # Backlog
 
