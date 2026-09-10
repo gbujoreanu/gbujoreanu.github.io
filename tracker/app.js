@@ -1,5 +1,6 @@
 import { formatDuration, layoutTimelineItems, MINUTES_PER_DAY } from './scheduler.js';
 import { mountEcosystemProfileMenu } from '../shared/identity.js?v=3';
+import { fairwayCalendarEntries, fairwayTimelineItems, fairwayDetail } from './fairway-events.js';
 
 const STORAGE_KEY = "daymark-v1";
 const SETTINGS_KEY = "daymark-settings-v1";
@@ -22,6 +23,29 @@ let taskFilter = "open";
 let selectedDate = todayKey();
 let calendarCursor = startOfMonth(new Date());
 let lastScrolledSchedulerDate = null;
+let fairwayEntries=[];
+let fairwayRefreshVersion=0;
+let fairwayLoading=false;
+
+async function refreshFairwayEvents() {
+  if(!currentUser || document.hidden || fairwayLoading)return;
+  const userId=currentUser.id,version=++fairwayRefreshVersion;
+  fairwayLoading=true;
+  try {
+    const {data,error}=await cloudClient.rpc('daymark_fairway_events');
+    if(userId!==currentUser?.id || version!==fairwayRefreshVersion)return;
+    if(error)throw error;
+    fairwayEntries=fairwayCalendarEntries(data||[]);
+    document.querySelectorAll('[data-fairway-sync]').forEach(el=>{el.textContent='Fairway tee times update automatically. Times shown in your local time zone.';});
+  } catch {
+    // Never leave revoked participant details visible when authorization cannot be refreshed.
+    fairwayEntries=[];
+    document.querySelectorAll('[data-fairway-sync]').forEach(el=>{el.textContent='Fairway tee times could not refresh. They will retry automatically.';});
+  } finally {
+    fairwayLoading=false;
+    if(userId===currentUser?.id){renderCalendar();renderScheduler();renderOverview();}
+  }
+}
 
 const els = {
   navTaskCount: $("#navTaskCount"), navGoalCount: $("#navGoalCount"), todayLabel: $("#todayLabel"),
@@ -60,6 +84,9 @@ async function initialize() {
   const { data, error } = await cloudClient.auth.getSession();
   if (error) return setStorageStatus("Cloud unavailable", true);
   await applySession(data.session);
+  window.addEventListener('focus',refreshFairwayEvents);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refreshFairwayEvents();});
+  setInterval(refreshFairwayEvents,30000);
 }
 
 function bindEvents() {
@@ -136,6 +163,7 @@ function showView(view, updateRoute = true) {
     renderCalendar();
   }
   if (view === 'scheduler') renderScheduler();
+  if (view === 'scheduler' || view === 'calendar') void refreshFairwayEvents();
   if (updateRoute) {
     const nextHash = view === 'scheduler' ? `#scheduler/${selectedDate}` : `#${view}`;
     if (location.hash !== nextHash) history.replaceState(null, '', nextHash);
@@ -218,6 +246,8 @@ async function applySession(session) {
   if (nextUser?.id === handledUserId) return;
   handledUserId = nextUser?.id || null;
   currentUser = nextUser;
+  fairwayEntries=[];
+  fairwayRefreshVersion++;
   if (!currentUser) {
     return location.replace('../account/?returnTo=/tracker/');
   }
@@ -233,6 +263,7 @@ async function applySession(session) {
     document.body.classList.remove('auth-pending');
     renderAll();
     applyRoute();
+    void refreshFairwayEvents();
   } catch (error) {
     console.error(error);
     setStorageStatus('Cloud load failed', true);
@@ -311,7 +342,8 @@ function calendarEntries() {
     ...state.tasks.filter((task) => task.dueDate && task.onCalendar && (settings.showCompletedCalendar || task.status !== 'done')).map((task) => ({ id: task.id, sourceId: task.id, type: 'task', title: task.title, date: task.dueDate, time: task.dueTime, done: task.status === 'done' })),
     ...state.goals.filter((goal) => goal.targetDate).map((goal) => ({ id: goal.id, sourceId: goal.id, type: 'goal', title: goal.title, date: goal.targetDate, time: '', done: Number(goal.progress) >= 100 })),
     ...state.events.map((event) => ({ ...event, type: 'event', sourceId: event.id })),
-    ...scheduleEntriesForCalendar()
+    ...scheduleEntriesForCalendar(),
+    ...fairwayEntries
   ].sort(sortByDateTime);
 }
 
@@ -397,6 +429,10 @@ function renderScheduler() {
   els.schedulerPreviousSummary.textContent = daySummary(formatKey(previous)); els.schedulerNextSummary.textContent = daySummary(formatKey(next));
 
   const goals = state.goals.filter((goal) => goal.targetDate === selectedDate);
+  const fairwayToday=fairwayEntries.filter(entry=>entry.date===selectedDate);
+  const fairwayPanel=$('#schedulerFairway');
+  fairwayPanel.hidden=!fairwayToday.length;
+  fairwayPanel.innerHTML=fairwayToday.map(entry=>`<a class="fairway-round-summary" href="${escapeHtml(entry.href)}"><strong>${escapeHtml(entry.title)} · ${escapeHtml(formatTime(entry.time))}</strong><span>${escapeHtml(fairwayDetail(entry))}</span><small>Open in Fairway → · Tee time only; end time not specified</small></a>`).join('');
   const unscheduled = state.tasks.filter((task) => task.dueDate === selectedDate && !task.dueTime);
   els.schedulerGoals.innerHTML = goals.length ? goals.map((goal) => `<button class="scheduler-summary-item goal" type="button" data-action="edit-goal" data-id="${goal.id}"><span>${Number(goal.progress)>=100?'Complete':'Target today'}</span><strong>${escapeHtml(goal.title)}</strong><small>${goal.progress}% progress</small></button>`).join('') : emptyMarkup('No goal targets for this day.');
   els.schedulerUnscheduled.innerHTML = unscheduled.length ? unscheduled.map((task) => `<button class="scheduler-summary-item task ${task.status==='done'?'done':''}" type="button" data-action="edit-task" data-id="${task.id}"><span>${escapeHtml(task.priority)} priority</span><strong>${escapeHtml(task.title)}</strong><small>${task.status==='done'?'Completed':'No time assigned'}</small></button>`).join('') : emptyMarkup('No tasks are waiting for a time.');
@@ -424,7 +460,7 @@ function timelineItemsForDay(date) {
     const visibleStart = new Date(Math.max(start.getTime(),entryStart.getTime())); const visibleEnd = new Date(Math.min(end.getTime(),entryEnd.getTime()));
     return { id:entry.id,type:'schedule',title:entry.title,notes:entry.notes,startMinute:minutesIntoDay(visibleStart,start),endMinute:minutesIntoDay(visibleEnd,start),timeLabel:`${formatClock(entryStart)} – ${formatClock(entryEnd)}`,duration:formatDuration((entryEnd-entryStart)/60000) };
   });
-  return [...taskItems,...scheduleItems];
+  return [...taskItems,...scheduleItems,...fairwayTimelineItems(fairwayEntries,date)];
 }
 
 function timelineItemMarkup(item) {
@@ -432,6 +468,7 @@ function timelineItemMarkup(item) {
   const crowded = item.laneCount > 2;
   const classes = `timeline-block ${item.type} ${item.done?'done':''} ${item.laneCount>1?'overlapping':''} ${crowded?'crowded':''} ${item.lane%2?'lane-odd':'lane-even'}`;
   const style = `--start-minute:${item.startMinute};--duration-minute:${Math.max(30,item.endMinute-item.startMinute)};--lane:${item.lane};--lane-count:${item.laneCount};--stack-row:${Math.floor(item.lane/2)}`;
+  if(item.type==='fairway')return `<a class="${classes}" style="${style}" href="${escapeHtml(item.href)}" aria-label="${escapeHtml(`${item.title}, ${item.timeLabel}, ${fairwayDetail(item)}. Open in Fairway`)}"><span class="timeline-block-time">${escapeHtml(item.timeLabel)}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(fairwayDetail(item))}</small></a>`;
   return `<button class="${classes}" style="${style}" type="button" data-action="${action}" data-id="${item.id}" aria-label="Edit ${escapeHtml(item.title)}"><span class="timeline-block-time">${escapeHtml(item.timeLabel)}</span><strong>${escapeHtml(item.title)}</strong>${item.duration?`<small>${escapeHtml(item.duration)}</small>`:item.notes?`<small>${escapeHtml(item.notes)}</small>`:''}</button>`;
 }
 
@@ -442,7 +479,7 @@ function renderNowLine() {
 }
 
 function daySummary(date) {
-  const count = state.tasks.filter((task)=>task.dueDate===date).length + state.goals.filter((goal)=>goal.targetDate===date).length + timelineItemsForDay(date).filter((item)=>item.type==='schedule').length;
+  const count = state.tasks.filter((task)=>task.dueDate===date).length + state.goals.filter((goal)=>goal.targetDate===date).length + timelineItemsForDay(date).filter((item)=>item.type==='schedule'||item.type==='fairway').length;
   return count ? `${count} ${count===1?'item':'items'}` : 'Open day';
 }
 
@@ -473,12 +510,14 @@ function renderAgenda(entries) {
     ['Tasks',entries.filter((entry)=>entry.type==='task')],
     ['Goals',entries.filter((entry)=>entry.type==='goal')],
     ['Schedule',entries.filter((entry)=>entry.type==='schedule')],
-    ['Events',entries.filter((entry)=>entry.type==='event')]
+    ['Events',entries.filter((entry)=>entry.type==='event')],
+    ['Fairway rounds',entries.filter((entry)=>entry.type==='fairway')]
   ].filter(([,items])=>items.length);
   els.agendaList.innerHTML = sections.length ? sections.map(([label,items]) => `<section class="agenda-section"><h3>${label}</h3>${items.map(agendaItemMarkup).join('')}</section>`).join('') : emptyMarkup('Nothing scheduled. Leave space or add an event.');
 }
 
 function agendaItemMarkup(entry) {
+  if(entry.type==='fairway')return `<div class="agenda-item fairway"><strong>${escapeHtml(entry.course)}</strong><span>Tee time · ${escapeHtml(formatTime(entry.time))}</span><span>${escapeHtml(fairwayDetail(entry))}</span><div class="agenda-actions"><a class="small-action" href="${escapeHtml(entry.href)}">Open in Fairway →</a></div></div>`;
   const schedule = entry.type==='schedule' ? state.scheduleEntries.find((item)=>item.id===entry.sourceId) : null;
   const detail = schedule ? `${formatClock(new Date(schedule.startsAt))} – ${formatClock(new Date(schedule.endsAt))} · ${formatDuration((new Date(schedule.endsAt)-new Date(schedule.startsAt))/60000)}`
     : entry.time ? formatTime(entry.time) : entry.type==='goal' ? 'Goal target' : entry.type==='task' ? 'Task due' : 'All day';

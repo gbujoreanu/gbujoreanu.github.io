@@ -18,7 +18,7 @@
 
 # Ready
 
-No task selected.
+- Fairway planned/accepted rounds → Daymark Calendar and Scheduler (automatic for hosts and accepted participants).
 
 # Backlog
 
@@ -28,7 +28,6 @@ These are high-level items, not final specifications. The user may change, remov
 - Fairway Friends / rounds / scorecard changes based on user testing.
 - Fairway completed shared rounds → personal history/handicap.
 - Fairway scorecard sharing/export.
-- Fairway → Daymark Calendar/Scheduler integration.
 - Daymark Family sharing.
 - Money → Daymark bill due dates and later carefully scoped household features.
 - Dedicated password recovery/change-password flow.

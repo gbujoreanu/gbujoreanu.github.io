@@ -8,6 +8,7 @@
   <title>Daymark — Plan what matters</title>
   <script>try{const s=JSON.parse(localStorage.getItem('daymark-settings-v1')||'{}');const legacy={neutral:'classic',light:'focus',dark:'midnight'};const chosen=legacy[s.theme]||s.theme||'classic';const system=matchMedia('(prefers-color-scheme:dark)').matches?'midnight':'focus';document.documentElement.dataset.theme=s.followSystem?system:chosen;document.documentElement.dataset.density=s.density||'comfortable'}catch(e){document.documentElement.dataset.theme='classic';document.documentElement.dataset.density='comfortable'}</script>
   <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="fairway-events.css?v=1">
   <link rel="stylesheet" href="layout-fixes.css?v=3">
   <link rel="stylesheet" href="../shared/app-switcher.css?v=7">
   <link rel="stylesheet" href="../shared/identity.css?v=3">
@@ -107,6 +108,8 @@
           <article class="scheduler-summary-panel"><div class="panel-heading"><div><p class="eyebrow">Unscheduled tasks</p><h2>Due without a time</h2></div><button class="text-button" type="button" data-view-target="tasks">All tasks →</button></div><div class="scheduler-summary-list" id="schedulerUnscheduled"></div></article>
         </div>
 
+        <p class="fairway-sync" data-fairway-sync role="status"></p>
+        <section id="schedulerFairway" class="scheduler-fairway" aria-label="Fairway tee times" hidden></section>
         <article class="timeline-panel" id="schedulerSwipeArea">
           <header class="timeline-heading"><div><p class="eyebrow">Day timeline</p><h2>12 AM – 11 PM</h2></div><p><span class="timeline-legend task"></span>Timed task <span class="timeline-legend schedule"></span>Schedule entry</p></header>
           <div class="timeline-scroll" id="timelineScroll"><div class="timeline" id="schedulerTimeline"><div class="timeline-hours" id="timelineHours"></div><div class="timeline-grid" id="timelineGrid"></div><div class="timeline-items" id="timelineItems"></div><div class="timeline-now hidden" id="timelineNow"><span>Now</span></div></div></div>
@@ -121,7 +124,7 @@
             <div class="weekday-row" id="weekdayRow"></div>
             <div class="calendar-grid" id="calendarGrid"></div>
           </article>
-          <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><div class="agenda-list" id="agendaList"></div><div class="agenda-footer-actions"><button class="button dark full" id="viewSchedulerDay" type="button">View Scheduler →</button><button class="button secondary ink full" type="button" data-open-form="event">+ Add event here</button></div></aside>
+          <aside class="agenda-panel"><p class="eyebrow">Selected day</p><h2 id="agendaDate">Today</h2><p class="fairway-sync" data-fairway-sync role="status"></p><div class="agenda-list" id="agendaList"></div><div class="agenda-footer-actions"><button class="button dark full" id="viewSchedulerDay" type="button">View Scheduler →</button><button class="button secondary ink full" type="button" data-open-form="event">+ Add event here</button></div></aside>
         </div>
       </section>
     </main>
@@ -231,6 +234,6 @@
   <script src="../shared/supabase.js?v=1"></script>
   <script type="module" src="../shared/app-switcher.js?v=8"></script>
   <script type="module" src="../shared/unified-header.js?v=1"></script>
-  <script type="module" src="app.js?v=10"></script>
+  <script type="module" src="app.js?v=11"></script>
 </body>
 </html>

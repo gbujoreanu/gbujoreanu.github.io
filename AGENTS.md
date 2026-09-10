@@ -124,12 +124,12 @@ Do not make casual destructive production changes.
 
 ## Cross-app contracts
 
-Cross-app behavior uses explicit, opt-in platform events keyed by `owner_id + source_app + source_type + source_id`, plus access and consumer-subscription rows. The source app remains authoritative; Daymark renders a read-only reference and deep link rather than copying source records.
+Cross-app references use platform events keyed by `owner_id + source_app + source_type + source_id`. Fairway scheduled rounds automatically appear in Daymark for the host and accepted participants; no opt-in or subscription is required for this integration. Source authorization is rechecked on every read, including cancellation, removal, and blocking. Daymark renders read-only tee-time references without scores or private notes, refreshing on return and every 30 seconds while visible. Other integrations remain explicitly scoped and are not automatically enabled.
 
 Planned examples:
 
 - A Daymark Scheduler work block may explicitly publish worked time to Money Earnings.
-- A planned Fairway round may optionally appear in Daymark Calendar while Fairway remains the source of truth.
+- Fairway remains authoritative for its Calendar/Scheduler references; `/golf/#upcoming/<round-id>` opens the source round. Tee-time markers do not imply an estimated round duration.
 - A Money bill may publish only its name and due date to the same owner's Daymark. Amount, notes, categories, and other financial fields must never enter the platform event payload.
 
 Sharing a Supabase project does not authorize one app to read another app's private tables.

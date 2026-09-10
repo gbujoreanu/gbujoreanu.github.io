@@ -1,0 +1,13 @@
+.fairway-sync{font-size:.75rem;line-height:1.5;color:var(--text-secondary);overflow-wrap:anywhere}
+.calendar-event.fairway{border-left:3px solid var(--goal-accent);background:var(--surface-highlight,var(--surface-panel));color:var(--text-primary)}
+.agenda-item.fairway{border-left:3px solid var(--goal-accent);overflow-wrap:anywhere}
+.agenda-item.fairway .small-action{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+.scheduler-fairway{display:grid;gap:8px;margin:12px 0 20px;min-width:0}
+.scheduler-fairway[hidden]{display:none}
+.fairway-round-summary{display:block;padding:12px 16px;border-left:3px solid var(--goal-accent);background:var(--surface-panel);color:var(--text-primary);text-decoration:none;min-width:0;overflow-wrap:anywhere}
+.fairway-round-summary span,.fairway-round-summary small{display:block;margin-top:5px;color:var(--text-secondary)}
+.timeline-block.fairway{background:var(--scheduler-block-bg);color:var(--scheduler-block-text);border-color:var(--goal-accent);border-left-width:3px;text-decoration:none;padding:3px 6px}
+.timeline-block.fairway .timeline-block-time{color:inherit;font-size:.58rem}
+.timeline-block.fairway strong{font-size:.7rem;line-height:1.15;margin:0}
+.timeline-block.fairway small{display:none}
+.fairway-round-summary:focus-visible,.timeline-block.fairway:focus-visible,.agenda-item.fairway a:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
