@@ -13,12 +13,13 @@
 - Connections and Family type-ahead search: partial names/handles, @handle matching, eligibility states, and stale-response protection.
 - New-user profile provisioning and safe identity repair: permanent User### fallbacks, searchable-by-default new profiles, preserved existing choices, and discoverability opt-out with blocking/RLS/email privacy.
 - Fairway planned rounds, friend invitations, host controls, and participant responses.
+- Fairway scheduled rounds automatically appear as source-linked Daymark Calendar/Scheduler items for hosts and accepted participants, with live authorization and date/time updates.
 - Fairway group scorecards: participant/self scoring, host scoring, incremental saves, completion, polished desktop scorecard, and contained vertical 18-hole mobile scorecard with accessible round totals. Personal-history/handicap linkage is not included.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
 
-- Fairway planned/accepted rounds → Daymark Calendar and Scheduler (automatic for hosts and accepted participants).
+No task currently selected.
 
 # Backlog
 
