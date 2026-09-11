@@ -14,13 +14,14 @@
 - New-user profile provisioning and safe identity repair: permanent User### fallbacks, searchable-by-default new profiles, preserved existing choices, and discoverability opt-out with blocking/RLS/email privacy.
 - Fairway planned rounds, friend invitations, host controls, and participant responses.
 - Fairway scheduled rounds automatically appear as source-linked Daymark Calendar/Scheduler items for hosts and accepted participants, with live authorization and date/time updates.
-- Fairway group scorecards: participant/self scoring, host scoring, incremental saves, completion, polished desktop scorecard, and contained vertical 18-hole mobile scorecard with accessible round totals. Personal-history/handicap linkage is not included.
+- Fairway group scorecards: participant/self scoring, host scoring, incremental saves, completion, polished desktop scorecard, and contained vertical 18-hole mobile scorecard with accessible round totals.
 - Fairway 9-hole and 18-hole rounds across planning, individual and group scorecards, history, and completion; Daymark uses source-linked two-hour or four-hour round durations.
+- Fairway shared completed rounds create one private, source-linked personal result per accepted golfer and feed normal history, statistics, and handicap calculations without duplication.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
 
-- Fairway shared completed rounds → personal history and handicap.
+- No task currently selected.
 
 # Backlog
 
