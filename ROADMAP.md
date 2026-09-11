@@ -20,15 +20,15 @@
 
 # Ready
 
-- No task currently selected.
+- Fairway shared completed rounds → personal history and handicap.
 
 # Backlog
 
 These are high-level items, not final specifications. The user may change, remove, reorder, or redesign them later. Implement only an explicitly selected Ready task.
 
 - Validate/fix remaining Family basic functionality with real accounts.
-- Fairway Friends / rounds / scorecard changes based on user testing.
-- Fairway completed shared rounds → personal history/handicap.
+- Fairway Friends and Upcoming UX redesign based on user testing.
+- Fairway course search/autocomplete.
 - Fairway scorecard sharing/export.
 - Daymark Family sharing.
 - Money → Daymark bill due dates and later carefully scoped household features.
