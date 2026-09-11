@@ -78,6 +78,8 @@ Daymark is calm and structured around time, planning, organization, timelines, a
 
 Fairway should feel like golf through scorecards, courses, round progression, and golf-specific hierarchy—not generic SaaS with green paint. It includes rounds, courses, scoring, statistics, a golf-oriented Friends directory, planned rounds, shared group scorecards, Settings, and five independent themes. Relationship data comes from the shared API helper while Fairway owns its presentation. Group scorecards belong to a planned-round session: accepted participants may edit only their own card, while the host/designated scorer may edit all accepted participants' cards.
 
+Completed individual and shared 9-hole or 18-hole scorecards can be rendered locally as a square PNG from data the viewer is already authorized to read. The export renderer performs no additional database access and must never introduce broader scorecard visibility.
+
 The real-user UX/design pass is complete. Preserve these resulting conventions:
 
 - Treat Add Round as a staged golf workflow with a scorecard and review, not a database form.
