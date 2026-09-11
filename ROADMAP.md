@@ -17,6 +17,7 @@
 - Fairway group scorecards: participant/self scoring, host scoring, incremental saves, completion, polished desktop scorecard, and contained vertical 18-hole mobile scorecard with accessible round totals.
 - Fairway 9-hole and 18-hole rounds across planning, individual and group scorecards, history, and completion; Daymark uses source-linked two-hour or four-hour round durations.
 - Fairway shared completed rounds create one private, source-linked personal result per accepted golfer and feed normal history, statistics, and handicap calculations without duplication.
+- Fairway Friends and Upcoming presentation polish: golfer-focused connection rows, tee-sheet grouping, clearer round states/actions, and responsive touch layouts.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
@@ -28,7 +29,6 @@
 These are high-level items, not final specifications. The user may change, remove, reorder, or redesign them later. Implement only an explicitly selected Ready task.
 
 - Validate/fix remaining Family basic functionality with real accounts.
-- Fairway Friends and Upcoming UX redesign based on user testing.
 - Fairway course search/autocomplete.
 - Fairway scorecard sharing/export.
 - Daymark Family sharing.
