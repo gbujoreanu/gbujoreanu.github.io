@@ -18,7 +18,7 @@
 - Fairway 9-hole and 18-hole rounds across planning, individual and group scorecards, history, and completion; Daymark uses source-linked two-hour or four-hour round durations.
 - Fairway shared completed rounds create one private, source-linked personal result per accepted golfer and feed normal history, statistics, and handicap calculations without duplication.
 - Fairway Friends and Upcoming presentation polish: golfer-focused connection rows, tee-sheet grouping, clearer round states/actions, and responsive touch layouts.
-- Fairway square PNG scorecard export for completed individual and shared 9-hole or 18-hole rounds, including score-derived group highlights.
+- Fairway square PNG scorecard export for completed individual and shared 9-hole or 18-hole rounds, with score-derived group highlights, adaptive player-count layouts, and five premium backdrop choices.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
