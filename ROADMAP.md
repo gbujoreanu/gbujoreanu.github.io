@@ -19,6 +19,7 @@
 - Fairway shared completed rounds create one private, source-linked personal result per accepted golfer and feed normal history, statistics, and handicap calculations without duplication.
 - Fairway Friends and Upcoming presentation polish: golfer-focused connection rows, tee-sheet grouping, clearer round states/actions, and responsive touch layouts.
 - Fairway square PNG scorecard export for completed individual and shared 9-hole or 18-hole rounds, with score-derived group highlights, adaptive player-count layouts, and five premium backdrop choices.
+- Fairway 18-hole PNG exports use a scorecard-accurate front-nine / F9 / back-nine / B9 / total column structure with aligned PAR and golfer rows.
 - Existing Supabase migrations, RLS protections, and regression-test coverage.
 
 # Ready
