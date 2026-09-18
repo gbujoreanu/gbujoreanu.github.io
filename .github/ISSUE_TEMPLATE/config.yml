@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/gbujoreanu/gbujoreanu.github.io/security
+    about: Use the private security-reporting path when available; do not post sensitive details publicly.

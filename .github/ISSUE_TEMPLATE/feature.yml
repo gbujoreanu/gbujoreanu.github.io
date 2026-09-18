@@ -1,0 +1,38 @@
+name: Feature or improvement
+description: Suggest a focused new capability or improvement
+title: "[Enhancement]: "
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: App area
+      options:
+        - Account
+        - Daymark
+        - Fairway
+        - Money
+        - Shared platform
+        - Repository / deployment
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: User need
+      description: What user problem or opportunity should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the useful result without prescribing a large implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope notes
+      description: Optional constraints, privacy concerns, or related workflows.

@@ -140,6 +140,13 @@ Sharing a Supabase project does not authorize one app to read another app's priv
 
 `ROADMAP.md` is the single task-status source, using only Done, Ready, and Backlog. Done means implemented, not immutable or free of bugs. Work only on the Ready task explicitly selected by the user, keeping each implementation task focused on one main feature or fix. Do not invent or promote future work from recommendations, architecture examples, or unfinished scaffolding. The user may revise the roadmap at any time. Do not automatically start another task.
 
+## GitHub issue conventions
+
+- Label user-reported broken or regressed behavior `bug`.
+- Label new features and improvements `enhancement`.
+- Add at most one relevant app-area label: `account`, `daymark`, `fairway`, `money`, or `platform`.
+- Keep issues focused and high-level until the user selects and scopes the work. Do not duplicate completed work or treat an issue as authorization to begin it.
+
 ## Updating this file
 
 Keep this concise. It is not a changelog, commit history, bug diary, CSS log, or deployment history. Do not append every task. Update and consolidate it only when architecture, security boundaries, major capabilities, shared platform behavior, durable conventions, design principles, or roadmap status materially change.

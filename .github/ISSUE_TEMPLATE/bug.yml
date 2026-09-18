@@ -1,0 +1,58 @@
+name: Bug report
+description: Report broken or regressed behavior
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Please do not include passwords, tokens, financial records, or another person's private data.
+  - type: dropdown
+    id: area
+    attributes:
+      label: App area
+      options:
+        - Account
+        - Daymark
+        - Fairway
+        - Money
+        - Shared platform
+        - Repository / deployment
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the visible problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Desktop
+        - Tablet
+        - Phone
+        - Multiple
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Chrome, Safari, Firefox, Edge, etc.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots or non-sensitive console details if useful.
