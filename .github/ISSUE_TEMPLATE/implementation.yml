@@ -1,0 +1,88 @@
+name: Focused implementation task
+description: Scope an explicitly selected feature, improvement, or fix for implementation
+title: "[Implementation]: "
+body:
+  - type: markdown
+    attributes:
+      value: Keep this task focused on one main outcome. Do not include passwords, tokens, production records, financial data, or another person's private information.
+  - type: dropdown
+    id: app
+    attributes:
+      label: App
+      options:
+        - Account
+        - Daymark
+        - Fairway
+        - Money
+        - Platform
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Problem or goal
+      description: State the focused problem to solve or outcome to deliver.
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behavior
+      description: Describe what exists or happens today.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the intended user-visible result.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List the specific conditions that prove this task is complete.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: List adjacent work that must not be included.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or recording
+      description: Attach privacy-safe visual evidence or links when useful.
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and privacy considerations
+      description: Note authentication, authorization, RLS, data exposure, or privacy constraints.
+  - type: textarea
+    id: responsive
+    attributes:
+      label: Desktop and mobile requirements
+      description: Identify relevant viewport sizes, interactions, or platform-specific behavior.
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing requirements
+      description: Specify automated, multi-user, database, or deployed workflow validation.
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment required
+      options:
+        - "Yes"
+        - "No"
+        - Not sure
+    validations:
+      required: true
+

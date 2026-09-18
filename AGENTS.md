@@ -136,9 +136,9 @@ Planned examples:
 
 Sharing a Supabase project does not authorize one app to read another app's private tables.
 
-## Roadmap
+## Work tracking
 
-`ROADMAP.md` is the single task-status source, using only Done, Ready, and Backlog. Done means implemented, not immutable or free of bugs. Work only on the Ready task explicitly selected by the user, keeping each implementation task focused on one main feature or fix. Do not invent or promote future work from recommendations, architecture examples, or unfinished scaffolding. The user may revise the roadmap at any time. Do not automatically start another task.
+GitHub Issues and the linked GitHub Project are the active task-status sources. `ROADMAP.md` is historical reference only. Work only on the Ready issue explicitly selected by the user, keeping each implementation task focused on one main feature or fix. Use the Project statuses Backlog, Ready, In Progress, Testing, and Done; keep only explicitly selected work in Ready. Do not invent or promote future work from recommendations, architecture examples, or unfinished scaffolding. Do not automatically start another task.
 
 ## GitHub issue conventions
 
@@ -153,4 +153,4 @@ Keep this concise. It is not a changelog, commit history, bug diary, CSS log, or
 
 ## Implementation handoff convention
 
-After completing work, update `ROADMAP.md`: move completed items to Done, preserve remaining Ready/Backlog items, and incorporate roadmap decisions the user gave during the chat. Include the updated roadmap in a concise **Completion Update**. Do not automatically recommend, select, or begin another task unless the user asks.
+After completing work, update the selected issue and GitHub Project status, close the issue only after required validation, and include that status in a concise **Completion Update**. Stop after one issue. Do not automatically recommend, select, or begin another task unless the user asks.
