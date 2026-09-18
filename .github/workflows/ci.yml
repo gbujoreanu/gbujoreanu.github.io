@@ -25,7 +25,7 @@ jobs:
       - name: Check JavaScript syntax
         shell: bash
         run: |
-          find account tracker money shared scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 \
+          find account tracker money shared -type f \( -name '*.js' -o -name '*.mjs' \) -print0 \
             | xargs -0 -n1 node --check
 
       - name: Run JavaScript tests
