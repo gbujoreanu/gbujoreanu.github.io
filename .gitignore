@@ -1,0 +1,38 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Authentication and browser state
+.auth/
+auth-state.json
+storage-state.json
+*.har
+*.trace.zip
+
+# Private or exported local data
+backups/
+dumps/
+exports/
+local-data/
+private/
+
+# Test and tool output
+coverage/
+test-results/
+playwright-report/
+downloads/
+*.log
+*.tmp
+*.bak
+
+# Dependencies and operating-system files
+node_modules/
+.DS_Store
+Thumbs.db
+
+

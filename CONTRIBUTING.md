@@ -32,6 +32,14 @@ Project fields identify the app, work type, priority, and approximate size. Issu
 - Validate the deployed user flow when the issue changes user-facing behavior.
 - Never commit privileged credentials or real private datasets.
 
+## Privacy-safe tests and fixtures
+
+- Use synthetic users, names, handles, courses, accounts, transactions, and other fixture data.
+- Never commit production exports, copied production records, real credentials, session state, or authentication captures.
+- Do not commit personal screenshots or recordings. Crop or recreate a problem with synthetic data before attaching visual evidence.
+- Keep generated reports, browser profiles, downloads, database dumps, and local test artifacts outside the repository.
+- Treat the browser-safe Supabase publishable configuration as public configuration; all privileged keys and database credentials belong only in approved secret storage.
+
 ## Completion
 
 When an issue is complete:
