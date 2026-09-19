@@ -50,4 +50,3 @@ When an issue is complete:
 4. Move the issue through Testing and close it only after validation.
 5. Update the Project status; closing an issue should place it in Done.
 6. Stop after that one issue unless the user explicitly selects another.
-
